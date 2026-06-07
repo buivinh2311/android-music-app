@@ -18,5 +18,5 @@ data class UserFavoriteSongCrossRefEntity (
     val songId: String,
 
     @ColumnInfo(name = "created_at")
-    val createdAt: Long
+    val createdAt: Long = System.currentTimeMillis()
 )

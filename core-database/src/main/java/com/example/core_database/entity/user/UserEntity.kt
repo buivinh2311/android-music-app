@@ -14,7 +14,7 @@ data class UserEntity (
     val username: String,
 
     @ColumnInfo(name = "password")
-    val password: String,
+    val password: String = "",
 
     @ColumnInfo(name = "email")
     val email: String,
@@ -23,5 +23,5 @@ data class UserEntity (
     val createdAt: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "avatar")
-    val avatar: String? = null
+    val avatar: String = ""
 )

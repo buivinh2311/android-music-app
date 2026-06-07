@@ -13,7 +13,7 @@ interface UserDao {
     suspend fun getUserById(userId: Int): UserEntity?
 
     @Insert
-    suspend fun insert(user: UserEntity)
+    suspend fun insert(user: UserEntity): Boolean
 
     @Update
     suspend fun update(user: UserEntity)

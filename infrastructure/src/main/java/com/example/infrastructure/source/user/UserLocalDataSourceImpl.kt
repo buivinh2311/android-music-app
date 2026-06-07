@@ -9,18 +9,18 @@ class UserLocalDataSourceImpl @Inject constructor(
     private val userDao: UserDao
 ): UserLocalDataSource {
     override suspend fun getUserById(userId: Int): UserEntity? {
-        TODO("Not yet implemented")
+        return userDao.getUserById(userId)
     }
 
-    override suspend fun insert(user: UserEntity) {
-        TODO("Not yet implemented")
+    override suspend fun insert(user: UserEntity): Boolean {
+        return userDao.insert(user)
     }
 
     override suspend fun update(user: UserEntity) {
-        TODO("Not yet implemented")
+        userDao.update(user)
     }
 
     override suspend fun delete(user: UserEntity) {
-        TODO("Not yet implemented")
+        userDao.delete(user)
     }
 }
