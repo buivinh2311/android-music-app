@@ -1,0 +1,62 @@
+package com.example.core_resources.ui.dimen
+
+import androidx.compose.ui.unit.dp
+
+object AppDimens {
+
+    object Space {
+        val Xs = 4.dp
+        val Sm = 8.dp
+        val Md = 12.dp
+        val Lg = 16.dp
+        val Xl = 24.dp
+    }
+
+    object ImageSize {
+        val Sm = 48.dp
+        val Md = 56.dp
+        val Lg = 64.dp
+    }
+
+    object Radius {
+        val Xs = 4.dp
+        val Sm = 8.dp
+        val Md = 12.dp
+        val Lg = 16.dp
+        val Xl = 24.dp
+    }
+
+    object Ripple {
+        val Sm = 20.dp
+        val Md = 30.dp
+        val Lg = 40.dp
+    }
+
+    object Layout {
+        val TopBarHeight = 56.dp
+        val BottomBarHeight = 56.dp
+        val ArtistItemHeight = 64.dp
+        val PlaylistItemHeight = 64.dp
+        val SongItemHeight = 72.dp
+    }
+
+    object Icon {
+        val Xs = 16.dp
+        val Sm = 26.dp
+        val Md = 30.dp
+        val Lg = 34.dp
+        val Xl = 40.dp
+    }
+
+    object Divider {
+        val Thin = 0.5.dp
+        val Normal = 1.dp
+        val Thick = 2.dp
+    }
+
+    object Border {
+        val Thin = 0.5.dp
+        val Normal = 1.dp
+        val Thick = 2.dp
+    }
+}

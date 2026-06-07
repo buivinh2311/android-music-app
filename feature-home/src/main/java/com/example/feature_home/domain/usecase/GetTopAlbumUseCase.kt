@@ -1,0 +1,13 @@
+package com.example.feature_home.domain.usecase
+
+import com.example.core_domain.repository.AlbumRepository
+import com.example.core_model.Album
+import javax.inject.Inject
+
+class GetTopAlbumUseCas @Inject constructor(
+    private val repository: AlbumRepository
+) {
+    suspend operator fun invoke(limit: Int): List<Album> {
+        return repository.getTopAlbums(limit)
+    }
+}

@@ -1,0 +1,53 @@
+package com.example.feature_player.presentation.component
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImage
+import com.example.core_resources.R
+import com.example.core_resources.ui.dimen.AppDimens
+
+@Composable
+fun PlayerArtWork(
+    modifier: Modifier = Modifier,
+    artworkUrl: String?,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Card(
+            onClick = onClick,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            shape = CircleShape,
+            border = BorderStroke(AppDimens.Border.Thick, Color.Gray),
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .aspectRatio(1f)
+        ) {
+            AsyncImage(
+                model = artworkUrl,
+                contentDescription = "Song Artwork",
+                placeholder = painterResource(R.drawable.ic_music_note),
+                error = painterResource(R.drawable.ic_music_not_available),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+}

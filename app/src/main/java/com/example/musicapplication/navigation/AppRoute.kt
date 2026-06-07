@@ -1,0 +1,27 @@
+package com.example.musicapplication.navigation
+
+object AppRoute {
+    const val HOME = "home"
+    const val LIBRARY = "library"
+    const val DISCOVERY = "discovery"
+    const val SETTINGS = "settings"
+    const val SEARCH = "search"
+    const val ALBUM = "album"
+    const val ALBUM_DETAIL = "albumDetail"
+    const val ALBUM_DETAIL_WITH_ARG = "albumDetail/{albumName}"
+    const val RECOMMENDED = "recommended"
+    const val FAVORITE = "favorite"
+    const val RECENT = "recent"
+    const val PLAYLIST = "playlist"
+    const val PLAYLIST_DETAIL = "playlistDetail"
+    const val PLAYLIST_DETAIL_WITH_ARG = "playlistDetail/{playlistId}"
+    const val ARTIST = "artist"
+    const val ARTIST_CHOOSER = "artistChooser"
+    const val ARTIST_CHOOSER_WITH_ARG = "artistChooser/{artistStr}"
+    const val ARTIST_DETAIL = "artistDetail"
+    const val ARTIST_DETAIL_WITH_ARG = "artistDetail/{artistName}"
+    const val FOR_YOU = "forYou"
+    const val MOST_LISTENED = "mostListened"
+    const val PLAYER = "player"
+    const val PLAYER_WITH_ARG = "player/{songId}"
+}
