@@ -51,4 +51,10 @@
     <string name="titlt_album_hot">Album thịnh hành</string>
     <string name="title_artist_hot">" Ca sĩ nổi bật"</string>
     <string name="title_artist">Nghệ sĩ</string>
+    <string name="title_add_song_to_playlist">Thêm bài hát vào playlist</string>
+    <string name="action_create_new_playlist">Tạo playlist mới</string>
+    <string name="action_create">Tạo</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="hint_playlist_name">Nhập tên của Playlist</string>
+    <string name="title_favorite_song">Bài hát yêu thích</string>
 </resources>

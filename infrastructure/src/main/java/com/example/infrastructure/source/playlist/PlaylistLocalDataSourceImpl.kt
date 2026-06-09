@@ -3,6 +3,7 @@ package com.example.infrastructure.source.playlist
 import com.example.core_database.dao.playlist.PlaylistDao
 import com.example.core_database.datasource.playlist.PlaylistLocalDataSource
 import com.example.core_database.entity.playlist.PlaylistEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PlaylistLocalDataSourceImpl @Inject constructor(
@@ -16,15 +17,19 @@ class PlaylistLocalDataSourceImpl @Inject constructor(
         return playlistDao.getPlaylistById(playlistId)
     }
 
-    override suspend fun getAllPlaylists(): List<PlaylistEntity> {
+    override fun getAllPlaylists(): Flow<List<PlaylistEntity>> {
         return playlistDao.getAllPlaylists()
+    }
+
+    override suspend fun getMaxPlaylistId(): Int? {
+        return playlistDao.getMaxPlaylistId()
+    }
+
+    override suspend fun updateSize(playlistId: Int, size: Int) {
+        playlistDao.updateSize(playlistId, size)
     }
 
     override suspend fun delete(playlistId: Int) {
         playlistDao.delete(playlistId)
     }
-
-//    override suspend fun getPlaylistWithSongs(playlistId: Int): PlaylistWithSongs {
-//        TODO("Not yet implemented")
-//    }
 }

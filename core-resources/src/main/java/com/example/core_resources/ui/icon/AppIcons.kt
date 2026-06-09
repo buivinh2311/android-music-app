@@ -7,7 +7,7 @@ import com.example.core_resources.R
 @Suppress("unused")
 object AppIcons {
 
-    val AddToLibrary
+    val AddToPlaylist
         @Composable
         get() = painterResource(R.drawable.ic_add_to_library)
 

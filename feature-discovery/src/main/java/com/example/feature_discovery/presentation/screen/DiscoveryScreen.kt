@@ -27,16 +27,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.core_model.DisplaySong
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionItem
-import com.example.core_ui.ui.AppBottomBar
-import com.example.core_ui.ui.AppTopBar
-import com.example.core_ui.ui.ArtistItem
-import com.example.core_ui.ui.SongItem
-import com.example.core_ui.ui.SongLazyHorizontalGrid
-import com.example.core_ui.ui.SongOptionBottomSheet
-import com.example.core_ui.ui.ViewAllButton
+import com.example.core_ui.component.AppBottomBar
+import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.ArtistItem
+import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.SongLazyHorizontalGrid
+import com.example.core_ui.component.ViewAllButton
+import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_discovery.presentation.viewmodel.DiscoveryViewModel
+import com.example.shared_presentation.model.SongOptionItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +47,7 @@ fun DiscoveryScreen(
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     var selectedSong: DisplaySong? by remember {
         mutableStateOf(null)
@@ -141,13 +140,15 @@ fun DiscoveryScreen(
                 }
             }
 
-            selectedSong?.let {
-                SongOptionBottomSheet(
-                    song = it,
-                    onDismiss = { selectedSong = null },
-                    onSongOptionClick = onSongOptionClick
-                )
-            }
+//            selectedSong?.let {
+//                SongOptionHost(
+//                    song = it,
+//                    onDismiss = {
+//                        selectedSong = null
+//                    },
+//                    onSongNavigationAction = onSongNavigationAction
+//                )
+//            }
         }
     }
 }

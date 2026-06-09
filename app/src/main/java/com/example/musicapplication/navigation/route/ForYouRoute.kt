@@ -2,17 +2,17 @@ package com.example.musicapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionItem
+import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_foryou.presentation.screen.ForYouScreen
 import com.example.musicapplication.navigation.AppRoute
+import com.example.shared_presentation.model.SongOptionItem
 
 @Composable
 fun ForYouRoute(
     navController: NavController,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     ForYouScreen(
         onSongClick = { songId ->
@@ -20,6 +20,6 @@ fun ForYouRoute(
         },
         onBackCLick = onBackClick,
         onBottomActionClick = onBottomActionClick,
-        onSongOptionClick = onSongOptionClick
+        onSongNavigationAction = onSongNavigationAction
     )
 }

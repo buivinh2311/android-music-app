@@ -14,12 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionItem
-import com.example.core_ui.ui.AppBottomBar
-import com.example.core_ui.ui.AppTopBar
-import com.example.core_ui.ui.PlaylistItem
-import com.example.core_ui.ui.ViewAllButton
+import com.example.core_ui.component.AppBottomBar
+import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.ViewAllButton
+import com.example.core_ui.menu.AppBottomBarAction
+import com.example.shared_presentation.model.SongOptionItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +30,7 @@ fun LibraryScreen(
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -75,12 +74,12 @@ fun LibraryScreen(
                 Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
             }
 
-            items(20) {
-                PlaylistItem(
-                    modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
-                    onPlaylistClick = onPlaylistClick
-                )
-            }
+//            items(20) {
+//                PlaylistItem(
+//                    modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
+//                    onPlaylistClick = onPlaylistClick
+//                )
+//            }
         }
     }
 }

@@ -23,17 +23,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionItem
-import com.example.core_ui.ui.AppBottomBar
-import com.example.core_ui.ui.AppTopBar
+import com.example.core_ui.component.AppBottomBar
+import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.menu.AppBottomBarAction
+import com.example.shared_presentation.model.SongOptionItem
 
 @Composable
 fun RecentScreen(
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     Scaffold(
     modifier = Modifier.fillMaxSize(),

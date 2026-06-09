@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.ui.AppButton
+import com.example.core_ui.component.AppButton
 
 @Composable
 fun PlayerExtraAction(modifier: Modifier = Modifier) {
@@ -35,7 +35,7 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AppButton(
-                painter = AppIcons.AddToLibrary,
+                painter = AppIcons.AddToPlaylist,
                 contentDescription = stringResource(R.string.action_add_to_library),
                 iconSize = AppDimens.Icon.Sm,
                 rippleRadius = AppDimens.Ripple.Lg,

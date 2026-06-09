@@ -65,7 +65,7 @@ interface SongDao {
     suspend fun getRecommendedSongs(limit: Int, type: String): List<SongEntity>
 
     @Query(
-        "SELECT * FROM songs s " +
+        "SELECT s.* FROM songs s " +
                 "INNER JOIN song_lists l ON s.song_id = l.song_id " +
                 "WHERE l.list_type = :type " +
                 "ORDER BY s.counter DESC, s.song_id " +
@@ -74,7 +74,7 @@ interface SongDao {
     suspend fun getMostHeardSongs(limit: Int, type: String): List<SongEntity>
 
     @Query(
-        "SELECT * FROM songs s " +
+        "SELECT s.* FROM songs s " +
                 "INNER JOIN song_lists l ON s.song_id = l.song_id " +
                 "WHERE l.list_type = :type " +
                 "ORDER BY s.song_id " +

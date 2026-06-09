@@ -7,14 +7,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.ui.AppBottomBar
-import com.example.core_ui.ui.AppTopBar
-import com.example.core_ui.ui.PlaylistItem
+import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.component.AppBottomBar
+import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.PlaylistItem
+import com.example.feature_playlist.presentation.viewmodel.PlaylistViewModel
 
 @Composable
 fun PlaylistScreen(
@@ -22,6 +26,9 @@ fun PlaylistScreen(
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
+    val playlistViewModel: PlaylistViewModel = hiltViewModel()
+    val uiState by playlistViewModel.uiState.collectAsState()
+    val playlists = uiState.playlists
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -41,9 +48,13 @@ fun PlaylistScreen(
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            items(20) {
+            items(
+                count = playlists.size,
+                key = { index -> playlists[index].id }
+            ) { index ->
                 PlaylistItem(
                     modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
+                    playlist = playlists[index],
                     onPlaylistClick = onPlaylistClick
                 )
             }

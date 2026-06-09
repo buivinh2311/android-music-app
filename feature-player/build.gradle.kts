@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":core-network"))
     implementation(project(":core-utils"))
     implementation(project(":core-playback"))
+    implementation(project(":shared-presentation"))
+
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.coil)
     implementation(libs.retrofit)

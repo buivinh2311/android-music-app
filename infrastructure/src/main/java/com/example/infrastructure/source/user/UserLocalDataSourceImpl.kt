@@ -13,7 +13,7 @@ class UserLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun insert(user: UserEntity): Boolean {
-        return userDao.insert(user)
+        return userDao.insert(user) > 0
     }
 
     override suspend fun update(user: UserEntity) {

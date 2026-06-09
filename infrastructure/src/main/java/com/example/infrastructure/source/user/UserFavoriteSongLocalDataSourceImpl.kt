@@ -4,6 +4,7 @@ import com.example.core_database.dao.user.UserFavoriteSongCrossRefDao
 import com.example.core_database.datasource.user.UserFavoriteSongLocalDataSource
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserFavoriteSongCrossRefEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserFavoriteSongLocalDataSourceImpl @Inject constructor(
@@ -13,7 +14,7 @@ class UserFavoriteSongLocalDataSourceImpl @Inject constructor(
         userFavoriteSongCrossRefDao.insert(userFavoriteSong)
     }
 
-    override suspend fun isFavoriteSong(userId: Int, songId: String): Boolean {
+    override fun isFavoriteSong(userId: Int, songId: String): Flow<Boolean> {
         return userFavoriteSongCrossRefDao.isFavoriteSong(userId, songId)
     }
 

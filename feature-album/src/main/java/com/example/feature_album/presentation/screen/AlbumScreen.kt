@@ -17,10 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.ui.AlbumItem
-import com.example.core_ui.ui.AppBottomBar
-import com.example.core_ui.ui.AppTopBar
+import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.component.AlbumItem
+import com.example.core_ui.component.AppBottomBar
+import com.example.core_ui.component.AppTopBar
 import com.example.feature_album.presentation.viewmodel.AlbumViewModel
 
 @Composable

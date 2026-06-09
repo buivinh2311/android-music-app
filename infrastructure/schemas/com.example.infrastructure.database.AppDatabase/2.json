@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ecc0a1bb9dc950a8f2db9d917654a175",
+    "identityHash": "1e99cd572153fba79c66eff515becf4d",
     "entities": [
       {
         "tableName": "albums",
@@ -236,7 +236,7 @@
       },
       {
         "tableName": "playlists",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `artwork_url` TEXT, `created_at` INTEGER NOT NULL, PRIMARY KEY(`playlist_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `artwork_url` TEXT, `size` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`playlist_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -254,6 +254,11 @@
             "fieldPath": "artwork",
             "columnName": "artwork_url",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "size",
+            "columnName": "size",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "createdAt",
@@ -554,7 +559,7 @@
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `username` TEXT NOT NULL, `password` TEXT NOT NULL, `email` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `avatar` TEXT, PRIMARY KEY(`user_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `username` TEXT NOT NULL, `password` TEXT NOT NULL, `email` TEXT, `created_at` INTEGER NOT NULL, `avatar` TEXT, PRIMARY KEY(`user_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -577,8 +582,7 @@
           {
             "fieldPath": "email",
             "columnName": "email",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "createdAt",
@@ -869,7 +873,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ecc0a1bb9dc950a8f2db9d917654a175')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1e99cd572153fba79c66eff515becf4d')"
     ]
   }
 }

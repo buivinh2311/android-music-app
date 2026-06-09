@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.ui.ViewAllButton
+import com.example.core_ui.component.ViewAllButton
 
 @Composable
 fun LibraryPlaylistHeader(

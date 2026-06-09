@@ -1,15 +1,12 @@
 package com.example.musicapplication.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionAction
-import com.example.core_ui.data.SongOptionItem
+import com.example.core_ui.menu.AppBottomBarAction
 import com.example.musicapplication.navigation.route.AlbumDetailRoute
 import com.example.musicapplication.navigation.route.AlbumRoute
 import com.example.musicapplication.navigation.route.ArtistChooserRoute
@@ -26,6 +23,8 @@ import com.example.musicapplication.navigation.route.PlaylistDetailRoute
 import com.example.musicapplication.navigation.route.PlaylistRoute
 import com.example.musicapplication.navigation.route.RecentRoute
 import com.example.musicapplication.navigation.route.RecommendedRoute
+import com.example.shared_presentation.model.SongOptionAction
+import com.example.shared_presentation.model.SongOptionItem
 
 @Composable
 fun AppNavHost() {
@@ -62,20 +61,8 @@ fun AppNavHost() {
         }
     }
 
-    val onSongOptionClick: (SongOptionItem) -> Unit = { item ->
+    val onSongNavigationAction: (SongOptionItem) -> Unit = { item ->
         when(item.action) {
-            SongOptionAction.DOWNLOAD -> {
-
-            }
-
-            SongOptionAction.ADD_TO_LIBRARY -> {
-
-            }
-
-            SongOptionAction.ADD_TO_PLAYLIST -> {
-
-            }
-
             SongOptionAction.VIEW_ALBUM -> {
                 navController.navigate("${AppRoute.ALBUM_DETAIL}/${item.album}")
             }
@@ -89,29 +76,11 @@ fun AppNavHost() {
                 }
             }
 
-            SongOptionAction.SIMILAR_CONTENT -> {
-
-            }
-
-            SongOptionAction.RING_TONE -> {
-
-            }
-
-            SongOptionAction.EQUALIZER -> {
-
-            }
-
             SongOptionAction.COMMENT -> {
 
             }
 
-            SongOptionAction.BLOCK -> {
-
-            }
-
-            SongOptionAction.REPORT -> {
-
-            }
+            else -> {}
         }
     }
 
@@ -122,7 +91,7 @@ fun AppNavHost() {
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -132,7 +101,7 @@ fun AppNavHost() {
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -142,7 +111,7 @@ fun AppNavHost() {
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -169,7 +138,7 @@ fun AppNavHost() {
                     albumName = albumName,
                     onBackClick = onBackClick,
                     onBottomActionClick = onBottomActionClick,
-                    onSongOptionClick = onSongOptionClick
+                    onSongNavigationAction = onSongNavigationAction
                 )
             }
         }
@@ -179,7 +148,7 @@ fun AppNavHost() {
                 navController = navController,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -188,7 +157,7 @@ fun AppNavHost() {
                 navController = navController,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -197,7 +166,7 @@ fun AppNavHost() {
                 navController = navController,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -216,13 +185,17 @@ fun AppNavHost() {
                     type = NavType.IntType
                 }
             )
-        ) {
-            PlaylistDetailRoute(
-                navController = navController,
-                onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
-            )
+        ) { backStackEntry ->
+            val playlistId = backStackEntry.arguments?.getInt("playlistId")
+            playlistId?.let {
+                PlaylistDetailRoute(
+                    playlistId = playlistId,
+                    navController = navController,
+                    onBackClick = onBackClick,
+                    onBottomActionClick = onBottomActionClick,
+                    onSongNavigationAction = onSongNavigationAction
+                )
+            }
         }
 
         composable(AppRoute.ARTIST) {
@@ -253,7 +226,7 @@ fun AppNavHost() {
                     navController = navController,
                     onBackClick = onBackClick,
                     onBottomActionClick = onBottomActionClick,
-                    onSongOptionClick = onSongOptionClick
+                    onSongNavigationAction = onSongNavigationAction
                 )
             }
         }
@@ -263,7 +236,7 @@ fun AppNavHost() {
                 navController = navController,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -272,7 +245,7 @@ fun AppNavHost() {
                 navController = navController,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
-                onSongOptionClick = onSongOptionClick
+                onSongNavigationAction = onSongNavigationAction
             )
         }
 
@@ -282,7 +255,7 @@ fun AppNavHost() {
                 PlayerRoute(
                     songId = songId,
                     onBackClick = onBackClick,
-                    onSongOptionClick = onSongOptionClick
+                    onSongNavigationAction = onSongNavigationAction
                 )
             }
         }

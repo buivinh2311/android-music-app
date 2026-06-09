@@ -6,6 +6,8 @@ import com.example.core_model.Playlist
 import com.example.infrastructure.mapper.local.toEntity
 import com.example.infrastructure.mapper.local.toModel
 import com.example.infrastructure.mapper.local.toModels
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PlaylistRepositoryImpl @Inject constructor(
@@ -15,12 +17,23 @@ class PlaylistRepositoryImpl @Inject constructor(
         return playlistLocalDataSource.getPlaylistById(playlistId)?.toModel()
     }
 
-    override suspend fun getAllPlaylist(): List<Playlist> {
-        return playlistLocalDataSource.getAllPlaylists().toModels()
+    override fun getAllPlaylist(): Flow<List<Playlist>> {
+        return playlistLocalDataSource.getAllPlaylists()
+            .map { playlist ->
+                playlist.toModels()
+            }
     }
 
     override suspend fun insert(playlist: Playlist) {
         playlistLocalDataSource.insert(playlist.toEntity())
+    }
+
+    override suspend fun getMaxPlaylistId(): Int? {
+        return playlistLocalDataSource.getMaxPlaylistId()
+    }
+
+    override suspend fun updateSize(playlistId: Int, size: Int) {
+        playlistLocalDataSource.updateSize(playlistId, size)
     }
 
     override suspend fun delete(playlistId: Int) {

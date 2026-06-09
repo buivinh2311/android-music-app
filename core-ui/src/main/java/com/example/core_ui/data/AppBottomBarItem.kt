@@ -1,9 +1,0 @@
-package com.example.core_ui.data
-
-import androidx.compose.ui.graphics.painter.Painter
-
-data class AppBottomBarItem(
-    val icon: Painter,
-    val title: String,
-    val action: AppBottomBarAction
-)

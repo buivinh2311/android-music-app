@@ -6,6 +6,7 @@ import com.example.core_domain.manager.UserManager
 import com.example.core_domain.repository.FavoriteSongRepository
 import com.example.core_model.DisplaySong
 import com.example.infrastructure.mapper.local.toDisplayModels
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FavoriteSongRepositoryImpl @Inject constructor(
@@ -27,7 +28,7 @@ class FavoriteSongRepositoryImpl @Inject constructor(
         localDataSource.delete(userId, songId)
     }
 
-    override suspend fun isFavoriteSong(songId: String): Boolean {
+    override fun isFavoriteSong(songId: String): Flow<Boolean> {
         val userId = userManager.getCurrentUserId()
         return localDataSource.isFavoriteSong(userId, songId)
     }

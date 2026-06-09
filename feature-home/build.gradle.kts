@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":core-domain"))
     implementation(project(":core-network"))
     implementation(project(":core-utils"))
+    implementation(project(":shared-presentation"))
     implementation(libs.coil)
 
     //hilt

@@ -80,7 +80,6 @@ class PlaybackControllerImpl @Inject constructor(
     }
 
     override fun play(song: Song) {
-        if(song.sourceUrl == null) return
         val mediaItem = MediaItem.Builder()
             .setUri(song.sourceUrl)
             .setMediaId(song.id)

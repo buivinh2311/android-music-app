@@ -30,20 +30,19 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.core_model.DisplaySong
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionItem
-import com.example.core_ui.ui.AppBottomBar
-import com.example.core_ui.ui.AppTopBar
-import com.example.core_ui.ui.SongItem
-import com.example.core_ui.ui.SongOptionBottomSheet
+import com.example.core_ui.component.AppBottomBar
+import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.SongItem
+import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_recommended.presentation.viewmodel.RecommendedViewModel
+import com.example.shared_presentation.model.SongOptionItem
 
 @Composable
 fun RecommendedScreen(
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     var selectedSong: DisplaySong? by remember {
         mutableStateOf(null)
@@ -116,13 +115,15 @@ fun RecommendedScreen(
                 }
             }
 
-            selectedSong?.let {
-                SongOptionBottomSheet(
-                    song = it,
-                    onDismiss = { selectedSong = null },
-                    onSongOptionClick = onSongOptionClick
-                )
-            }
+//            selectedSong?.let {
+//                SongOptionHost(
+//                    song = it,
+//                    onDismiss = {
+//                        selectedSong = null
+//                    },
+//                    onSongNavigationAction = onSongNavigationAction
+//                )
+//            }
         }
     }
 }

@@ -2,10 +2,10 @@ package com.example.musicapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.example.core_ui.data.AppBottomBarAction
-import com.example.core_ui.data.SongOptionItem
+import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_discovery.presentation.screen.DiscoveryScreen
 import com.example.musicapplication.navigation.AppRoute
+import com.example.shared_presentation.model.SongOptionItem
 
 @Composable
 fun DiscoveryRoute(
@@ -13,7 +13,7 @@ fun DiscoveryRoute(
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     DiscoveryScreen(
         onMoreArtistClick = {
@@ -35,6 +35,6 @@ fun DiscoveryRoute(
         onSearchClick = onSearchClick,
         onSongClick = onSongClick,
         onBottomActionClick = onBottomActionClick,
-        onSongOptionClick = onSongOptionClick
+        onSongNavigationAction = onSongNavigationAction
     )
 }

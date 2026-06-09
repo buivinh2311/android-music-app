@@ -27,8 +27,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.data.SongOptionItem
-import com.example.core_ui.ui.SongOptionBottomSheet
 import com.example.feature_player.presentation.component.PlayerArtWork
 import com.example.feature_player.presentation.component.PlayerControls
 import com.example.feature_player.presentation.component.PlayerExtraAction
@@ -36,13 +34,14 @@ import com.example.feature_player.presentation.component.PlayerInfo
 import com.example.feature_player.presentation.component.PlayerProgress
 import com.example.feature_player.presentation.component.PlayerTopBar
 import com.example.feature_player.presentation.viewmodel.PlayerViewModel
+import com.example.shared_presentation.model.SongOptionItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
     songId: String,
     onBackClick: () -> Unit,
-    onSongOptionClick: (SongOptionItem) -> Unit
+    onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     var shouldShowBottomSheet by remember { mutableStateOf(false) }
     val playerViewModel: PlayerViewModel = hiltViewModel()
@@ -119,13 +118,15 @@ fun PlayerScreen(
                         PlayerExtraAction()
                         playerViewModel.play(song)
 
-                        if (shouldShowBottomSheet) {
-                            SongOptionBottomSheet(
-                                song = displaySong,
-                                onDismiss = { shouldShowBottomSheet = false },
-                                onSongOptionClick = onSongOptionClick
-                            )
-                        }
+//                        if (shouldShowBottomSheet) {
+//                            SongOptionHost(
+//                                song = displaySong,
+//                                onDismiss = {
+//                                    shouldShowBottomSheet = false
+//                                },
+//                                onSongNavigationAction = onSongNavigationAction
+//                            )
+//                        }
                     }
                 }
             }

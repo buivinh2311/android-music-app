@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserFavoriteSongCrossRefEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserFavoriteSongCrossRefDao {
@@ -19,7 +20,7 @@ interface UserFavoriteSongCrossRefDao {
                 "WHERE user_id = :userId AND s.song_id = :songId" +
                 ")"
     )
-    suspend fun isFavoriteSong(userId: Int, songId: String): Boolean
+    fun isFavoriteSong(userId: Int, songId: String): Flow<Boolean>
 
     @Query(
         "SELECT s.* FROM user_favorite_song_cross_ref u " +

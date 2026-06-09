@@ -16,6 +16,9 @@ data class PlaylistEntity (
     @ColumnInfo(name = "artwork_url")
     val artwork: String? = null,
 
+    @ColumnInfo(name = "size")
+    val size: Int? = 0,
+
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 )

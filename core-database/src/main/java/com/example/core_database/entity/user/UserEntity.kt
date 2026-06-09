@@ -17,11 +17,11 @@ data class UserEntity (
     val password: String = "",
 
     @ColumnInfo(name = "email")
-    val email: String,
+    val email: String? = null,
 
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "avatar")
-    val avatar: String = ""
+    val avatar: String? = null
 )
