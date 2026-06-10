@@ -35,6 +35,7 @@ import com.example.feature_player.presentation.component.PlayerProgress
 import com.example.feature_player.presentation.component.PlayerTopBar
 import com.example.feature_player.presentation.viewmodel.PlayerViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.SongActionHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,8 +50,11 @@ fun PlayerScreen(
     LaunchedEffect(songId) {
         playerViewModel.loadSong(songId)
     }
+    val playlists by playerViewModel.playlists.collectAsState()
     val song = uiState.song
     val displaySong = uiState.displaySong
+    
+    
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -117,17 +121,31 @@ fun PlayerScreen(
 
                         PlayerExtraAction()
                         playerViewModel.play(song)
-
-//                        if (shouldShowBottomSheet) {
-//                            SongOptionHost(
-//                                song = displaySong,
-//                                onDismiss = {
-//                                    shouldShowBottomSheet = false
-//                                },
-//                                onSongNavigationAction = onSongNavigationAction
-//                            )
-//                        }
                     }
+                }
+
+                if(shouldShowBottomSheet) {
+                    SongActionHost(
+                        selectedSong = displaySong,
+                        playlists = playlists,
+                        observeFavoriteSong = { songId ->
+                            playerViewModel.isFavoriteSong(songId)
+                        },
+                        onDismissSong = { shouldShowBottomSheet = false },
+                        onAddSongToFavorite = { songId ->
+                            playerViewModel.addSongToFavorite(songId)
+                        },
+                        onRemoveSongFromFavorite = { songId ->
+                            playerViewModel.removeSongToFavorite(songId)
+                        },
+                        onCreatePlaylist = {playlistName ->
+                            playerViewModel.createPlaylist(playlistName)
+                        },
+                        onAddSongToPlaylist = {playlistId, songId ->
+                            playerViewModel.addSongToPlaylist(playlistId, songId)
+                        },
+                        onSongNavigationAction = onSongNavigationAction
+                    )
                 }
             }
         }

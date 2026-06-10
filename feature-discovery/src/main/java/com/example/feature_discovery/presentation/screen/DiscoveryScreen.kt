@@ -36,6 +36,7 @@ import com.example.core_ui.component.ViewAllButton
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_discovery.presentation.viewmodel.DiscoveryViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.SongActionHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +58,8 @@ fun DiscoveryScreen(
     val hotArtists = uiState.hotArtists
     val mostHeardSongs = uiState.mostHeardSongs
     val forYouSongs = uiState.forYouSongs
+    val playlists by discoveryViewModel.playlists.collectAsState()
+    
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -140,15 +143,27 @@ fun DiscoveryScreen(
                 }
             }
 
-//            selectedSong?.let {
-//                SongOptionHost(
-//                    song = it,
-//                    onDismiss = {
-//                        selectedSong = null
-//                    },
-//                    onSongNavigationAction = onSongNavigationAction
-//                )
-//            }
+            SongActionHost(
+                selectedSong = selectedSong,
+                playlists = playlists,
+                observeFavoriteSong = { songId ->
+                    discoveryViewModel.isFavoriteSong(songId)
+                },
+                onDismissSong = { selectedSong = null },
+                onAddSongToFavorite = { songId ->
+                    discoveryViewModel.addSongToFavorite(songId)
+                },
+                onRemoveSongFromFavorite = { songId ->
+                    discoveryViewModel.removeSongToFavorite(songId)
+                },
+                onCreatePlaylist = {playlistName ->
+                    discoveryViewModel.createPlaylist(playlistName)
+                },
+                onAddSongToPlaylist = {playlistId, songId ->
+                    discoveryViewModel.addSongToPlaylist(playlistId, songId)
+                },
+                onSongNavigationAction = onSongNavigationAction
+            )
         }
     }
 }

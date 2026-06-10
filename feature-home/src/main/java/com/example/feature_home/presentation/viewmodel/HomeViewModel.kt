@@ -12,9 +12,11 @@ import com.example.feature_home.presentation.state.HomeState
 import com.example.shared_presentation.model.SongOptionAction
 import com.example.shared_presentation.model.SongOptionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +28,7 @@ class HomeViewModel @Inject constructor(
     private val playlistUseCases: PlaylistUseCases,
     private val getTopAlbumUseCas: GetTopAlbumUseCas,
     private val getRecommendedSongsUseCase: GetRecommendedSongsUseCase
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeState())
     val uiState: StateFlow<HomeState> = _uiState
 
@@ -77,6 +79,10 @@ class HomeViewModel @Inject constructor(
                 initialValue = emptyList()
             )
 
+    fun isFavoriteSong(songId: String): Flow<Boolean> {
+        return favoriteSongUseCases.observerFavoriteSong(songId)
+    }
+
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {
             playlistUseCases.createPlaylist(playlistName)
@@ -89,9 +95,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavoriteSong(songId: String) {
+    fun addSongToFavorite(songId: String) {
         viewModelScope.launch {
-            favoriteSongUseCases.toggleFavoriteSong(songId)
+            favoriteSongUseCases.addSongToFavorite(songId)
         }
     }
+
+    fun removeSongToFavorite(songId: String) {
+        viewModelScope.launch {
+            favoriteSongUseCases.removeSongFromFavorite(songId)
+        }
+    }
+
 }

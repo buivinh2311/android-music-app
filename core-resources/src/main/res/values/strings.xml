@@ -57,4 +57,9 @@
     <string name="action_cancel">Hủy</string>
     <string name="hint_playlist_name">Nhập tên của Playlist</string>
     <string name="title_favorite_song">Bài hát yêu thích</string>
+    <string name="create_new_playlist_success">Tạo playlist mới thành công</string>
+    <string name="add_song_to_playlist_success">Đã thêm %s vào playlist</string>
+    <string name="add_song_to_favorite_success">Đã thêm %s vào thư viện</string>
+    <string name="remove_song_to_favorite_success">Đã gỡ %s khỏi thư viện</string>
+    <string name="currently_under_development">Tính năng này đang trong quá trình phát triển</string>
 </resources>

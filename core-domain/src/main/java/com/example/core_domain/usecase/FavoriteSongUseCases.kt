@@ -19,13 +19,4 @@ class FavoriteSongUseCases @Inject constructor(
     suspend fun removeSongFromFavorite(songId: String) {
         favoriteSongRepository.removeSongFromFavorite(songId)
     }
-
-    suspend fun toggleFavoriteSong(songId: String) {
-        val isFavorite = favoriteSongRepository.isFavoriteSong(songId).first()
-        if (isFavorite) {
-            favoriteSongRepository.removeSongFromFavorite(songId)
-        } else {
-            favoriteSongRepository.addSongToFavorite(songId)
-        }
-    }
 }

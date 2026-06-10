@@ -1,5 +1,7 @@
 package com.example.feature_home.presentation.screen
 
+import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -35,15 +38,18 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.SongItem
 import com.example.core_ui.component.ViewAllButton
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_home.presentation.viewmodel.HomeViewModel
 import com.example.shared_presentation.model.SongOptionAction
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.CreatePlaylistDialog
 import com.example.shared_presentation.presentation.PlaylistPickerBottomSheet
+import com.example.shared_presentation.presentation.SongActionHost
 import com.example.shared_presentation.presentation.SongOptionBottomSheet
 import kotlinx.coroutines.launch
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -58,18 +64,6 @@ fun HomeScreen(
     var selectedSong: DisplaySong? by remember {
         mutableStateOf(null)
     }
-
-    var songIdForPlaylistPicker: String? by remember {
-        mutableStateOf(null)
-    }
-
-    var showCreatePlaylistDialog by remember {
-        mutableStateOf(false)
-    }
-
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
     val homeViewModel: HomeViewModel = hiltViewModel()
     val uiState by homeViewModel.uiState.collectAsState()
     val hotAlbums = uiState.hotAlbums
@@ -78,9 +72,6 @@ fun HomeScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
         bottomBar = {
             AppBottomBar(onBottomActionClick = onBottomActionClick)
         },
@@ -144,54 +135,27 @@ fun HomeScreen(
                 }
             }
 
-            selectedSong?.let { song ->
-                SongOptionBottomSheet(
-                    song = song,
-                    onDismiss = { selectedSong = null },
-                    onSongNavigationAction = {
-                        onSongNavigationAction(it)
-                    },
-                    onSongBusinessAction = { item ->
-                        when(item.action) {
-                            SongOptionAction.DOWNLOAD -> {
-
-                            }
-
-                            SongOptionAction.ADD_TO_LIBRARY -> {
-                                homeViewModel.toggleFavoriteSong(item.id)
-                            }
-
-                            SongOptionAction.ADD_TO_PLAYLIST -> {
-                                songIdForPlaylistPicker = item.id
-                            }
-
-                            else -> {}
-                        }
-                    }
-                )
-            }
-
-            songIdForPlaylistPicker?.let { songId ->
-                PlaylistPickerBottomSheet(
-                    playlists = playlists,
-                    onDismiss = { songIdForPlaylistPicker = null },
-                    onPlaylistClick = { playlistId ->
-                        homeViewModel.addSongToPlaylist(playlistId, songId)
-                    },
-                    onCreateNewPlaylist = {
-                        showCreatePlaylistDialog = true
-                    }
-                )
-            }
-
-            if (showCreatePlaylistDialog) {
-                CreatePlaylistDialog(
-                    onDismiss = { showCreatePlaylistDialog = false },
-                    onCreate = { playlistName ->
-                        homeViewModel.createPlaylist(playlistName)
-                    }
-                )
-            }
+            SongActionHost(
+                selectedSong = selectedSong,
+                playlists = playlists,
+                observeFavoriteSong = { songId ->
+                    homeViewModel.isFavoriteSong(songId)
+                },
+                onDismissSong = { selectedSong = null },
+                onAddSongToFavorite = { songId ->
+                    homeViewModel.addSongToFavorite(songId)
+                },
+                onRemoveSongFromFavorite = { songId ->
+                    homeViewModel.removeSongToFavorite(songId)
+                },
+                onCreatePlaylist = {playlistName ->
+                    homeViewModel.createPlaylist(playlistName)
+                },
+                onAddSongToPlaylist = {playlistId, songId ->
+                    homeViewModel.addSongToPlaylist(playlistId, songId)
+                },
+                onSongNavigationAction = onSongNavigationAction
+            )
         }
     }
 }

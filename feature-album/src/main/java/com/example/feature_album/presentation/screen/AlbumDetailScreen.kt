@@ -32,6 +32,7 @@ import com.example.feature_album.presentation.component.AlbumAction
 import com.example.feature_album.presentation.component.AlbumInformation
 import com.example.feature_album.presentation.viewmodel.AlbumDetailViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.SongActionHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +54,8 @@ fun AlbumDetailScreen(
     }
     val songs = uiState.songs
     val album = uiState.album ?: Album(0, albumName, "", songs.size)
+    val playlists by albumDetailViewModel.playlists.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -66,7 +69,7 @@ fun AlbumDetailScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if(uiState.isLoading) {
+        if (uiState.isLoading) {
 
         } else {
             LazyColumn(
@@ -102,15 +105,28 @@ fun AlbumDetailScreen(
                     )
                 }
             }
-//            selectedSong?.let {
-//                SongOptionHost(
-//                    song = it,
-//                    onDismiss = {
-//                        selectedSong = null
-//                    },
-//                    onSongNavigationAction = onSongNavigationAction
-//                )
-//            }
+
+            SongActionHost(
+                selectedSong = selectedSong,
+                playlists = playlists,
+                observeFavoriteSong = { songId ->
+                    albumDetailViewModel.isFavoriteSong(songId)
+                },
+                onDismissSong = { selectedSong = null },
+                onAddSongToFavorite = { songId ->
+                    albumDetailViewModel.addSongToFavorite(songId)
+                },
+                onRemoveSongFromFavorite = { songId ->
+                    albumDetailViewModel.removeSongToFavorite(songId)
+                },
+                onCreatePlaylist = { playlistName ->
+                    albumDetailViewModel.createPlaylist(playlistName)
+                },
+                onAddSongToPlaylist = { playlistId, songId ->
+                    albumDetailViewModel.addSongToPlaylist(playlistId, songId)
+                },
+                onSongNavigationAction = onSongNavigationAction
+            )
         }
     }
 }

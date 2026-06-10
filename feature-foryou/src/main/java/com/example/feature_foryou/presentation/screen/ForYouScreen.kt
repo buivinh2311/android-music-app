@@ -36,6 +36,7 @@ import com.example.core_ui.component.SongItem
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_foryou.presentation.viewmodel.ForYouViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.SongActionHost
 
 @Composable
 fun ForYouScreen(
@@ -50,6 +51,8 @@ fun ForYouScreen(
     val forYouViewModel: ForYouViewModel = hiltViewModel()
     val uiState by forYouViewModel.uiState.collectAsState()
     val songs = uiState.songs
+    val playlists by forYouViewModel.playlists.collectAsState()
+    
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -115,15 +118,27 @@ fun ForYouScreen(
                 }
             }
 
-//            selectedSong?.let {
-//                SongOptionHost(
-//                    song = it,
-//                    onDismiss = {
-//                        selectedSong = null
-//                    },
-//                    onSongNavigationAction = onSongNavigationAction
-//                )
-//            }
+            SongActionHost(
+                selectedSong = selectedSong,
+                playlists = playlists,
+                observeFavoriteSong = { songId ->
+                    forYouViewModel.isFavoriteSong(songId)
+                },
+                onDismissSong = { selectedSong = null },
+                onAddSongToFavorite = { songId ->
+                    forYouViewModel.addSongToFavorite(songId)
+                },
+                onRemoveSongFromFavorite = { songId ->
+                    forYouViewModel.removeSongToFavorite(songId)
+                },
+                onCreatePlaylist = {playlistName ->
+                    forYouViewModel.createPlaylist(playlistName)
+                },
+                onAddSongToPlaylist = {playlistId, songId ->
+                    forYouViewModel.addSongToPlaylist(playlistId, songId)
+                },
+                onSongNavigationAction = onSongNavigationAction
+            )
         }
     }
 }

@@ -36,6 +36,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_playlist.presentation.component.PlaylistInformation
 import com.example.feature_playlist.presentation.viewmodel.PlaylistDetailViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.SongActionHost
 
 @Composable
 fun PlaylistDetailScreen(
@@ -55,6 +56,8 @@ fun PlaylistDetailScreen(
     }
     val playlist = uiState.playlist
     val songs = uiState.songs
+    val playlists by playlistDetailViewModel.playlists.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -113,16 +116,28 @@ fun PlaylistDetailScreen(
                     )
                 }
             }
-//
-//            selectedSong?.let { song ->
-//                SongOptionHost(
-//                    song = song,
-//                    onDismiss = {
-//                        selectedSong = null
-//                    },
-//                    onSongNavigationAction = onSongNavigationAction
-//                )
-//            }
+
+            SongActionHost(
+                selectedSong = selectedSong,
+                playlists = playlists,
+                observeFavoriteSong = { songId ->
+                    playlistDetailViewModel.isFavoriteSong(songId)
+                },
+                onDismissSong = { selectedSong = null },
+                onAddSongToFavorite = { songId ->
+                    playlistDetailViewModel.addSongToFavorite(songId)
+                },
+                onRemoveSongFromFavorite = { songId ->
+                    playlistDetailViewModel.removeSongToFavorite(songId)
+                },
+                onCreatePlaylist = {playlistName ->
+                    playlistDetailViewModel.createPlaylist(playlistName)
+                },
+                onAddSongToPlaylist = {playlistId, songId ->
+                    playlistDetailViewModel.addSongToPlaylist(playlistId, songId)
+                },
+                onSongNavigationAction = onSongNavigationAction
+            )
         }
     }
 }
