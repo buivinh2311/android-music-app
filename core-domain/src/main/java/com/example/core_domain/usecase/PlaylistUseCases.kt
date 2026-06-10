@@ -16,7 +16,6 @@ class PlaylistUseCases @Inject constructor(
 
     suspend fun addSongToPlaylist(playlistId: Int, songId: String) {
         playlistSongRepository.addSongToPlaylist(playlistId, songId)
-        playlistRepository.updateSize(playlistId, 1)
     }
 
     suspend fun createPlaylist(playlistName: String) {
@@ -30,6 +29,5 @@ class PlaylistUseCases @Inject constructor(
 
     suspend fun removeSongFromPlaylist(playlistId: Int, songId: String) {
         playlistSongRepository.removeSongFromPlaylist(playlistId, songId)
-        playlistRepository.updateSize(playlistId, -1)
     }
 }

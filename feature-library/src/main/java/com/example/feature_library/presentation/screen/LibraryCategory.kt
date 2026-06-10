@@ -1,4 +1,4 @@
-package com.example.feature_library.presentation.ui
+package com.example.feature_library.presentation.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll

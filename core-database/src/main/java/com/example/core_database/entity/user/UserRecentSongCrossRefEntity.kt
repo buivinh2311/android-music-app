@@ -17,11 +17,5 @@ data class UserRecentSongCrossRefEntity(
     val userId: Int = 0,
 
     @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis(),
-
-    @ColumnInfo(name = "updated_at")
-    val updatedAt: Long = System.currentTimeMillis(),
-
-    @ColumnInfo(name = "replay")
-    val replay: Int = 1
+    val createdAt: Long = System.currentTimeMillis()
 )

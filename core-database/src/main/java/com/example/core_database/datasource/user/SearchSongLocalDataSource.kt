@@ -4,7 +4,7 @@ import androidx.room.Query
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserSearchSongCrossRefEntity
 
-interface UserSearchSongLocalDataSource {
+interface SearchSongLocalDataSource {
     fun getSearchedSongs(userId: Int): List<SongEntity>
     suspend fun insert(crossRef: UserSearchSongCrossRefEntity)
     suspend fun delete(crossRef: UserSearchSongCrossRefEntity)

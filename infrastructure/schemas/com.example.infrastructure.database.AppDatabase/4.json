@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "e08393ec8dc23ed241cb6db1a65da2a8",
+    "version": 4,
+    "identityHash": "a7e3a595ebbb18bf630e5e7177f85cf8",
     "entities": [
       {
         "tableName": "albums",
@@ -236,7 +236,7 @@
       },
       {
         "tableName": "playlists",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `artwork_url` TEXT, `size` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`playlist_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlist_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `artwork_url` TEXT, `created_at` INTEGER NOT NULL, PRIMARY KEY(`playlist_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -254,11 +254,6 @@
             "fieldPath": "artwork",
             "columnName": "artwork_url",
             "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "size",
-            "columnName": "size",
-            "affinity": "INTEGER"
           },
           {
             "fieldPath": "createdAt",
@@ -861,7 +856,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e08393ec8dc23ed241cb6db1a65da2a8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a7e3a595ebbb18bf630e5e7177f85cf8')"
     ]
   }
 }

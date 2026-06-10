@@ -1,4 +1,4 @@
-package com.example.feature_library.presentation.ui
+package com.example.feature_library.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer

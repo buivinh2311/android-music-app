@@ -63,7 +63,7 @@ import com.example.core_database.entity.user.UserSearchSongCrossRefEntity
         UserRecentSongCrossRefEntity::class,
         UserSearchSongCrossRefEntity::class
     ],
-    version = 3
+    version = 5
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun AlbumDao(): AlbumDao

@@ -1,4 +1,4 @@
-package com.example.feature_home.presentation.state
+package com.example.feature_home.presentation
 
 import com.example.core_model.Album
 import com.example.core_model.DisplaySong

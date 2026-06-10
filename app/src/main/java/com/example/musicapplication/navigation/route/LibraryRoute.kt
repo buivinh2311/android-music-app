@@ -3,7 +3,7 @@ package com.example.musicapplication.navigation.route
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_library.presentation.ui.LibraryScreen
+import com.example.feature_library.presentation.screen.LibraryScreen
 import com.example.musicapplication.navigation.AppRoute
 import com.example.shared_presentation.model.SongOptionItem
 

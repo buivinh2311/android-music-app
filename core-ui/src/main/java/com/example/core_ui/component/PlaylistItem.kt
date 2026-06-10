@@ -35,7 +35,7 @@ fun PlaylistItem(
     onPlaylistClick: (Int) -> Unit
 ) {
     Surface(
-        onClick = { onPlaylistClick(1) },
+        onClick = { onPlaylistClick(playlist.id) },
         shape = RoundedCornerShape(AppDimens.Radius.Sm),
         color = Color.Transparent,
         modifier = modifier.height(AppDimens.Layout.PlaylistItemHeight)
@@ -76,7 +76,7 @@ fun PlaylistItem(
                 )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
                 Text(
-                    text = playlist.size.toString(),
+                    text = playlist.size.toString() + stringResource(R.string.text_song),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     maxLines = 1,

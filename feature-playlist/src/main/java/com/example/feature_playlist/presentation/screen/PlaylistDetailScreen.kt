@@ -1,6 +1,7 @@
 package com.example.feature_playlist.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -74,46 +75,51 @@ fun PlaylistDetailScreen(
         if(uiState.isLoading) {
 
         } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    PlaylistInformation(model = playlist?.artwork ?: "")
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(48.dp),
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(horizontal = AppDimens.Space.Xl)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.action_play_music),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White
+            playlist?.let {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .background(MaterialTheme.colorScheme.background),
+                    contentPadding = PaddingValues(
+                        vertical = AppDimens.Space.Lg
+                    ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        PlaylistInformation(playlist)
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+                        Button(
+                            onClick = {},
+                            shape = RoundedCornerShape(48.dp),
+                            modifier = Modifier
+                                .width(200.dp)
+                                .padding(horizontal = AppDimens.Space.Xl)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.action_play_music),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.White
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                    }
+
+                    items(
+                        count = songs.size,
+                        key = { index -> songs[index].id }
+                    ) { index ->
+                        SongItem(
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .fillMaxWidth(),
+                            song = songs[index],
+                            onSongClick = onSongClick,
+                            onMoreClick = { song ->
+                                selectedSong = song
+                            }
                         )
                     }
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                }
-
-                items(
-                    count = songs.size,
-                    key = { index -> songs[index].id }
-                ) { index ->
-                    SongItem(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .fillMaxWidth(),
-                        song = songs[index],
-                        onSongClick = onSongClick,
-                        onMoreClick = { song ->
-                            selectedSong = song
-                        }
-                    )
                 }
             }
 

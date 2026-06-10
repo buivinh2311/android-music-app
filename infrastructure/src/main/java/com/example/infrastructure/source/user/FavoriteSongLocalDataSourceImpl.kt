@@ -1,29 +1,29 @@
 package com.example.infrastructure.source.user
 
 import com.example.core_database.dao.user.UserFavoriteSongCrossRefDao
-import com.example.core_database.datasource.user.UserFavoriteSongLocalDataSource
+import com.example.core_database.datasource.user.FavoriteSongLocalDataSource
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserFavoriteSongCrossRefEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserFavoriteSongLocalDataSourceImpl @Inject constructor(
-    private val userFavoriteSongCrossRefDao: UserFavoriteSongCrossRefDao
-): UserFavoriteSongLocalDataSource {
+class FavoriteSongLocalDataSourceImpl @Inject constructor(
+    private val crossRefDao: UserFavoriteSongCrossRefDao
+): FavoriteSongLocalDataSource {
     override suspend fun insert(userFavoriteSong: UserFavoriteSongCrossRefEntity) {
-        userFavoriteSongCrossRefDao.insert(userFavoriteSong)
+        crossRefDao.insert(userFavoriteSong)
     }
 
     override fun isFavoriteSong(userId: Int, songId: String): Flow<Boolean> {
-        return userFavoriteSongCrossRefDao.isFavoriteSong(userId, songId)
+        return crossRefDao.isFavoriteSong(userId, songId)
     }
 
     override suspend fun getFavoriteSongs(userId: Int): List<SongEntity> {
-        return userFavoriteSongCrossRefDao.getFavoriteSong(userId)
+        return crossRefDao.getFavoriteSong(userId)
     }
 
     override suspend fun delete(userId: Int, songId: String) {
-        userFavoriteSongCrossRefDao.delete(userId, songId)
+        crossRefDao.delete(userId, songId)
     }
 
 

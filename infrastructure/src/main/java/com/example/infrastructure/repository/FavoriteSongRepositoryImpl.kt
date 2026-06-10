@@ -1,6 +1,6 @@
 package com.example.infrastructure.repository
 
-import com.example.core_database.datasource.user.UserFavoriteSongLocalDataSource
+import com.example.core_database.datasource.user.FavoriteSongLocalDataSource
 import com.example.core_database.entity.user.UserFavoriteSongCrossRefEntity
 import com.example.core_domain.manager.UserManager
 import com.example.core_domain.repository.FavoriteSongRepository
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FavoriteSongRepositoryImpl @Inject constructor(
-    private val localDataSource: UserFavoriteSongLocalDataSource,
+    private val localDataSource: FavoriteSongLocalDataSource,
     private val userManager: UserManager
 ): FavoriteSongRepository {
     override suspend fun getFavoriteSongs(): List<DisplaySong> {

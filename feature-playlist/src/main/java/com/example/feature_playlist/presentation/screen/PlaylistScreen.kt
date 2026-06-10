@@ -1,6 +1,8 @@
 package com.example.feature_playlist.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,7 +38,7 @@ fun PlaylistScreen(
         },
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_library),
+                title = stringResource(R.string.title_library_playlist),
                 onBackClick = onBackClick
             )
         },
@@ -46,7 +48,11 @@ fun PlaylistScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(
+                vertical = AppDimens.Space.Lg
+            ),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
         ) {
             items(
                 count = playlists.size,

@@ -5,7 +5,7 @@ data class Playlist(
     val name: String,
     val artwork: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val size: Int = 0
+    val size: Int? = 0
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

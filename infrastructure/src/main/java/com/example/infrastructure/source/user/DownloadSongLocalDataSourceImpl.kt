@@ -1,28 +1,28 @@
 package com.example.infrastructure.source.user
 
 import com.example.core_database.dao.user.UserDownloadSongCrossRefDao
-import com.example.core_database.datasource.user.UserDownloadSongLocalDataSource
+import com.example.core_database.datasource.user.DownloadSongLocalDataSource
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserDownloadSongCrossRefEntity
 import javax.inject.Inject
 
-class UserDownloadSongLocalDataSourceImpl @Inject constructor(
-    private val userDownloadSongCrossRefDao: UserDownloadSongCrossRefDao
-): UserDownloadSongLocalDataSource {
+class DownloadSongLocalDataSourceImpl @Inject constructor(
+    private val crossRefDao: UserDownloadSongCrossRefDao
+): DownloadSongLocalDataSource {
     override suspend fun insert(userDownloadSong: UserDownloadSongCrossRefEntity) {
-        userDownloadSongCrossRefDao.insert(userDownloadSong)
+        crossRefDao.insert(userDownloadSong)
     }
 
     override suspend fun isDownloadSong(userId: Int, songId: String): Boolean {
-        return userDownloadSongCrossRefDao.isDownloadSong(userId, songId)
+        return crossRefDao.isDownloadSong(userId, songId)
     }
 
     override suspend fun getDownloadSongs(userId: Int): List<SongEntity> {
-        return userDownloadSongCrossRefDao.getDownloadSongs(userId)
+        return crossRefDao.getDownloadSongs(userId)
     }
 
     override suspend fun delete(userId: Int, songId: String) {
-        userDownloadSongCrossRefDao.delete(userId, songId)
+        crossRefDao.delete(userId, songId)
     }
 
 

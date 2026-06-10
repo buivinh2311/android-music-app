@@ -3,6 +3,7 @@ package com.example.infrastructure.source.playlist
 import com.example.core_database.dao.playlist.PlaylistDao
 import com.example.core_database.datasource.playlist.PlaylistLocalDataSource
 import com.example.core_database.entity.playlist.PlaylistEntity
+import com.example.core_database.entity.playlist.PlaylistWithCountEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -13,20 +14,24 @@ class PlaylistLocalDataSourceImpl @Inject constructor(
         playlistDao.insert(playlist)
     }
 
-    override suspend fun getPlaylistById(playlistId: Int): PlaylistEntity? {
+    override suspend fun getPlaylistById(playlistId: Int): PlaylistWithCountEntity? {
         return playlistDao.getPlaylistById(playlistId)
     }
 
-    override fun getAllPlaylists(): Flow<List<PlaylistEntity>> {
+    override fun getAllPlaylists(): Flow<List<PlaylistWithCountEntity>> {
         return playlistDao.getAllPlaylists()
+    }
+
+    override fun getLimitPlaylists(limit: Int): Flow<List<PlaylistWithCountEntity>> {
+        return playlistDao.getLimitPlaylists(limit)
     }
 
     override suspend fun getMaxPlaylistId(): Int? {
         return playlistDao.getMaxPlaylistId()
     }
 
-    override suspend fun updateSize(playlistId: Int, size: Int) {
-        playlistDao.updateSize(playlistId, size)
+    override suspend fun updateArtwork(playlistId: Int, artwork: String) {
+        playlistDao.updateArtwork(playlistId, artwork)
     }
 
     override suspend fun delete(playlistId: Int) {

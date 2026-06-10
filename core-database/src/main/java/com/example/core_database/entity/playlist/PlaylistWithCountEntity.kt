@@ -1,12 +1,8 @@
 package com.example.core_database.entity.playlist
 
 import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "playlists")
-data class PlaylistEntity (
-    @PrimaryKey
+data class PlaylistWithCountEntity (
     @ColumnInfo(name = "playlist_id")
     val id: Int,
 
@@ -16,6 +12,9 @@ data class PlaylistEntity (
     @ColumnInfo(name = "artwork_url")
     val artwork: String? = null,
 
+    @ColumnInfo(name = "size")
+    val size: Int,
+
     @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long
 )
