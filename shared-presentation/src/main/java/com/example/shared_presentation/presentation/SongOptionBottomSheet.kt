@@ -33,6 +33,7 @@ import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.showToast
 import com.example.shared_presentation.model.SongOptionAction
 import com.example.shared_presentation.model.SongOptionItem
 import kotlinx.coroutines.launch
@@ -41,7 +42,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun SongOptionBottomSheet(
     song: DisplaySong,
+    isFavorite: Boolean,
     onDismiss: () -> Unit,
+    onShareClick: () -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit,
     onSongBusinessAction: (SongOptionItem) -> Unit
 ) {
@@ -55,7 +58,9 @@ fun SongOptionBottomSheet(
     ) {
         SongOptionBottomSheetContent(
             modifier = Modifier.padding(horizontal = AppDimens.Space.Lg),
-            song = song
+            isFavorite = isFavorite,
+            song = song,
+            onShareClick = onShareClick
         ) { item ->
             when (item.action) {
                 SongOptionAction.VIEW_ALBUM, SongOptionAction.VIEW_ARTIST -> {
@@ -79,6 +84,8 @@ fun SongOptionBottomSheet(
 private fun SongOptionBottomSheetContent(
     modifier: Modifier = Modifier,
     song: DisplaySong,
+    isFavorite: Boolean,
+    onShareClick: () -> Unit,
     onClick: (SongOptionItem) -> Unit
 ) {
     Column(
@@ -125,12 +132,12 @@ private fun SongOptionBottomSheetContent(
                 rippleRadius = AppDimens.Ripple.Sm,
                 tint = MaterialTheme.colorScheme.onBackground
             ) {
-
+                onShareClick()
             }
         }
         HorizontalDivider(modifier = Modifier.padding(vertical = AppDimens.Space.Md))
 
-        songOptions(song).forEach { item ->
+        songOptions(song, isFavorite).forEach { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,7 +150,8 @@ private fun SongOptionBottomSheetContent(
                 Icon(
                     painter = item.icon,
                     contentDescription = null,
-                    modifier = Modifier.size(AppDimens.Icon.Sm)
+                    modifier = Modifier.size(AppDimens.Icon.Sm),
+                    tint = item.iconColor
                 )
                 Spacer(modifier = Modifier.width(AppDimens.Space.Md))
                 Text(
@@ -157,13 +165,17 @@ private fun SongOptionBottomSheetContent(
 }
 
 @Composable
-private fun songOptions(song: DisplaySong): List<SongOptionItem> {
+private fun songOptions(
+    song: DisplaySong,
+    isFavorite: Boolean
+): List<SongOptionItem> {
     val options = mutableListOf<SongOptionItem>().apply {
 
         add(
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.Download,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_download),
                 action = SongOptionAction.DOWNLOAD
             )
@@ -172,8 +184,11 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
         add(
             SongOptionItem(
                 id = song.id,
-                icon = AppIcons.Favorite,
-                title = stringResource(R.string.action_add_to_library),
+                icon = if(isFavorite) AppIcons.Favorite_filled else AppIcons.Favorite,
+                iconColor = if(isFavorite) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onBackground,
+                title = if(isFavorite) stringResource(R.string.added_song_to_library)
+                else stringResource(R.string.action_add_to_library),
                 action = SongOptionAction.ADD_TO_LIBRARY
             )
         )
@@ -182,6 +197,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.AddToPlaylist,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_add_to_playlist),
                 action = SongOptionAction.ADD_TO_PLAYLIST
             )
@@ -193,6 +209,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
                     id = song.id,
                     album = song.album,
                     icon = AppIcons.Album,
+                    iconColor = MaterialTheme.colorScheme.onBackground,
                     title = stringResource(R.string.action_view_album),
                     action = SongOptionAction.VIEW_ALBUM
                 )
@@ -204,6 +221,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
                 id = song.id,
                 artist = song.artist,
                 icon = AppIcons.Artist,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_view_artist),
                 action = SongOptionAction.VIEW_ARTIST
             )
@@ -213,6 +231,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.SimilarContent,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_play_similar_content),
                 action = SongOptionAction.SIMILAR_CONTENT
             )
@@ -222,6 +241,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.Ringtone,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_set_ringtone),
                 action = SongOptionAction.RING_TONE
             )
@@ -231,6 +251,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.Equalizer,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_equalizer),
                 action = SongOptionAction.EQUALIZER
             )
@@ -241,6 +262,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
                 id = song.id,
                 icon = AppIcons.Comment,
                 title = stringResource(R.string.action_comment),
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 action = SongOptionAction.COMMENT
             )
         )
@@ -249,6 +271,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.Block,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_block),
                 action = SongOptionAction.BLOCK
             )
@@ -258,6 +281,7 @@ private fun songOptions(song: DisplaySong): List<SongOptionItem> {
             SongOptionItem(
                 id = song.id,
                 icon = AppIcons.ReportError,
+                iconColor = MaterialTheme.colorScheme.onBackground,
                 title = stringResource(R.string.action_report_error),
                 action = SongOptionAction.REPORT
             )

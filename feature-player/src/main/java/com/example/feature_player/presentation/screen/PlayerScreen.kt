@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -46,11 +47,12 @@ fun PlayerScreen(
 ) {
     var shouldShowBottomSheet by remember { mutableStateOf(false) }
     val playerViewModel: PlayerViewModel = hiltViewModel()
-    val uiState by playerViewModel.uiState.collectAsState()
+    val uiState by playerViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(songId) {
         playerViewModel.loadSong(songId)
     }
-    val playlists by playerViewModel.playlists.collectAsState()
+    val playlists by playerViewModel.playlists
+        .collectAsStateWithLifecycle(emptyList())
     val song = uiState.song
     val displaySong = uiState.displaySong
     

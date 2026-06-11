@@ -1,31 +1,24 @@
-package com.example.feature_recent.presentation
+package com.example.feature_favorite.presentation
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.Playlist
-import com.example.core_utils.util.AppUtil
-import com.example.feature_recent.domain.usecase.GetLimitRecentSongsUseCase
+import com.example.feature_favorite.domain.usecase.GetAllFavoriteSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecentViewModel @Inject constructor(
+class FavoriteViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
-    getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase
+    getAllFavoriteSongsUseCase: GetAllFavoriteSongsUseCase
 ): ViewModel() {
-    val recentSongs = getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
+    val songs = getAllFavoriteSongsUseCase()
+
     val playlists = playlistUseCases.getAllPlaylist()
+
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {

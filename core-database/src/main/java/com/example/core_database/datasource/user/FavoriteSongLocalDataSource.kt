@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface FavoriteSongLocalDataSource {
     suspend fun insert(userFavoriteSong: UserFavoriteSongCrossRefEntity)
     fun isFavoriteSong(userId: Int, songId: String): Flow<Boolean>
-    suspend fun getFavoriteSongs(userId: Int): List<SongEntity>
+    fun getFavoriteSongs(userId: Int): Flow<List<SongEntity>>
     suspend fun delete(userId: Int, songId: String)
 }

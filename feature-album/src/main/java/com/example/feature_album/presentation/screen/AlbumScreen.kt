@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.menu.AppBottomBarAction
@@ -30,7 +31,7 @@ fun AlbumScreen(
     onBackClick: () -> Unit
 ) {
     val albumViewModel: AlbumViewModel = hiltViewModel()
-    val uiState by albumViewModel.uiState.collectAsState()
+    val uiState by albumViewModel.uiState.collectAsStateWithLifecycle()
     val albums = uiState.albums
     Scaffold(
         modifier = Modifier.fillMaxSize(),

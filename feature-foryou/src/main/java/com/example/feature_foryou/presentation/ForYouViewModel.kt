@@ -1,4 +1,4 @@
-package com.example.feature_foryou.presentation.viewmodel
+package com.example.feature_foryou.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,6 @@ import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
 import com.example.core_utils.util.AppUtil
 import com.example.feature_foryou.domain.usecase.GetForYouSongsUseCase
-import com.example.feature_foryou.presentation.state.ForYouUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,17 +47,8 @@ class ForYouViewModel @Inject constructor(
         }
     }
 
-    val playlists: StateFlow<List<Playlist>> =
-        playlistUseCases.getAllPlaylist()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
-
-    fun isFavoriteSong(songId: String): Flow<Boolean> {
-        return favoriteSongUseCases.observerFavoriteSong(songId)
-    }
+    val playlists = playlistUseCases.getAllPlaylist()
+    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {

@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.DisplaySong
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -51,13 +52,14 @@ fun PlaylistDetailScreen(
         mutableStateOf(null)
     }
     val playlistDetailViewModel: PlaylistDetailViewModel = hiltViewModel()
-    val uiState by playlistDetailViewModel.uiState.collectAsState()
+    val uiState by playlistDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(playlistId) {
         playlistDetailViewModel.loadPlaylist(playlistId)
     }
     val playlist = uiState.playlist
     val songs = uiState.songs
-    val playlists by playlistDetailViewModel.playlists.collectAsState()
+    val playlists by playlistDetailViewModel.playlists
+        .collectAsStateWithLifecycle(emptyList())
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

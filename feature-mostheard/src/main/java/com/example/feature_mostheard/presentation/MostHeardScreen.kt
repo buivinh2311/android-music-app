@@ -1,4 +1,4 @@
-package com.example.feature_foryou.presentation.screen
+package com.example.feature_mostheard.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.DisplaySong
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -34,12 +35,12 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.SongItem
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_foryou.presentation.viewmodel.ForYouViewModel
+import com.example.feature_mostheard.presentation.MostHeardViewModel
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.SongActionHost
 
 @Composable
-fun ForYouScreen(
+fun MostListenedScreen(
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -48,10 +49,11 @@ fun ForYouScreen(
     var selectedSong: DisplaySong? by remember {
         mutableStateOf(null)
     }
-    val forYouViewModel: ForYouViewModel = hiltViewModel()
-    val uiState by forYouViewModel.uiState.collectAsState()
+    val mostHeardViewModel: MostHeardViewModel = hiltViewModel()
+    val uiState by mostHeardViewModel.uiState.collectAsStateWithLifecycle()
     val songs = uiState.songs
-    val playlists by forYouViewModel.playlists.collectAsState()
+    val playlists by mostHeardViewModel.playlists
+        .collectAsStateWithLifecycle(emptyList())
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -60,7 +62,7 @@ fun ForYouScreen(
         },
         topBar = {
             AppTopBar(
-                title = "Danh cho ban",
+                title = stringResource(R.string.title_discovery_most_listened),
                 onBackClick = onBackCLick
             )
         },
@@ -122,20 +124,20 @@ fun ForYouScreen(
                 selectedSong = selectedSong,
                 playlists = playlists,
                 observeFavoriteSong = { songId ->
-                    forYouViewModel.isFavoriteSong(songId)
+                    mostHeardViewModel.isFavoriteSong(songId)
                 },
                 onDismissSong = { selectedSong = null },
                 onAddSongToFavorite = { songId ->
-                    forYouViewModel.addSongToFavorite(songId)
+                    mostHeardViewModel.addSongToFavorite(songId)
                 },
                 onRemoveSongFromFavorite = { songId ->
-                    forYouViewModel.removeSongToFavorite(songId)
+                    mostHeardViewModel.removeSongToFavorite(songId)
                 },
                 onCreatePlaylist = {playlistName ->
-                    forYouViewModel.createPlaylist(playlistName)
+                    mostHeardViewModel.createPlaylist(playlistName)
                 },
                 onAddSongToPlaylist = {playlistId, songId ->
-                    forYouViewModel.addSongToPlaylist(playlistId, songId)
+                    mostHeardViewModel.addSongToPlaylist(playlistId, songId)
                 },
                 onSongNavigationAction = onSongNavigationAction
             )

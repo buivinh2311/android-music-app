@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.feature_library.presentation.model.CategoryOption
 
 @Composable
 fun LibraryCategory(
@@ -44,23 +43,34 @@ fun LibraryCategory(
                 rememberScrollState()
             )
     ) {
-        categoryOptions(onFavoriteClick).forEach { item ->
-            CategoryCard(
-                modifier = Modifier.width(100.dp),
-                painter = item.icon,
-                text = item.title,
-                tint = item.tint
-            ) { }
-            Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
-        }
+        CategoryOption(
+            painter = AppIcons.Favorite,
+            title = stringResource(R.string.action_library_favorite),
+            tint = Color.Cyan,
+            onClick = onFavoriteClick
+        )
+        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+        CategoryOption(
+            painter = AppIcons.Download,
+            title = stringResource(R.string.action_library_downloaded),
+            tint = Color(0xFF7A43DA),
+            onClick = onFavoriteClick
+        )
+        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+        CategoryOption(
+            painter = AppIcons.Artist,
+            title = stringResource(R.string.action_library_artist),
+            tint = Color(0xFFFC4433),
+            onClick = onFavoriteClick
+        )
     }
 }
 
 @Composable
-private fun CategoryCard(
+private fun CategoryOption(
     modifier: Modifier = Modifier,
     painter: Painter,
-    text: String,
+    title: String,
     quantity: Int = 0,
     tint: Color = MaterialTheme.colorScheme.onBackground,
     onClick: () -> Unit
@@ -71,6 +81,7 @@ private fun CategoryCard(
             containerColor = Color.White.copy(alpha = 0.9f)
         ),
         modifier = modifier
+            .width(100.dp)
             .clip(RoundedCornerShape(AppDimens.Radius.Lg))
             .clickable {
                 onClick()
@@ -91,7 +102,7 @@ private fun CategoryCard(
             Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
             Text(
-                text = text,
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -102,32 +113,4 @@ private fun CategoryCard(
             )
         }
     }
-}
-
-@Composable
-private fun categoryOptions(
-    onFavoriteClick: () -> Unit
-): List<CategoryOption> {
-    return listOf(
-        CategoryOption(
-            icon = AppIcons.Favorite,
-            title = stringResource(R.string.action_library_favorite),
-            tint = Color.Cyan,
-            onClick = onFavoriteClick
-        ),
-
-        CategoryOption(
-            icon = AppIcons.Download,
-            title = stringResource(R.string.action_library_downloaded),
-            tint = Color(0xFF7A43DA),
-            onClick = onFavoriteClick
-        ),
-
-        CategoryOption(
-            icon = AppIcons.Artist,
-            title = stringResource(R.string.action_library_artist),
-            tint = Color(0xFFFC4433),
-            onClick = onFavoriteClick
-        )
-    )
 }

@@ -1,21 +1,16 @@
-package com.example.feature_discovery.presentation.viewmodel
+package com.example.feature_discovery.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.Playlist
 import com.example.core_utils.util.AppUtil
 import com.example.feature_discovery.domain.usecase.GetForYouSongsUseCase
-import com.example.feature_discovery.domain.usecase.GetTopArtistUseCase
 import com.example.feature_discovery.domain.usecase.GetMostHeardSongsUseCase
-import com.example.feature_discovery.presentation.state.DiscoveryUiState
+import com.example.feature_discovery.domain.usecase.GetTopArtistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -88,17 +83,8 @@ class DiscoveryViewModel @Inject constructor(
         }
     }
 
-    val playlists: StateFlow<List<Playlist>> =
-        playlistUseCases.getAllPlaylist()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
-
-    fun isFavoriteSong(songId: String): Flow<Boolean> {
-        return favoriteSongUseCases.observerFavoriteSong(songId)
-    }
+    val playlists = playlistUseCases.getAllPlaylist()
+    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {

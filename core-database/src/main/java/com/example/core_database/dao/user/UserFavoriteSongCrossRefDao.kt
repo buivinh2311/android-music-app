@@ -28,7 +28,7 @@ interface UserFavoriteSongCrossRefDao {
                 "WHERE user_id = :userId " +
                 "ORDER BY u.created_at"
     )
-    suspend fun getFavoriteSong(userId: Int): List<SongEntity>
+    fun getFavoriteSong(userId: Int): Flow<List<SongEntity>>
 
     @Query("DELETE FROM user_favorite_song_cross_ref " +
             "WHERE user_id = :userId AND song_id = :songId")

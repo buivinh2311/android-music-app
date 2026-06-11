@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.DisplaySong
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -53,10 +54,11 @@ fun HomeScreen(
         mutableStateOf(null)
     }
     val homeViewModel: HomeViewModel = hiltViewModel()
-    val uiState by homeViewModel.uiState.collectAsState()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val hotAlbums = uiState.hotAlbums
     val recommendedSongs = uiState.recommendedSongs
-    val playlists by homeViewModel.playlists.collectAsState()
+    val playlists by homeViewModel.playlists
+        .collectAsStateWithLifecycle(emptyList())
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

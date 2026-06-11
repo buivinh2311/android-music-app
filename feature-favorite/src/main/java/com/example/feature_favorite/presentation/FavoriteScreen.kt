@@ -1,11 +1,9 @@
-package com.example.feature_recent.presentation
+package com.example.feature_favorite.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -39,7 +37,7 @@ import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.SongActionHost
 
 @Composable
-fun RecentScreen(
+fun FavoriteScreen(
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -48,64 +46,72 @@ fun RecentScreen(
     var selectedSong: DisplaySong? by remember {
         mutableStateOf(null)
     }
-    val recentViewModel: RecentViewModel = hiltViewModel()
-    val playlists by recentViewModel.playlists
+    val favoriteViewModel: FavoriteViewModel = hiltViewModel()
+    val favoriteSongs by favoriteViewModel.songs
         .collectAsStateWithLifecycle(emptyList())
-    val recentSongs by recentViewModel.recentSongs
+    val playlists by favoriteViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
-
+    
     Scaffold(
-    modifier = Modifier.fillMaxSize(),
-    bottomBar = {
-        AppBottomBar(onBottomActionClick = onBottomActionClick)
-    },
-    topBar = {
-        AppTopBar(
-            title = stringResource(R.string.title_library_heard_recently),
-            onBackClick = onBackCLick
-        )
-    },
-    containerColor = MaterialTheme.colorScheme.background
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            AppBottomBar(onBottomActionClick = onBottomActionClick)
+        },
+        topBar = {
+            AppTopBar(
+                title = stringResource(R.string.title_favorite_song),
+                onBackClick = onBackCLick
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(
+                vertical = AppDimens.Space.Xl
+            )
         ) {
             item {
+                Text(
+                    text = stringResource(R.string.label_favorite),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+                Text(
+                    text = favoriteSongs.size.toString() + stringResource(R.string.text_song),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                Button(
+                    onClick = {},
+                    modifier = Modifier.width(150.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.width(200.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = Color.White,
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(R.string.action_play_random),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.action_play_music),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 }
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
             }
 
             items(
-                count = recentSongs.size,
-                key = { index -> recentSongs[index].id }
+                count = favoriteSongs.size,
+                key = { index -> favoriteSongs[index].id }
             ) { index ->
                 SongItem(
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    song = recentSongs[index],
+                    song = favoriteSongs[index],
                     onSongClick = onSongClick,
                     onMoreClick = { song ->
                         selectedSong = song
@@ -118,20 +124,20 @@ fun RecentScreen(
             selectedSong = selectedSong,
             playlists = playlists,
             observeFavoriteSong = { songId ->
-                recentViewModel.isFavoriteSong(songId)
+                favoriteViewModel.isFavoriteSong(songId)
             },
             onDismissSong = { selectedSong = null },
             onAddSongToFavorite = { songId ->
-                recentViewModel.addSongToFavorite(songId)
+                favoriteViewModel.addSongToFavorite(songId)
             },
             onRemoveSongFromFavorite = { songId ->
-                recentViewModel.removeSongToFavorite(songId)
+                favoriteViewModel.removeSongToFavorite(songId)
             },
             onCreatePlaylist = {playlistName ->
-                recentViewModel.createPlaylist(playlistName)
+                favoriteViewModel.createPlaylist(playlistName)
             },
             onAddSongToPlaylist = {playlistId, songId ->
-                recentViewModel.addSongToPlaylist(playlistId, songId)
+                favoriteViewModel.addSongToPlaylist(playlistId, songId)
             },
             onSongNavigationAction = onSongNavigationAction
         )

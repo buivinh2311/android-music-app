@@ -1,4 +1,4 @@
-package com.example.feature_discovery.presentation.state
+package com.example.feature_discovery.presentation
 
 import com.example.core_model.Artist
 import com.example.core_model.DisplaySong

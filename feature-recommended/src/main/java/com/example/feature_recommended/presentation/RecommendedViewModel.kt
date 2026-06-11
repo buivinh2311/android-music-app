@@ -1,4 +1,4 @@
-package com.example.feature_mostheard.presentation.viewmodel
+package com.example.feature_recommended.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,8 +6,7 @@ import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
 import com.example.core_utils.util.AppUtil
-import com.example.feature_mostheard.domain.GetMostHeardSongsUseCase
-import com.example.feature_mostheard.presentation.state.MostHeardUiState
+import com.example.feature_recommended.domain.usecase.GetRecommendedSongUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,26 +18,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MostHeardViewModel @Inject constructor(
+class RecommendedViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
-    private val getMostHeardSongsUseCase: GetMostHeardSongsUseCase
+    private val getRecommendedSongUseCase: GetRecommendedSongUseCase
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(MostHeardUiState())
-    val uiState: StateFlow<MostHeardUiState> = _uiState
+    private val _uiState = MutableStateFlow(RecommendedUiState())
+    val uiState: StateFlow<RecommendedUiState> = _uiState
 
     init {
-        loadMostHeardSongs()
+        loadRecommendedSongs()
     }
 
-    private fun loadMostHeardSongs() {
+    private fun loadRecommendedSongs() {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            val songs = getMostHeardSongsUseCase(AppUtil.DEFAULT_LIST_SIZE)
+            val songs = getRecommendedSongUseCase(AppUtil.DEFAULT_LIST_SIZE)
             _uiState.update {
                 it.copy(
                     songs = songs,
@@ -48,17 +47,8 @@ class MostHeardViewModel @Inject constructor(
         }
     }
 
-    val playlists: StateFlow<List<Playlist>> =
-        playlistUseCases.getAllPlaylist()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
-
-    fun isFavoriteSong(songId: String): Flow<Boolean> {
-        return favoriteSongUseCases.observerFavoriteSong(songId)
-    }
+    val playlists = playlistUseCases.getAllPlaylist()
+    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {

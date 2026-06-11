@@ -7,15 +7,19 @@ import com.example.core_domain.repository.FavoriteSongRepository
 import com.example.core_model.DisplaySong
 import com.example.infrastructure.mapper.local.toDisplayModels
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class FavoriteSongRepositoryImpl @Inject constructor(
     private val localDataSource: FavoriteSongLocalDataSource,
     private val userManager: UserManager
 ): FavoriteSongRepository {
-    override suspend fun getFavoriteSongs(): List<DisplaySong> {
+    override fun getFavoriteSongs(): Flow<List<DisplaySong>> {
         val userId = userManager.getCurrentUserId()
-        return localDataSource.getFavoriteSongs(userId).toDisplayModels()
+        return localDataSource.getFavoriteSongs(userId)
+            .map { songs ->
+                songs.toDisplayModels()
+            }
     }
 
     override suspend fun addSongToFavorite(songId: String) {

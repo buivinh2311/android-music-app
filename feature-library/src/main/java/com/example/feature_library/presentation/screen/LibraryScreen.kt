@@ -1,6 +1,7 @@
 package com.example.feature_library.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -46,14 +47,13 @@ fun LibraryScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(
+                vertical = AppDimens.Space.Lg
+            )
         ) {
             item {
-                Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
                 LibraryCategory(onFavoriteClick = onFavoriteClick)
-            }
-
-            item {
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                 ViewAllButton(
                     title = stringResource(R.string.title_library_heard_recently),

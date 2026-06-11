@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -47,7 +48,7 @@ fun ArtistChooserScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val artistChooserViewModel: ArtistChooserViewModel = hiltViewModel()
-    val uiState by artistChooserViewModel.uiState.collectAsState()
+    val uiState by artistChooserViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(artistStr) {
         artistChooserViewModel.loadArtists(artistStr.trim())
     }

@@ -18,7 +18,7 @@ class FavoriteSongLocalDataSourceImpl @Inject constructor(
         return crossRefDao.isFavoriteSong(userId, songId)
     }
 
-    override suspend fun getFavoriteSongs(userId: Int): List<SongEntity> {
+    override fun getFavoriteSongs(userId: Int): Flow<List<SongEntity>> {
         return crossRefDao.getFavoriteSong(userId)
     }
 

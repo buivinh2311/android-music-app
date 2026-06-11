@@ -43,6 +43,10 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_favorite)
 
+    val Favorite_filled
+        @Composable
+        get() = painterResource(R.drawable.ic_favorite_filled)
+
     val Lyrics
         @Composable
         get() = painterResource(R.drawable.ic_lyrics)

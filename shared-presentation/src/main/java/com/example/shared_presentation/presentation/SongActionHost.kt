@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.DisplaySong
 import com.example.core_model.Playlist
 import com.example.core_resources.R
@@ -40,10 +41,20 @@ fun SongActionHost(
     val context = LocalContext.current
 
     selectedSong?.let { song ->
-        val isFavorite by observeFavoriteSong(song.id).collectAsState(false)
+        val isFavorite by observeFavoriteSong(song.id)
+            .collectAsStateWithLifecycle(false)
         SongOptionBottomSheet(
             song = song,
+            isFavorite = isFavorite,
             onDismiss = { onDismissSong() },
+            onShareClick = {
+                showToast(
+                    context,
+                    message = context.getString(
+                        R.string.currently_under_development,
+                    )
+                )
+            },
             onSongNavigationAction = {
                 onSongNavigationAction(it)
             },
@@ -84,7 +95,7 @@ fun SongActionHost(
                         songForPlaylistPicker = song
                     }
 
-                    SongOptionAction.COMMENT -> {
+                    else -> {
                         showToast(
                             context,
                             message = context.getString(
@@ -92,17 +103,6 @@ fun SongActionHost(
                             )
                         )
                     }
-
-                    SongOptionAction.REPORT -> {
-                        showToast(
-                            context,
-                            message = context.getString(
-                                R.string.currently_under_development,
-                            )
-                        )
-                    }
-
-                    else -> {}
                 }
             }
         )

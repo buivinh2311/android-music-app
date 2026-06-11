@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.menu.AppBottomBarAction
@@ -29,7 +30,7 @@ fun PlaylistScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val playlistViewModel: PlaylistViewModel = hiltViewModel()
-    val uiState by playlistViewModel.uiState.collectAsState()
+    val uiState by playlistViewModel.uiState.collectAsStateWithLifecycle()
     val playlists = uiState.playlists
     Scaffold(
         modifier = Modifier.fillMaxSize(),

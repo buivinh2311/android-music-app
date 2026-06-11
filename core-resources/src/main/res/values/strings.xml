@@ -62,4 +62,5 @@
     <string name="add_song_to_favorite_success">Đã thêm %s vào thư viện</string>
     <string name="remove_song_to_favorite_success">Đã gỡ %s khỏi thư viện</string>
     <string name="currently_under_development">Tính năng này đang trong quá trình phát triển</string>
+    <string name="added_song_to_library">Đã thêm vào thư viện</string>
 </resources>

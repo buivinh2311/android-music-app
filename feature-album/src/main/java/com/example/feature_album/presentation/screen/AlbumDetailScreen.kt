@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Album
 import com.example.core_model.DisplaySong
 import com.example.core_resources.ui.dimen.AppDimens
@@ -48,13 +49,14 @@ fun AlbumDetailScreen(
         mutableStateOf(null)
     }
     val albumDetailViewModel: AlbumDetailViewModel = hiltViewModel()
-    val uiState by albumDetailViewModel.uiState.collectAsState()
+    val uiState by albumDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(albumName) {
         albumDetailViewModel.loadAlbumDetail(albumName)
     }
     val songs = uiState.songs
     val album = uiState.album ?: Album(0, albumName, "", songs.size)
-    val playlists by albumDetailViewModel.playlists.collectAsState()
+    val playlists by albumDetailViewModel.playlists
+        .collectAsStateWithLifecycle(emptyList())
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

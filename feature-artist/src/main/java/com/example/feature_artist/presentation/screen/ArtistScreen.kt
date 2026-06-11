@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.menu.AppBottomBarAction
@@ -30,7 +31,7 @@ fun ArtistScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val artistViewModel: ArtistViewModel = hiltViewModel()
-    val uiState by artistViewModel.uiState.collectAsState()
+    val uiState by artistViewModel.uiState.collectAsStateWithLifecycle()
     val artists = uiState.artists
     Scaffold(
         modifier = Modifier.fillMaxSize(),

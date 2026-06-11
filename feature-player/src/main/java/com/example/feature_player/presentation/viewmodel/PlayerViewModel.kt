@@ -58,17 +58,8 @@ class PlayerViewModel @Inject constructor(
         playbackController.resume()
     }
 
-    val playlists: StateFlow<List<Playlist>> =
-        playlistUseCases.getAllPlaylist()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
-
-    fun isFavoriteSong(songId: String): Flow<Boolean> {
-        return favoriteSongUseCases.observerFavoriteSong(songId)
-    }
+    val playlists = playlistUseCases.getAllPlaylist()
+    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {
