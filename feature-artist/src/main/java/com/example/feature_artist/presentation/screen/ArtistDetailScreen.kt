@@ -1,5 +1,6 @@
 package com.example.feature_artist.presentation.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -19,20 +20,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Artist
 import com.example.core_model.DisplaySong
+import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_artist.presentation.component.ArtistInformation
 import com.example.feature_artist.presentation.viewmodel.ArtistDetailViewModel
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.SongActionHost
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun ArtistDetailScreen(
     artistName: String,
@@ -53,6 +58,10 @@ fun ArtistDetailScreen(
     val songs = uiState.songs
     val playlists by artistDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val isFavoriteArtist by artistDetailViewModel
+        .isFavoriteArtist(artistName)
+        .collectAsStateWithLifecycle(false)
+    val context = LocalContext.current
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -82,7 +91,29 @@ fun ArtistDetailScreen(
             ) {
                 item {
                     ArtistInformation(
-                        artist = artist
+                        artist = artist,
+                        isFavoriteArtist = isFavoriteArtist,
+                        onFollowClick = { artistName ->
+                            if(isFavoriteArtist) {
+                                artistDetailViewModel.removeArtistFromFavorite(artistName)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.remove_artist_from_favorite_success,
+                                        artistName
+                                    )
+                                )
+                            } else {
+                                artistDetailViewModel.addArtistToFavorite(artistName)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.add_artist_to_favorite_success,
+                                        artistName
+                                    )
+                                )
+                            }
+                        }
                     )
                     Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                 }

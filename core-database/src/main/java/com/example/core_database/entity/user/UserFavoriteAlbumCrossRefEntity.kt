@@ -7,15 +7,15 @@ import androidx.room.PrimaryKey
 
 @Entity(
     "user_favorite_album_cross_ref",
-    primaryKeys = ["user_id", "album_id"],
-    indices = [Index("user_id"), Index("album_id")]
+    primaryKeys = ["user_id", "album_name"],
+    indices = [Index("user_id"), Index("album_name")]
 )
 data class UserFavoriteAlbumCrossRefEntity (
     @ColumnInfo(name = "user_id")
     val userId: Int,
 
-    @ColumnInfo(name = "album_id")
-    val albumId: Int,
+    @ColumnInfo(name = "album_name")
+    val albumName: String,
 
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()

@@ -4,6 +4,7 @@ import com.example.core_database.dao.user.UserFavoriteAlbumCrossRefDao
 import com.example.core_database.datasource.user.FavoriteAlbumLocalDataSource
 import com.example.core_database.entity.album.AlbumEntity
 import com.example.core_database.entity.user.UserFavoriteAlbumCrossRefEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FavoriteAlbumLocalDataSourceImpl @Inject constructor(
@@ -13,17 +14,16 @@ class FavoriteAlbumLocalDataSourceImpl @Inject constructor(
         crossRefDao.insert(userFavoriteAlbum)
     }
 
-    override suspend fun isFavoriteAlbum(userId: Int, albumId: Int): Boolean {
-        return crossRefDao.isFavoriteAlbum(userId, albumId)
+    override fun isFavoriteAlbum(userId: Int, albumName: String): Flow<Boolean> {
+        return crossRefDao.isFavoriteAlbum(userId, albumName)
     }
 
     override suspend fun getFavoriteAlbums(userId: Int): List<AlbumEntity> {
         return crossRefDao.getFavoriteAlbums(userId)
     }
 
-    override suspend fun delete(userId: Int, albumId: Int) {
-        crossRefDao.delete(userId, albumId)
+    override suspend fun delete(userId: Int, albumName: String) {
+        crossRefDao.delete(userId, albumName)
     }
-
 
 }

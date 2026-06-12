@@ -14,6 +14,7 @@ import com.example.musicapplication.navigation.route.ArtistDetailRoute
 import com.example.musicapplication.navigation.route.ArtistRoute
 import com.example.musicapplication.navigation.route.DiscoveryRoute
 import com.example.musicapplication.navigation.route.FavoriteRoute
+import com.example.musicapplication.navigation.route.FollowedArtistRoute
 import com.example.musicapplication.navigation.route.ForYouRoute
 import com.example.musicapplication.navigation.route.HomeRoute
 import com.example.musicapplication.navigation.route.LibraryRoute
@@ -200,6 +201,14 @@ fun AppNavHost() {
 
         composable(AppRoute.ARTIST) {
             ArtistRoute(
+                navController = navController,
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
+        composable(AppRoute.FOLLOWED_ARTIST) {
+            FollowedArtistRoute(
                 navController = navController,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick

@@ -16,6 +16,7 @@ object AppRoute {
     const val PLAYLIST_DETAIL = "playlistDetail"
     const val PLAYLIST_DETAIL_WITH_ARG = "playlistDetail/{playlistId}"
     const val ARTIST = "artist"
+    const val FOLLOWED_ARTIST = "followedArtist"
     const val ARTIST_CHOOSER = "artistChooser"
     const val ARTIST_CHOOSER_WITH_ARG = "artistChooser/{artistStr}"
     const val ARTIST_DETAIL = "artistDetail"

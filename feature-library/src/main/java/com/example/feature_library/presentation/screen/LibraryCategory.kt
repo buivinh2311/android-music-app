@@ -33,7 +33,8 @@ import com.example.core_resources.ui.icon.AppIcons
 @Composable
 fun LibraryCategory(
     modifier: Modifier = Modifier,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onFollowedArtistClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -61,7 +62,7 @@ fun LibraryCategory(
             painter = AppIcons.Artist,
             title = stringResource(R.string.action_library_artist),
             tint = Color(0xFFFC4433),
-            onClick = onFavoriteClick
+            onClick = onFollowedArtistClick
         )
     }
 }

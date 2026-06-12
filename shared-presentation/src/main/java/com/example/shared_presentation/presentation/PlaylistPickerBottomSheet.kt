@@ -1,5 +1,6 @@
 package com.example.shared_presentation.presentation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,7 +51,8 @@ fun PlaylistPickerBottomSheet(
         sheetState = sheetState
     ) {
         LazyColumn (
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
         ) {
             item {
                 Text(

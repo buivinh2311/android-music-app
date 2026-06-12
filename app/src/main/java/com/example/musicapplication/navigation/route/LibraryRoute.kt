@@ -24,6 +24,10 @@ fun LibraryRoute(
             navController.navigate(AppRoute.FAVORITE)
         },
 
+        onFollowedArtistClick = {
+            navController.navigate(AppRoute.FOLLOWED_ARTIST)
+        },
+
         onMorePlaylistClick = {
             navController.navigate(AppRoute.PLAYLIST)
         },

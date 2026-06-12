@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.core_database.entity.album.AlbumEntity
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserFavoriteAlbumCrossRefEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserFavoriteAlbumCrossRefDao {
@@ -16,15 +17,14 @@ interface UserFavoriteAlbumCrossRefDao {
     @Query(
         "SELECT EXISTS(" +
                 "SELECT 1 FROM user_favorite_album_cross_ref u " +
-                "INNER JOIN albums a ON u.album_id = a.album_id " +
-                "WHERE user_id = :userId AND a.album_id = :albumId" +
+                "WHERE user_id = :userId AND album_name = :albumName" +
                 ")"
     )
-    suspend fun isFavoriteAlbum(userId: Int, albumId: Int): Boolean
+    fun isFavoriteAlbum(userId: Int, albumName: String): Flow<Boolean>
 
     @Query(
         "SELECT a.* FROM user_favorite_album_cross_ref u " +
-                "INNER JOIN albums a ON u.album_id = a.album_id " +
+                "INNER JOIN albums a ON u.album_name = a.name " +
                 "WHERE user_id = :userId " +
                 "ORDER BY u.created_at"
     )
@@ -32,7 +32,7 @@ interface UserFavoriteAlbumCrossRefDao {
 
     @Query(
         "DELETE FROM user_favorite_album_cross_ref " +
-                "WHERE user_id = :userId AND album_id = :albumId"
+                "WHERE user_id = :userId AND album_name = :albumName"
     )
-    suspend fun delete(userId: Int, albumId: Int)
+    suspend fun delete(userId: Int, albumName: String)
 }

@@ -1,5 +1,6 @@
 package com.example.feature_artist.presentation.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,9 @@ import com.example.core_utils.util.ArtistUtil
 @Composable
 fun ArtistInformation(
     modifier: Modifier = Modifier,
-    artist: Artist
+    artist: Artist,
+    isFavoriteArtist: Boolean,
+    onFollowClick: (String) -> Unit
 ) {
     AsyncImage(
         model = artist.avatar,
@@ -44,23 +47,34 @@ fun ArtistInformation(
         text = artist.name,
         style = MaterialTheme.typography.titleLarge
     )
+    Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
     Text(
-        text = ArtistUtil.interestedToString(artist.interested) +
-                stringResource(R.string.text_interested),
+        text = ArtistUtil.interestedToString(
+            if (isFavoriteArtist) artist.interested + 1
+            else artist.interested
+        ) + stringResource(R.string.text_interested),
         style = MaterialTheme.typography.bodyLarge
     )
     Spacer(modifier = Modifier.height(AppDimens.Space.Md))
     Row(horizontalArrangement = Arrangement.Center) {
         Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
+            onClick = { onFollowClick(artist.name) },
+            colors = if (isFavoriteArtist) ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) else ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ),
-            modifier = Modifier.width(130.dp)
+            border = if (isFavoriteArtist) BorderStroke(
+                AppDimens.Border.Thin,
+                MaterialTheme.colorScheme.onPrimary
+            ) else null,
+            modifier = Modifier.width(140.dp)
         ) {
             Text(
-                text = stringResource(R.string.follow),
+                text = if (isFavoriteArtist) stringResource(R.string.followed)
+                else stringResource(R.string.follow),
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -71,7 +85,7 @@ fun ArtistInformation(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ),
-            modifier = Modifier.width(130.dp)
+            modifier = Modifier.width(140.dp)
         ) {
             Text(
                 text = stringResource(R.string.action_play_music),

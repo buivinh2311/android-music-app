@@ -26,6 +26,7 @@ import com.example.shared_presentation.model.SongOptionItem
 fun LibraryScreen(
     onRecentClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    onFollowedArtistClick: () -> Unit,
     onMorePlaylistClick: () -> Unit,
     onPlaylistClick: (Int) -> Unit,
     onSearchClick: () -> Unit,
@@ -53,7 +54,10 @@ fun LibraryScreen(
             )
         ) {
             item {
-                LibraryCategory(onFavoriteClick = onFavoriteClick)
+                LibraryCategory(
+                    onFavoriteClick = onFavoriteClick,
+                    onFollowedArtistClick = onFollowedArtistClick
+                )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                 ViewAllButton(
                     title = stringResource(R.string.title_library_heard_recently),

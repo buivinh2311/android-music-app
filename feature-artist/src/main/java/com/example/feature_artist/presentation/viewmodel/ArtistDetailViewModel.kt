@@ -1,12 +1,16 @@
 package com.example.feature_artist.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
+import com.example.feature_artist.domain.usecase.AddArtistToFavoriteUseCase
 import com.example.feature_artist.domain.usecase.GetArtistDetailUseCase
 import com.example.feature_artist.domain.usecase.GetSongsForArtistUseCase
+import com.example.feature_artist.domain.usecase.ObserverFavoriteArtistUseCase
+import com.example.feature_artist.domain.usecase.RemoveArtistFromFavoriteUseCase
 import com.example.feature_artist.presentation.state.ArtistDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +26,9 @@ class ArtistDetailViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
     private val getArtistDetailUseCase: GetArtistDetailUseCase,
+    private val addArtistToFavoriteUseCase: AddArtistToFavoriteUseCase,
+    private val removeArtistFromFavoriteUseCase: RemoveArtistFromFavoriteUseCase,
+    private val observerFavoriteArtistUseCase: ObserverFavoriteArtistUseCase,
     private val getSongsForArtistUseCase: GetSongsForArtistUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(ArtistDetailState())
@@ -62,8 +69,21 @@ class ArtistDetailViewModel @Inject constructor(
         }
     }
 
+    fun isFavoriteArtist(artistName: String) = observerFavoriteArtistUseCase(artistName)
     val playlists = playlistUseCases.getAllPlaylist()
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
+
+    fun addArtistToFavorite(artistName: String) {
+        viewModelScope.launch {
+            addArtistToFavoriteUseCase(artistName)
+        }
+    }
+
+    fun removeArtistFromFavorite(artistName: String) {
+        viewModelScope.launch {
+            removeArtistFromFavoriteUseCase(artistName)
+        }
+    }
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {
