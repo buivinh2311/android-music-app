@@ -1,11 +1,13 @@
 package com.example.core_playback
 
+import androidx.media3.common.Player
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackState
 import kotlinx.coroutines.flow.StateFlow
 
 interface PlaybackController {
     val playbackState: StateFlow<PlaybackState>
+    val player: Player
     fun play(queueSource: String, queue: List<Song>, startSong: Song)
     fun pause()
     fun resume()

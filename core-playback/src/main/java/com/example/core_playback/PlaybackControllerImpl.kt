@@ -1,7 +1,12 @@
 package com.example.core_playback
 
 import android.content.Context
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -18,21 +23,32 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PlaybackControllerImpl @Inject constructor(
-    @ApplicationContext context: Context,
-): PlaybackController {
-    private val player = ExoPlayer.Builder(context).build()
+    @param:ApplicationContext private val context: Context
+) : PlaybackController {
+    private val exoPlayer = ExoPlayer.Builder(context).build().apply {
+        setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                .build(),
+            true
+        )
+    }
+    override val player: Player
+        get() = exoPlayer
     private val _playbackState = MutableStateFlow(PlaybackState())
     override val playbackState: StateFlow<PlaybackState> = _playbackState
 
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
+
     init {
         scope.launch {
             while (true) {
                 _playbackState.update {
                     it.copy(
-                        currentPosition = player.currentPosition,
+                        currentPosition = exoPlayer.currentPosition,
                     )
                 }
                 delay(500)
@@ -42,7 +58,7 @@ class PlaybackControllerImpl @Inject constructor(
     }
 
     init {
-        player.addListener(object : Player.Listener {
+        exoPlayer.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 _playbackState.update {
                     it.copy(isPlaying = isPlaying)
@@ -56,7 +72,7 @@ class PlaybackControllerImpl @Inject constructor(
                 _playbackState.update {
                     it.copy(
                         currentSongId = mediaItem?.mediaId,
-                        currentIndex = player.currentMediaItemIndex,
+                        currentIndex = exoPlayer.currentMediaItemIndex,
                         currentPosition = 0L
                     )
                 }
@@ -66,7 +82,7 @@ class PlaybackControllerImpl @Inject constructor(
                 if (state == Player.STATE_READY) {
                     _playbackState.update {
                         it.copy(
-                            duration = player.duration
+                            duration = exoPlayer.duration
                         )
                     }
                 }
@@ -78,23 +94,60 @@ class PlaybackControllerImpl @Inject constructor(
         })
     }
 
+//    private var shouldResumeAfterFocusGain = false
+//    private val audioManager = context.getSystemService(AudioManager::class.java)
+//    private val audioFocusListener =
+//        AudioManager.OnAudioFocusChangeListener { focusChange ->
+//            when (focusChange) {
+//                AudioManager.AUDIOFOCUS_LOSS -> pause()
+//                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+//                    if (exoPlayer.isPlaying) {
+//                        shouldResumeAfterFocusGain = true
+//                        pause()
+//                    }
+//                }
+//                AudioManager.AUDIOFOCUS_GAIN -> {
+//                    if (shouldResumeAfterFocusGain) {
+//                        resume()
+//                        shouldResumeAfterFocusGain = false
+//                    }
+//                }
+//            }
+//        }
+//    private val audioFocusRequest = AudioFocusRequest.Builder(
+//        AudioManager.AUDIOFOCUS_GAIN
+//    ).setOnAudioFocusChangeListener(
+//        audioFocusListener
+//    ).build()
+
     override fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+//        val result = audioManager.requestAudioFocus(audioFocusRequest)
+//        if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+//            return
+//        }
+
         val startIndex = queue.indexOfFirst { it.id == startSong.id }
         val mediaItems = queue.map { song ->
             MediaItem.Builder()
                 .setMediaId(song.id)
                 .setUri(song.sourceUrl)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(song.title)
+                        .setArtist(song.artist)
+                        .build()
+                )
                 .build()
         }
 
-        player.setMediaItems(
+        exoPlayer.setMediaItems(
             mediaItems,
             startIndex,
             0L
         )
 
-        player.prepare()
-        player.play()
+        exoPlayer.prepare()
+        exoPlayer.play()
 
         _playbackState.update {
             it.copy(
@@ -105,44 +158,44 @@ class PlaybackControllerImpl @Inject constructor(
     }
 
     override fun pause() {
-        player.pause()
+        exoPlayer.pause()
     }
 
     override fun resume() {
-        player.play()
+        exoPlayer.play()
     }
 
     override fun seekTo(position: Long) {
-        player.seekTo(position)
+        exoPlayer.seekTo(position)
     }
 
     override fun skipNext() {
-        player.seekToNextMediaItem()
+        exoPlayer.seekToNextMediaItem()
     }
 
     override fun skipPrevious() {
-        player.seekToPreviousMediaItem()
+        exoPlayer.seekToPreviousMediaItem()
     }
 
     override fun toggleShuffle() {
-        player.shuffleModeEnabled = !player.shuffleModeEnabled
+        exoPlayer.shuffleModeEnabled = !exoPlayer.shuffleModeEnabled
         _playbackState.update {
             it.copy(
-                isShuffleEnabled = player.shuffleModeEnabled
+                isShuffleEnabled = exoPlayer.shuffleModeEnabled
             )
         }
     }
 
     override fun changeRepeatMode() {
-        val nextMode = when(player.repeatMode) {
+        val nextMode = when (exoPlayer.repeatMode) {
             Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL
             Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
             else -> Player.REPEAT_MODE_OFF
         }
-        player.repeatMode = nextMode
+        exoPlayer.repeatMode = nextMode
         _playbackState.update {
             it.copy(
-                repeatMode = when(nextMode) {
+                repeatMode = when (nextMode) {
                     Player.REPEAT_MODE_OFF -> RepeatMode.OFF
                     Player.REPEAT_MODE_ALL -> RepeatMode.ALL
                     else -> RepeatMode.ONE
