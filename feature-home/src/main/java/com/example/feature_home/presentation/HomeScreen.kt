@@ -3,6 +3,7 @@ package com.example.feature_home.presentation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,12 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AlbumItem
@@ -33,9 +36,11 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.SongItem
 import com.example.core_ui.component.ViewAllButton
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_home.presentation.HomeViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -47,10 +52,11 @@ fun HomeScreen(
     onRecommendedClick: () -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
+    onMiniPlayerClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val homeViewModel: HomeViewModel = hiltViewModel()
@@ -59,6 +65,13 @@ fun HomeScreen(
     val recommendedSongs = uiState.recommendedSongs
     val playlists by homeViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val playbackState by homeViewModel.playbackState
+        .collectAsStateWithLifecycle()
+    val isCurrentFavoriteSong by homeViewModel.currentFavoriteSong
+        .collectAsStateWithLifecycle()
+    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
+    val queueSource = stringResource(R.string.title_home_recommended_song)
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -117,9 +130,65 @@ fun HomeScreen(
                     SongItem(
                         modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
                         song = recommendedSongs[index],
-                        onSongClick = onSongClick,
+                        onSongClick = { song ->
+                            homeViewModel.play(
+                                queueSource = queueSource,
+                                queue = recommendedSongs,
+                                startSong = song
+                            )
+                            onSongClick(song.id)
+                        },
                         onMoreClick = { song ->
                             selectedSong = song
+                        }
+                    )
+                }
+            }
+
+            currentSong?.let {
+                Box(
+                    Modifier.fillMaxSize()
+                ) {
+                    MiniPlayer(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .align(Alignment.BottomCenter),
+                        song = currentSong,
+                        isFavoriteSong = isCurrentFavoriteSong,
+                        isPlaying = playbackState.isPlaying,
+                        onMiniPlayerClick = {
+                            onMiniPlayerClick(currentSong.id)
+                        },
+                        onFavoriteClick = {
+                            if(isCurrentFavoriteSong) {
+                                homeViewModel.removeSongToFavorite(currentSong.id)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.remove_song_from_favorite_success,
+                                        currentSong.title
+                                    )
+                                )
+                            } else {
+                                homeViewModel.addSongToFavorite(currentSong.id)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.add_song_to_favorite_success,
+                                        currentSong.title
+                                    )
+                                )
+                            }
+                        },
+                        onTogglePlayClick = {
+                            if(playbackState.isPlaying) {
+                                homeViewModel.pause()
+                            } else {
+                                homeViewModel.resume()
+                            }
+                        },
+                        onNextClick = {
+                            homeViewModel.skipNext()
                         }
                     )
                 }

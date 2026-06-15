@@ -20,10 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Album
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
@@ -45,7 +46,7 @@ fun AlbumDetailScreen(
     onSongNavigationAction: (SongOptionItem) -> Unit
 
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val albumDetailViewModel: AlbumDetailViewModel = hiltViewModel()
@@ -100,7 +101,14 @@ fun AlbumDetailScreen(
                             .padding(horizontal = AppDimens.Space.Xs)
                             .fillMaxWidth(),
                         song = songs[index],
-                        onSongClick = onSongClick,
+                        onSongClick = { song ->
+                            albumDetailViewModel.play(
+                                queueSource = albumName,
+                                queue = songs,
+                                startSong = song
+                            )
+                            onSongClick(song.id)
+                        },
                         onMoreClick = { song ->
                             selectedSong = song
                         }

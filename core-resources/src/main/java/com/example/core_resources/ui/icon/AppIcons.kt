@@ -138,4 +138,12 @@ object AppIcons {
     val Add
         @Composable
         get() = painterResource(R.drawable.ic_add)
+
+    val PlayMini
+        @Composable
+        get() = painterResource(R.drawable.ic_play_mini)
+
+    val PauseMini
+        @Composable
+        get() = painterResource(R.drawable.ic_pause_mini)
 }

@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
@@ -48,7 +48,7 @@ fun PlaylistDetailScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val playlistDetailViewModel: PlaylistDetailViewModel = hiltViewModel()
@@ -116,7 +116,14 @@ fun PlaylistDetailScreen(
                                 .padding(horizontal = 4.dp)
                                 .fillMaxWidth(),
                             song = songs[index],
-                            onSongClick = onSongClick,
+                            onSongClick = { song ->
+                                playlistDetailViewModel.play(
+                                    queueSource = playlist.name,
+                                    queue = songs,
+                                    startSong = song
+                                )
+                                onSongClick(song.id)
+                            },
                             onMoreClick = { song ->
                                 selectedSong = song
                             }

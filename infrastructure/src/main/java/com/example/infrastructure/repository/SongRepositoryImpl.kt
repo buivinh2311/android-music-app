@@ -1,6 +1,5 @@
 package com.example.infrastructure.repository
 
-import android.util.Log
 import com.example.core_database.datasource.album.AlbumSongLocalDataSource
 import com.example.core_database.datasource.artist.ArtistSongLocalDataSource
 import com.example.core_database.datasource.song.SongListLocalDataSource
@@ -10,15 +9,13 @@ import com.example.core_database.entity.artist.ArtistSongCrossRefEntity
 import com.example.core_database.entity.song.SongListEntity
 import com.example.core_domain.model.SongListType
 import com.example.core_domain.repository.SongRepository
-import com.example.core_model.DisplaySong
 import com.example.core_model.Song
 import com.example.core_network.datasource.SongRemoteDataSource
 import com.example.core_network.dto.PagingParamRequest
-import com.example.infrastructure.mapper.local.toDisplayModels
 import com.example.infrastructure.mapper.local.toEntities
 import com.example.infrastructure.mapper.local.toModel
-import com.example.infrastructure.mapper.remote.toDisplayModel
-import com.example.infrastructure.mapper.remote.toDisplayModels
+import com.example.infrastructure.mapper.local.toModels
+import com.example.infrastructure.mapper.remote.toModels
 import com.example.infrastructure.mapper.remote.toModel
 import com.example.infrastructure.mapper.remote.toModels
 import javax.inject.Inject
@@ -30,9 +27,9 @@ class SongRepositoryImpl @Inject constructor(
     private val artistSongLocalDataSource: ArtistSongLocalDataSource,
     private val albumSongLocalDataSource: AlbumSongLocalDataSource
 ): SongRepository {
-    override suspend fun loadSongPaging(param: PagingParamRequest): List<DisplaySong> {
+    override suspend fun loadSongPaging(param: PagingParamRequest): List<Song> {
         return try {
-            songRemoteDataSource.loadSongPaging(param).songListDto.toDisplayModels()
+            songRemoteDataSource.loadSongPaging(param).songListDto.toModels()
         } catch (_: Exception) {
             emptyList()
         }
@@ -49,15 +46,15 @@ class SongRepositoryImpl @Inject constructor(
     override suspend fun getFirstNSongs(
         playlistId: Int,
         limit: Int
-    ): List<DisplaySong> {
+    ): List<Song> {
         return try {
-            songRemoteDataSource.getFirstNSongs(playlistId, limit).songListDto.toDisplayModels()
+            songRemoteDataSource.getFirstNSongs(playlistId, limit).songListDto.toModels()
         } catch (_: Exception) {
             emptyList()
         }
     }
 
-    override suspend fun getSongsByAlbumId(albumId: Int): List<DisplaySong> {
+    override suspend fun getSongsByAlbumId(albumId: Int): List<Song> {
         val localSongs = songLocalDataSource.getSongsByAlbumId(albumId)
         return try {
             val remoteSongs = songRemoteDataSource.getSongsByAlbumId(albumId).songListDto
@@ -68,32 +65,32 @@ class SongRepositoryImpl @Inject constructor(
                     AlbumSongCrossRefEntity(albumId, song.id)
                 }
                 albumSongLocalDataSource.insertAll(crossRefs)
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } else {
-                localSongs.toDisplayModels()
+                localSongs.toModels()
             }
         } catch (_: Exception) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         }
     }
 
-    override suspend fun getSongsByAlbumName(albumName: String): List<DisplaySong> {
+    override suspend fun getSongsByAlbumName(albumName: String): List<Song> {
         val localSongs = songLocalDataSource.getSongsByAlbumName(albumName)
         return try {
             val remoteSongs = songRemoteDataSource.getSongsByAlbumName(albumName).songListDto
             val remoteSongModels = remoteSongs.toModels()
             if(localSongs.isEmpty() || localSongs.size != remoteSongs.size) {
                 songLocalDataSource.insertAll(remoteSongModels.toEntities())
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } else {
-                localSongs.toDisplayModels()
+                localSongs.toModels()
             }
         } catch (_: Exception) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         }
     }
 
-    override suspend fun getSongsByArtistId(artistId: Int): List<DisplaySong> {
+    override suspend fun getSongsByArtistId(artistId: Int): List<Song> {
         val localSongs = songLocalDataSource.getSongsByArtistId(artistId)
         return try {
             val remoteSongs = songRemoteDataSource.getSongsByArtistId(artistId).songListDto
@@ -104,41 +101,33 @@ class SongRepositoryImpl @Inject constructor(
                     ArtistSongCrossRefEntity(artistId, song.id)
                 }
                 artistSongLocalDataSource.insertAll(crossRefs)
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } else {
-                localSongs.toDisplayModels()
+                localSongs.toModels()
             }
         } catch (_: Exception) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         }
     }
 
-    override suspend fun getSongsByArtistName(artistName: String): List<DisplaySong> {
+    override suspend fun getSongsByArtistName(artistName: String): List<Song> {
         val localSongs = songLocalDataSource.getSongsByArtistName(artistName)
         return try {
             val remoteSongs = songRemoteDataSource.getSongsByArtistName(artistName)
             val remoteSongModels = remoteSongs.toModels()
             if(localSongs.isEmpty() || localSongs.size != remoteSongs.size) {
                 songLocalDataSource.insertAll(remoteSongModels.toEntities())
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } else {
-                localSongs.toDisplayModels()
+                localSongs.toModels()
             }
         } catch (_: Exception) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         }
     }
 
-    override suspend fun getDisplaySongById(songId: String): DisplaySong? {
-        return try {
-            songRemoteDataSource.getSongById(songId)?.toDisplayModel()
-        } catch (_: Exception) {
-            null
-        }
-    }
-
-    override suspend fun getSongByPlaylistId(playlistId: Int): List<DisplaySong> {
-        return songLocalDataSource.getSongsInPlaylist(playlistId).toDisplayModels()
+    override suspend fun getSongByPlaylistId(playlistId: Int): List<Song> {
+        return songLocalDataSource.getSongsInPlaylist(playlistId).toModels()
     }
 
     override suspend fun getSongById(songId: String): Song? {
@@ -150,10 +139,10 @@ class SongRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecommendedSongs(limit: Int): List<DisplaySong> {
+    override suspend fun getRecommendedSongs(limit: Int): List<Song> {
         val localSongs = songLocalDataSource.getRecommendedSongs(limit)
         return if(localSongs.size >= limit) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         } else {
             try {
                 val remoteSongs = songRemoteDataSource.getRecommendedSongs(limit)
@@ -164,17 +153,17 @@ class SongRepositoryImpl @Inject constructor(
                 }
                 songListLocalDataSource.deleteByType(SongListType.RECOMMENDED)
                 songListLocalDataSource.insertAll(songLists)
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } catch (_: Exception) {
                 emptyList()
             }
         }
     }
 
-    override suspend fun getMostHeardSongs(limit: Int): List<DisplaySong> {
+    override suspend fun getMostHeardSongs(limit: Int): List<Song> {
         val localSongs = songLocalDataSource.getMostHeardSongs(limit)
         return if(localSongs.size >= limit) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         } else {
             try {
                 val remoteSongs = songRemoteDataSource.getMostHeardSongs(limit)
@@ -185,17 +174,17 @@ class SongRepositoryImpl @Inject constructor(
                 }
                 songListLocalDataSource.deleteByType(SongListType.MOST_HEARD)
                 songListLocalDataSource.insertAll(songLists)
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } catch (_: Exception) {
                 emptyList()
             }
         }
     }
 
-    override suspend fun getForYouSongs(limit: Int): List<DisplaySong> {
+    override suspend fun getForYouSongs(limit: Int): List<Song> {
         val localSongs = songLocalDataSource.getForYouSongs(limit)
         return if(localSongs.size >= limit) {
-            localSongs.toDisplayModels()
+            localSongs.toModels()
         } else {
             try {
                 val remoteSongs = songRemoteDataSource.getForYouSongs(limit)
@@ -206,7 +195,7 @@ class SongRepositoryImpl @Inject constructor(
                 }
                 songListLocalDataSource.deleteByType(SongListType.FOR_YOU)
                 songListLocalDataSource.insertAll(songLists)
-                remoteSongs.toDisplayModels()
+                remoteSongs.toModels()
             } catch (_: Exception) {
                 emptyList()
             }

@@ -1,8 +1,6 @@
-package com.example.core_playback.di
+package com.example.core_playback
 
 import android.content.Context
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.PlaybackControllerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

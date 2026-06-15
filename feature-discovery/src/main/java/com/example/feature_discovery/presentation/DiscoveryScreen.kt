@@ -1,5 +1,6 @@
 package com.example.feature_discovery.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
@@ -51,14 +52,16 @@ fun DiscoveryScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val discoveryViewModel: DiscoveryViewModel = hiltViewModel()
     val uiState by discoveryViewModel.uiState.collectAsStateWithLifecycle()
     val hotArtists = uiState.hotArtists
     val mostHeardSongs = uiState.mostHeardSongs
+    val mostHeard = stringResource(R.string.title_discovery_most_listened)
     val forYouSongs = uiState.forYouSongs
+    val forYou = stringResource(R.string.title_discovery_for_your)
     val playlists by discoveryViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
     
@@ -116,7 +119,14 @@ fun DiscoveryScreen(
                     SongLazyHorizontalGrid(
                         songs = mostHeardSongs,
                         rowWidth = 300.dp,
-                        onSongClick = onSongClick,
+                        onSongClick = { song ->
+                            discoveryViewModel.play(
+                                queueSource = mostHeard,
+                                queue = mostHeardSongs,
+                                startSong = song
+                            )
+                            onSongClick(song.id)
+                        },
                         onMoreClick = { song ->
                             selectedSong = song
                         }
@@ -137,7 +147,14 @@ fun DiscoveryScreen(
                             .padding(horizontal = AppDimens.Space.Xs)
                             .fillMaxWidth(),
                         song = forYouSongs[index],
-                        onSongClick = onSongClick,
+                        onSongClick = { song ->
+                            discoveryViewModel.play(
+                                queueSource = forYou,
+                                queue = forYouSongs,
+                                startSong = song
+                            )
+                            onSongClick(song.id)
+                        },
                         onMoreClick = { song ->
                             selectedSong = song
                         }

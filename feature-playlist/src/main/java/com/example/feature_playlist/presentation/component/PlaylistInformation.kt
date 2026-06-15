@@ -25,8 +25,8 @@ fun PlaylistInformation(
     AsyncImage(
         model = playlist.artwork,
         contentDescription = "playlist avatar",
-        placeholder = painterResource(R.drawable.ic_music_note),
-        error = painterResource(R.drawable.ic_music_not_available),
+        placeholder = painterResource(R.drawable.logo),
+        error = painterResource(R.drawable.logo),
         modifier = Modifier
             .size(200.dp)
             .clip(RoundedCornerShape(AppDimens.Radius.Lg))

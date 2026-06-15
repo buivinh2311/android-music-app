@@ -20,6 +20,7 @@ import com.example.core_ui.component.AppButton
 @Composable
 fun PlayerTopBar(
     modifier: Modifier = Modifier,
+    queueSource: String,
     onClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -32,7 +33,8 @@ fun PlayerTopBar(
             contentDescription = stringResource(R.string.action_down),
             iconSize = AppDimens.Icon.Md,
             rippleRadius = AppDimens.Ripple.Md,
-            tint = Color.White
+            tint = Color.White,
+            rippleColor = Color.White
         ) {
             onBackClick()
         }
@@ -41,7 +43,7 @@ fun PlayerTopBar(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "PHÁT TỪ",
+                text = stringResource(R.string.play_from),
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -51,7 +53,7 @@ fun PlayerTopBar(
             )
 
             Text(
-                text = "Bài hát gợi ý",
+                text = queueSource,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -64,7 +66,8 @@ fun PlayerTopBar(
             contentDescription = stringResource(R.string.action_view_more),
             iconSize = AppDimens.Icon.Md,
             rippleRadius = AppDimens.Ripple.Md,
-            tint = Color.White
+            tint = Color.White,
+            rippleColor = Color.White
         ) { onClick() }
     }
 }

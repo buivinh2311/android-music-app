@@ -57,8 +57,8 @@ fun PlaylistItem(
                 modifier = Modifier
                     .size(AppDimens.ImageSize.Md)
                     .clip(shape = RoundedCornerShape(AppDimens.Space.Sm)),
-                placeholder = painterResource(R.drawable.ic_music_note),
-                error = painterResource(R.drawable.ic_music_not_available),
+                placeholder = painterResource(R.drawable.logo),
+                error = painterResource(R.drawable.logo),
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))

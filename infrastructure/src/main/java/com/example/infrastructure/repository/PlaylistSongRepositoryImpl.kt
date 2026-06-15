@@ -4,8 +4,8 @@ import com.example.core_database.datasource.playlist.PlaylistLocalDataSource
 import com.example.core_database.datasource.playlist.PlaylistSongLocalDataSource
 import com.example.core_database.entity.playlist.PlaylistSongCrossRefEntity
 import com.example.core_domain.repository.PlaylistSongRepository
-import com.example.core_model.DisplaySong
-import com.example.infrastructure.mapper.local.toDisplayModels
+import com.example.core_model.Song
+import com.example.infrastructure.mapper.local.toModels
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -15,10 +15,10 @@ class PlaylistSongRepositoryImpl @Inject constructor(
     private val playlistSongLocalDataSource: PlaylistSongLocalDataSource,
     private val playlistLocalDataSource: PlaylistLocalDataSource
 ): PlaylistSongRepository {
-    override fun getSongsInPlaylist(playlistId: Int): Flow<List<DisplaySong>> {
+    override fun getSongsInPlaylist(playlistId: Int): Flow<List<Song>> {
         return playlistSongLocalDataSource.getSongsInPlaylist(playlistId)
             .map { song ->
-                song.toDisplayModels()
+                song.toModels()
             }
     }
 

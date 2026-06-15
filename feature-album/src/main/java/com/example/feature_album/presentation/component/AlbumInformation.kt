@@ -24,8 +24,8 @@ fun AlbumInformation(
     AsyncImage(
         model = album.artworkUrl,
         contentDescription = "album avatar",
-        placeholder = painterResource(R.drawable.ic_album),
-        error = painterResource(R.drawable.ic_album),
+        placeholder = painterResource(R.drawable.logo),
+        error = painterResource(R.drawable.logo),
         modifier = Modifier
             .size(220.dp)
             .clip(shape = RoundedCornerShape(AppDimens.Space.Lg))

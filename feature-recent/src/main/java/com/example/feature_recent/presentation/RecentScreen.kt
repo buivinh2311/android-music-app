@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
@@ -45,7 +45,7 @@ fun RecentScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val recentViewModel: RecentViewModel = hiltViewModel()
@@ -53,6 +53,7 @@ fun RecentScreen(
         .collectAsStateWithLifecycle(emptyList())
     val recentSongs by recentViewModel.recentSongs
         .collectAsStateWithLifecycle(emptyList())
+    val queueSource = stringResource(R.string.title_library_heard_recently)
 
     Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -106,7 +107,13 @@ fun RecentScreen(
                 SongItem(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     song = recentSongs[index],
-                    onSongClick = onSongClick,
+                    onSongClick = { song ->
+                        recentViewModel.play(
+                            queueSource = queueSource,
+                            queue = recentSongs,
+                            startSong = song
+                        )
+                    },
                     onMoreClick = { song ->
                         selectedSong = song
                     }

@@ -22,15 +22,15 @@ import com.example.core_resources.ui.dimen.AppDimens
 @Composable
 fun PlayerArtWork(
     modifier: Modifier = Modifier,
-    artworkUrl: String?,
-    onClick: () -> Unit
+    artworkUrl: String,
+    onArtworkClick: () -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         Card(
-            onClick = onClick,
+            onClick = onArtworkClick,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.onPrimary
             ),
@@ -43,8 +43,8 @@ fun PlayerArtWork(
             AsyncImage(
                 model = artworkUrl,
                 contentDescription = "Song Artwork",
-                placeholder = painterResource(R.drawable.ic_music_note),
-                error = painterResource(R.drawable.ic_music_not_available),
+                placeholder = painterResource(R.drawable.logo),
+                error = painterResource(R.drawable.logo),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )

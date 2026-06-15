@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
@@ -46,7 +46,7 @@ fun RecommendedScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val recommendedViewModel: RecommendedViewModel = hiltViewModel()
@@ -54,6 +54,7 @@ fun RecommendedScreen(
     val songs = uiState.songs
     val playlists by recommendedViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val queueSource = stringResource(R.string.title_home_recommended_song)
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -112,7 +113,14 @@ fun RecommendedScreen(
                             .padding(horizontal = AppDimens.Space.Xs)
                             .fillMaxWidth(),
                         song = songs[index],
-                        onSongClick = onSongClick,
+                        onSongClick = { song ->
+                            recommendedViewModel.play(
+                                queueSource = queueSource,
+                                queue = songs,
+                                startSong = song
+                            )
+                            onSongClick(song.id)
+                        },
                         onMoreClick = { song ->
                             selectedSong = song
                         }

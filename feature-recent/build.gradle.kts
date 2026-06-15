@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core-model"))
     implementation(project(":core-domain"))
     implementation(project(":core-network"))
+    implementation(project(":core-playback"))
     implementation(project(":core-utils"))
     implementation(project(":shared-presentation"))
     implementation(libs.androidx.material.icons.extended)

@@ -22,6 +22,7 @@ fun AppButton(
     iconSize: Dp,
     rippleRadius: Dp,
     tint: Color = Color.White,
+    rippleColor: Color,
     onClick: () -> Unit
 ) {
     Box(
@@ -37,7 +38,7 @@ fun AppButton(
                     indication = ripple(
                         bounded = false,
                         radius = rippleRadius,
-                        color = Color.White
+                        color = rippleColor
                     ),
                     interactionSource = remember {
                         MutableInteractionSource()

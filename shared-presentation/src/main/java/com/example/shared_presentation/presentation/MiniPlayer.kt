@@ -1,5 +1,8 @@
-package com.example.core_ui.component
+package com.example.shared_presentation.presentation
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,40 +18,63 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
+import com.example.core_ui.component.AppButton
 
 @Composable
-fun SongItem(
+fun MiniPlayer(
     modifier: Modifier = Modifier,
     song: Song,
-    onSongClick: (Song) -> Unit,
-    onMoreClick: (Song) -> Unit
+    isFavoriteSong: Boolean,
+    isPlaying: Boolean,
+    onMiniPlayerClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    onTogglePlayClick: () -> Unit,
+    onNextClick: () -> Unit
 ) {
+    val shape = RoundedCornerShape(AppDimens.Radius.Sm)
     Surface(
         onClick = {
-            onSongClick(song)
+            onMiniPlayerClick()
         },
+        tonalElevation = AppDimens.Space.Xs,
         shape = RoundedCornerShape(AppDimens.Radius.Sm),
         color = Color.Transparent,
-        modifier = modifier.height(AppDimens.Layout.SongItemHeight)
+        modifier = modifier
+            .height(AppDimens.Layout.MiniPlayerHeight)
+            .background(color = MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
                 .padding(
-                    start = AppDimens.Space.Md,
-                    top = AppDimens.Space.Sm,
+                    start = AppDimens.Space.Sm,
                     end = AppDimens.Space.Sm,
                     bottom = AppDimens.Space.Sm
-                ),
+                )
+                .shadow(
+                    elevation = 2.dp,
+                    shape = shape,
+                    clip = false
+                )
+                .clip(RoundedCornerShape(AppDimens.Radius.Sm))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(
+                    width = AppDimens.Border.Thin,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                    shape = shape
+                )
+            ,
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -80,18 +106,40 @@ fun SongItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+
+            AppButton(
+                painter = if (isFavoriteSong) AppIcons.Favorite_filled else AppIcons.Favorite,
+                contentDescription = stringResource(R.string.action_add_to_library),
+                iconSize = AppDimens.Icon.Md,
+                rippleRadius = AppDimens.Ripple.Sm,
+                tint = if (isFavoriteSong) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground,
+                onClick = { onFavoriteClick() }
+            )
+            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+
+            AppButton(
+                painter = if (isPlaying) AppIcons.PauseMini else AppIcons.PlayMini,
+                contentDescription = stringResource(R.string.action_play),
+                iconSize = AppDimens.Icon.Lg,
+                rippleRadius = AppDimens.Ripple.Sm,
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground,
+                onClick = { onTogglePlayClick() }
+            )
             Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
             AppButton(
-                painter = AppIcons.More,
-                contentDescription = stringResource(R.string.action_view_more),
-                iconSize = AppDimens.Icon.Sm,
+                painter = AppIcons.SkipNext,
+                contentDescription = stringResource(R.string.action_skip_next),
+                iconSize = AppDimens.Icon.Lg,
                 rippleRadius = AppDimens.Ripple.Sm,
                 tint = MaterialTheme.colorScheme.onBackground,
-                rippleColor = MaterialTheme.colorScheme.onBackground
-            ) {
-                onMoreClick(song)
-            }
+                rippleColor = MaterialTheme.colorScheme.onBackground,
+                onClick = { onNextClick() }
+            )
+            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
         }
     }
 }

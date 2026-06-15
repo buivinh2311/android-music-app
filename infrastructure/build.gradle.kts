@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core-database"))
     implementation(project(":core-domain"))
     implementation(project(":core-network"))
+    implementation(project(":core-playback"))
     implementation(project(":core-utils"))
     implementation(libs.coil)
 

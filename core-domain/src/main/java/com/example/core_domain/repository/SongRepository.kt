@@ -1,21 +1,19 @@
 package com.example.core_domain.repository
 
-import com.example.core_model.DisplaySong
 import com.example.core_model.Song
 import com.example.core_network.dto.PagingParamRequest
 
 interface SongRepository {
-    suspend fun loadSongPaging(param: PagingParamRequest): List<DisplaySong>
+    suspend fun loadSongPaging(param: PagingParamRequest): List<Song>
     suspend fun updateCounter(songId: String)
-    suspend fun getFirstNSongs(playlistId: Int, limit: Int): List<DisplaySong>
-    suspend fun getSongsByAlbumId(albumId: Int): List<DisplaySong>
-    suspend fun getSongsByAlbumName(albumName: String): List<DisplaySong>
-    suspend fun getSongsByArtistId(artistId: Int): List<DisplaySong>
-    suspend fun getSongsByArtistName(artistName: String): List<DisplaySong>
-    suspend fun getDisplaySongById(songId: String): DisplaySong?
-    suspend fun getSongByPlaylistId(playlistId: Int): List<DisplaySong>
+    suspend fun getFirstNSongs(playlistId: Int, limit: Int): List<Song>
+    suspend fun getSongsByAlbumId(albumId: Int): List<Song>
+    suspend fun getSongsByAlbumName(albumName: String): List<Song>
+    suspend fun getSongsByArtistId(artistId: Int): List<Song>
+    suspend fun getSongsByArtistName(artistName: String): List<Song>
     suspend fun getSongById(songId: String): Song?
-    suspend fun getRecommendedSongs(limit: Int):List<DisplaySong>
-    suspend fun getMostHeardSongs(limit: Int): List<DisplaySong>
-    suspend fun getForYouSongs(limit: Int): List<DisplaySong>
+    suspend fun getSongByPlaylistId(playlistId: Int): List<Song>
+    suspend fun getRecommendedSongs(limit: Int):List<Song>
+    suspend fun getMostHeardSongs(limit: Int): List<Song>
+    suspend fun getForYouSongs(limit: Int): List<Song>
 }

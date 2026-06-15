@@ -1,5 +1,8 @@
 package com.example.feature_player.presentation.screen
 
+import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_ui.component.showToast
 import com.example.feature_player.presentation.component.PlayerArtWork
 import com.example.feature_player.presentation.component.PlayerControls
 import com.example.feature_player.presentation.component.PlayerExtraAction
@@ -38,6 +44,7 @@ import com.example.feature_player.presentation.viewmodel.PlayerViewModel
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.SongActionHost
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
@@ -45,25 +52,27 @@ fun PlayerScreen(
     onBackClick: () -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var shouldShowBottomSheet by remember { mutableStateOf(false) }
+    var selectedSong: Song? by remember {
+        mutableStateOf(null)
+    }
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val uiState by playerViewModel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(songId) {
-        playerViewModel.loadSong(songId)
-    }
     val playlists by playerViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
-    val song = uiState.song
-    val displaySong = uiState.displaySong
-    
+    val playbackState by playerViewModel.playbackState
+        .collectAsStateWithLifecycle()
+    val isCurrentFavoriteSong by playerViewModel.currentSongFavorite
+        .collectAsStateWithLifecycle()
+    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
+    val context = LocalContext.current
     
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         AsyncImage(
-            model = song?.artworkUrl,
-            placeholder = painterResource(R.drawable.ic_music_note),
-            error = painterResource(R.drawable.ic_music_not_available),
+            model = currentSong?.artworkUrl,
+            placeholder = painterResource(R.drawable.logo),
+            error = painterResource(R.drawable.logo),
             contentDescription = "Song artwork",
             modifier = Modifier
                 .fillMaxSize()
@@ -84,56 +93,109 @@ fun PlayerScreen(
             if(uiState.isLoading) {
 
             } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(AppDimens.Space.Lg),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    PlayerTopBar(
-                        onClick = { shouldShowBottomSheet = true },
-                        onBackClick = onBackClick
-                    )
-                    if (song != null && displaySong != null) {
-                        Spacer(modifier = Modifier.height(36.dp))
+                currentSong?.let {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(AppDimens.Space.Lg),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        PlayerTopBar(
+                            queueSource = playbackState.queueSource,
+                            onClick = { selectedSong = currentSong },
+                            onBackClick = onBackClick
+                        )
+                        Spacer(modifier = Modifier.height(40.dp))
 
                         PlayerArtWork(
-                            artworkUrl = song.artworkUrl
-                        ) {
-                            shouldShowBottomSheet = true
-                        }
+                            artworkUrl = currentSong.artworkUrl,
+                            onArtworkClick = {
+                                selectedSong = currentSong
+                            }
+                        )
                         Spacer(modifier = Modifier.height(48.dp))
 
                         PlayerInfo(
-                            title = song.title,
-                            artist = song.artist
+                            title = currentSong.title,
+                            artist = currentSong.artist,
+                            isFavoriteSong = isCurrentFavoriteSong,
+                            onFavoriteClick = {
+                                if(isCurrentFavoriteSong) {
+                                    playerViewModel.removeSongToFavorite(currentSong.id)
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.remove_song_from_favorite_success,
+                                            currentSong.title
+                                        )
+                                    )
+                                } else {
+                                    playerViewModel.addSongToFavorite(currentSong.id)
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.add_song_to_favorite_success,
+                                            currentSong.title
+                                        )
+                                    )
+                                }
+                            },
+                            onShareClick = {
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.currently_under_development
+                                    )
+                                )
+                            }
                         )
                         Spacer(modifier = Modifier.height(40.dp))
 
                         PlayerProgress(
-                            duration = song.duration
+                            currentPosition = playbackState.currentPosition,
+                            duration = playbackState.duration,
+                            onPositionChange = {
+                                playerViewModel.seekTo(it.toLong())
+                            }
                         )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
-
-                        PlayerControls {
-                            playerViewModel.pause()
-                        }
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
 
+                        PlayerControls(
+                            isPlaying = playbackState.isPlaying,
+                            onPlayClick = {
+                                if(playbackState.isPlaying) {
+                                    playerViewModel.pause()
+                                } else {
+                                    playerViewModel.resume()
+                                }
+                            },
+                            onPreviousClick = {
+                                playerViewModel.skipPrevious()
+                            },
+                            onNextClick = {
+                                playerViewModel.skipNext()
+                            },
+                            isShuffleEnabled = playbackState.isShuffleEnabled,
+                            onShuffleClick = {
+                                playerViewModel.toggleShuffle()
+                            },
+                            repeatMode = playbackState.repeatMode,
+                            onRepeatModeClick = {
+                                playerViewModel.changeRepeatMode()
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(32.dp))
                         PlayerExtraAction()
-                        playerViewModel.play(song)
                     }
-                }
 
-                if(shouldShowBottomSheet) {
                     SongActionHost(
-                        selectedSong = displaySong,
+                        selectedSong = selectedSong,
                         playlists = playlists,
                         observeFavoriteSong = { songId ->
                             playerViewModel.isFavoriteSong(songId)
                         },
-                        onDismissSong = { shouldShowBottomSheet = false },
+                        onDismissSong = { selectedSong = null },
                         onAddSongToFavorite = { songId ->
                             playerViewModel.addSongToFavorite(songId)
                         },

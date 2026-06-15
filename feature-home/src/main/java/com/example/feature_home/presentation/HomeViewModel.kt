@@ -5,14 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
+import com.example.core_model.Song
+import com.example.core_playback.PlaybackController
 import com.example.core_utils.util.AppUtil
 import com.example.feature_home.domain.usecase.GetRecommendedSongsUseCase
 import com.example.feature_home.domain.usecase.GetTopAlbumUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,7 +30,8 @@ class HomeViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
     private val getTopAlbumUseCase: GetTopAlbumUseCase,
-    private val getRecommendedSongsUseCase: GetRecommendedSongsUseCase
+    private val getRecommendedSongsUseCase: GetRecommendedSongsUseCase,
+    private val playbackController: PlaybackController
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeState())
     val uiState: StateFlow<HomeState> = _uiState
@@ -67,7 +75,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    val playbackState = playbackController.playbackState
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentFavoriteSong: StateFlow<Boolean> =
+        playbackState
+            .map { it.currentSongId }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { id ->
+                favoriteSongUseCases.observerFavoriteSong(id)
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+
     val playlists = playlistUseCases.getAllPlaylist()
+
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
@@ -92,6 +114,22 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             favoriteSongUseCases.removeSongFromFavorite(songId)
         }
+    }
+
+    fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+        playbackController.play(queueSource, queue, startSong)
+    }
+
+    fun pause() {
+        playbackController.pause()
+    }
+
+    fun resume() {
+        playbackController.resume()
+    }
+
+    fun skipNext() {
+        playbackController.skipNext()
     }
 
 }

@@ -10,16 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.ui.dimen.AppDimens
 
 @Composable
 fun SongLazyHorizontalGrid(
     modifier: Modifier = Modifier,
-    songs: List<DisplaySong>,
+    songs: List<Song>,
     rowWidth: Dp,
-    onSongClick: (String) -> Unit,
-    onMoreClick: (DisplaySong) -> Unit
+    onSongClick: (Song) -> Unit,
+    onMoreClick: (Song) -> Unit
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(3),

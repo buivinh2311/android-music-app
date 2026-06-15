@@ -7,7 +7,7 @@ import com.example.core_network.dto.PagingParamRequest
 import com.example.core_network.dto.SongDto
 import com.example.core_network.dto.SongListDto
 import com.example.core_network.utils.safeApiCall
-import com.example.infrastructure.mapper.remote.toDisplayModels
+import com.example.infrastructure.mapper.remote.toModels
 import javax.inject.Inject
 
 class SongRemoteDataSourceImpl @Inject constructor(

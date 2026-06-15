@@ -28,6 +28,10 @@ fun HomeRoute(
             navController.navigate(AppRoute.RECOMMENDED)
         },
 
+        onMiniPlayerClick = { songId ->
+            navController.navigate("${AppRoute.PLAYER}/$songId")
+        },
+
         onSearchClick = onSearchClick,
         onSongClick = onSongClick,
         onBottomActionClick = onBottomActionClick,

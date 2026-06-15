@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
@@ -43,7 +43,7 @@ fun FavoriteScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var selectedSong: DisplaySong? by remember {
+    var selectedSong: Song? by remember {
         mutableStateOf(null)
     }
     val favoriteViewModel: FavoriteViewModel = hiltViewModel()
@@ -51,6 +51,7 @@ fun FavoriteScreen(
         .collectAsStateWithLifecycle(emptyList())
     val playlists by favoriteViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val queueSource = stringResource(R.string.title_favorite_song)
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -112,7 +113,14 @@ fun FavoriteScreen(
                 SongItem(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     song = favoriteSongs[index],
-                    onSongClick = onSongClick,
+                    onSongClick = { song ->
+                        favoriteViewModel.play(
+                            queueSource = queueSource,
+                            queue = favoriteSongs,
+                            startSong = song
+                        )
+                        onSongClick(song.id)
+                    },
                     onMoreClick = { song ->
                         selectedSong = song
                     }

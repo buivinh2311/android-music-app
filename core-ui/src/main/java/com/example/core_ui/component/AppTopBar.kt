@@ -42,7 +42,8 @@ fun AppTopBar(
                 contentDescription = stringResource(R.string.action_navigate_up),
                 iconSize = AppDimens.Icon.Sm,
                 rippleRadius = AppDimens.Ripple.Sm,
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground
             ) {
                 onBackClick()
             }
@@ -62,7 +63,8 @@ fun AppTopBar(
                 contentDescription = stringResource(R.string.action_search_by_voice),
                 iconSize = AppDimens.Icon.Md,
                 rippleRadius = AppDimens.Ripple.Sm,
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground
             ) { }
             Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
@@ -71,7 +73,8 @@ fun AppTopBar(
                 contentDescription = stringResource(R.string.action_search),
                 iconSize = AppDimens.Icon.Md,
                 rippleRadius = AppDimens.Ripple.Sm,
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground
             ) { }
         }
     }

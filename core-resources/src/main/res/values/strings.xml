@@ -18,7 +18,7 @@
     <string name="action_play">Chơi nhạc</string>
     <string name="action_skip_previous">phát trước đó</string>
     <string name="action_skip_next">phát tiếp theo</string>
-    <string name="action_repeat">Phát lặp lại</string>
+    <string name="action_change_repeat">Thay đổi chế độ lặp</string>
     <string name="action_down">Đóng</string>
     <string name="action_view_more">Xem tùy chọn</string>
     <string name="action_search">Tìm kiếm</string>
@@ -61,10 +61,12 @@
     <string name="create_new_playlist_success">Tạo playlist mới thành công</string>
     <string name="add_song_to_playlist_success">Đã thêm %s vào playlist</string>
     <string name="add_song_to_favorite_success">Đã thêm %s vào thư viện</string>
-    <string name="remove_song_to_favorite_success">Đã gỡ %s khỏi thư viện</string>
+    <string name="remove_song_from_favorite_success">Đã gỡ %s khỏi thư viện</string>
     <string name="currently_under_development">Tính năng này đang trong quá trình phát triển</string>
     <string name="added_song_to_library">Đã thêm vào thư viện</string>
     <string name="followed">ĐÃ THEO DÕI</string>
     <string name="add_artist_to_favorite_success">Đã thêm %s vào thư viện</string>
     <string name="remove_artist_from_favorite_success">Đã hủy theo dõi %s</string>
+    <string name="text_capacity_128">128 Kpbs</string>
+    <string name="play_from">PHÁT TỪ</string>
 </resources>

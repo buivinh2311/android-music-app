@@ -6,7 +6,6 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.core_model.Song
-import com.example.core_playback.state.PlaybackState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +31,8 @@ class PlaybackControllerImpl @Inject constructor(
         scope.launch {
             while (true) {
                 _playbackState.update {
-                    it.copy( currentPosition = player.currentPosition,
-                        duration = player.duration
+                    it.copy(
+                        currentPosition = player.currentPosition,
                     )
                 }
                 delay(500)
@@ -43,7 +42,6 @@ class PlaybackControllerImpl @Inject constructor(
     }
 
     init {
-
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 _playbackState.update {
@@ -58,6 +56,7 @@ class PlaybackControllerImpl @Inject constructor(
                 _playbackState.update {
                     it.copy(
                         currentSongId = mediaItem?.mediaId,
+                        currentIndex = player.currentMediaItemIndex,
                         currentPosition = 0L
                     )
                 }
@@ -79,18 +78,28 @@ class PlaybackControllerImpl @Inject constructor(
         })
     }
 
-    override fun play(song: Song) {
-        val mediaItem = MediaItem.Builder()
-            .setUri(song.sourceUrl)
-            .setMediaId(song.id)
-            .build()
-        player.setMediaItem(mediaItem)
+    override fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+        val startIndex = queue.indexOfFirst { it.id == startSong.id }
+        val mediaItems = queue.map { song ->
+            MediaItem.Builder()
+                .setMediaId(song.id)
+                .setUri(song.sourceUrl)
+                .build()
+        }
+
+        player.setMediaItems(
+            mediaItems,
+            startIndex,
+            0L
+        )
+
         player.prepare()
         player.play()
+
         _playbackState.update {
             it.copy(
-                currentSongId = song.id,
-                sourceUrl = song.sourceUrl
+                queueSource = queueSource,
+                queue = queue
             )
         }
     }
@@ -101,5 +110,44 @@ class PlaybackControllerImpl @Inject constructor(
 
     override fun resume() {
         player.play()
+    }
+
+    override fun seekTo(position: Long) {
+        player.seekTo(position)
+    }
+
+    override fun skipNext() {
+        player.seekToNextMediaItem()
+    }
+
+    override fun skipPrevious() {
+        player.seekToPreviousMediaItem()
+    }
+
+    override fun toggleShuffle() {
+        player.shuffleModeEnabled = !player.shuffleModeEnabled
+        _playbackState.update {
+            it.copy(
+                isShuffleEnabled = player.shuffleModeEnabled
+            )
+        }
+    }
+
+    override fun changeRepeatMode() {
+        val nextMode = when(player.repeatMode) {
+            Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL
+            Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
+            else -> Player.REPEAT_MODE_OFF
+        }
+        player.repeatMode = nextMode
+        _playbackState.update {
+            it.copy(
+                repeatMode = when(nextMode) {
+                    Player.REPEAT_MODE_OFF -> RepeatMode.OFF
+                    Player.REPEAT_MODE_ALL -> RepeatMode.ALL
+                    else -> RepeatMode.ONE
+                }
+            )
+        }
     }
 }

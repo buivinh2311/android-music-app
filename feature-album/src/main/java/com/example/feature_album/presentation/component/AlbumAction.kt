@@ -32,7 +32,8 @@ fun AlbumAction(modifier: Modifier = Modifier) {
             contentDescription = stringResource(R.string.action_download),
             iconSize = AppDimens.Icon.Md,
             rippleRadius = AppDimens.Ripple.Sm,
-            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+            rippleColor = MaterialTheme.colorScheme.onBackground
         ) { }
 
         Button(
@@ -54,7 +55,8 @@ fun AlbumAction(modifier: Modifier = Modifier) {
             contentDescription = stringResource(R.string.action_add_to_library),
             iconSize = AppDimens.Icon.Md,
             rippleRadius = AppDimens.Ripple.Sm,
-            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+            rippleColor = MaterialTheme.colorScheme.onBackground
         ) { }
     }
 }

@@ -39,8 +39,8 @@ fun AlbumItem(
         AsyncImage(
             model = album.artworkUrl,
             contentDescription = null,
-            placeholder = painterResource(R.drawable.ic_music_note),
-            error = painterResource(R.drawable.ic_music_not_available),
+            placeholder = painterResource(R.drawable.logo),
+            error = painterResource(R.drawable.logo),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(AppDimens.Radius.Sm)),

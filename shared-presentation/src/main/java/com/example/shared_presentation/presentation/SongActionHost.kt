@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_model.Playlist
 import com.example.core_resources.R
 import com.example.core_ui.component.showToast
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun SongActionHost(
-    selectedSong: DisplaySong?,
+    selectedSong: Song?,
     playlists: List<Playlist>,
     observeFavoriteSong: (String) -> Flow<Boolean>,
     onDismissSong: () -> Unit,
@@ -30,7 +30,7 @@ fun SongActionHost(
     onAddSongToPlaylist: (Int, String) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    var songForPlaylistPicker: DisplaySong? by remember {
+    var songForPlaylistPicker: Song? by remember {
         mutableStateOf(null)
     }
 
@@ -75,7 +75,7 @@ fun SongActionHost(
                             showToast(
                                 context,
                                 message = context.getString(
-                                    R.string.remove_song_to_favorite_success,
+                                    R.string.remove_song_from_favorite_success,
                                     song.title
                                 )
                             )

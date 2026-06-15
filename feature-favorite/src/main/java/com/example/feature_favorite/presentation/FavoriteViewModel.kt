@@ -4,8 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
+import com.example.core_model.Song
+import com.example.core_playback.PlaybackController
 import com.example.feature_favorite.domain.usecase.GetAllFavoriteSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -13,9 +23,22 @@ import javax.inject.Inject
 class FavoriteViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
-    getAllFavoriteSongsUseCase: GetAllFavoriteSongsUseCase
+    getAllFavoriteSongsUseCase: GetAllFavoriteSongsUseCase,
+    private val playbackController: PlaybackController
 ): ViewModel() {
     val songs = getAllFavoriteSongsUseCase()
+
+    val playbackState = playbackController.playbackState
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentSongFavorite: StateFlow<Boolean> =
+        playbackState
+            .map { it.currentSongId }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { id ->
+                favoriteSongUseCases.observerFavoriteSong(id)
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     val playlists = playlistUseCases.getAllPlaylist()
 
@@ -43,5 +66,9 @@ class FavoriteViewModel @Inject constructor(
         viewModelScope.launch {
             favoriteSongUseCases.removeSongFromFavorite(songId)
         }
+    }
+
+    fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+        playbackController.play(queueSource, queue, startSong)
     }
 }

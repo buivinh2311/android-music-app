@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
-import com.example.core_model.DisplaySong
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongOptionBottomSheet(
-    song: DisplaySong,
+    song: Song,
     isFavorite: Boolean,
     onDismiss: () -> Unit,
     onShareClick: () -> Unit,
@@ -83,7 +83,7 @@ fun SongOptionBottomSheet(
 @Composable
 private fun SongOptionBottomSheetContent(
     modifier: Modifier = Modifier,
-    song: DisplaySong,
+    song: Song,
     isFavorite: Boolean,
     onShareClick: () -> Unit,
     onClick: (SongOptionItem) -> Unit
@@ -97,8 +97,8 @@ private fun SongOptionBottomSheetContent(
             AsyncImage(
                 model = song.artworkUrl,
                 contentDescription = null,
-                placeholder = painterResource(R.drawable.ic_music_note),
-                error = painterResource(R.drawable.vietnam),
+                placeholder = painterResource(R.drawable.logo),
+                error = painterResource(R.drawable.logo),
                 modifier = Modifier
                     .size(AppDimens.ImageSize.Md)
                     .clip(shape = RoundedCornerShape(AppDimens.Radius.Sm)),
@@ -130,7 +130,8 @@ private fun SongOptionBottomSheetContent(
                 contentDescription = stringResource(R.string.action_view_more),
                 iconSize = AppDimens.Icon.Sm,
                 rippleRadius = AppDimens.Ripple.Sm,
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground
             ) {
                 onShareClick()
             }
@@ -166,7 +167,7 @@ private fun SongOptionBottomSheetContent(
 
 @Composable
 private fun songOptions(
-    song: DisplaySong,
+    song: Song,
     isFavorite: Boolean
 ): List<SongOptionItem> {
     val options = mutableListOf<SongOptionItem>().apply {

@@ -1,6 +1,5 @@
 package com.example.infrastructure.mapper.remote
 
-import com.example.core_model.DisplaySong
 import com.example.core_model.Song
 import com.example.core_network.dto.SongDto
 
@@ -20,17 +19,6 @@ fun SongDto.toModel(): Song? {
     )
 }
 
-fun SongDto.toDisplayModel(): DisplaySong? {
-    val id = this.id ?: return null
-    return DisplaySong(
-        id = id,
-        title = this.title.orEmpty(),
-        artist = this.artist.orEmpty(),
-        album = this.album,
-        artworkUrl = this.artworkUrl.orEmpty()
-    )
-}
-
 fun Song.toDto(): SongDto {
     return SongDto(
         id = this.id,
@@ -46,24 +34,10 @@ fun Song.toDto(): SongDto {
     )
 }
 
-fun Song.toDisplayModel(): DisplaySong {
-    return DisplaySong(
-        id = this.id,
-        title = this.title,
-        album = this.album,
-        artist = this.artist,
-        artworkUrl = this.artworkUrl
-    )
-}
-
 fun List<Song>.toDtos(): List<SongDto> {
     return this.map { it.toDto() }
 }
 
 fun List<SongDto>.toModels(): List<Song> {
     return this.mapNotNull { it.toModel() }
-}
-
-fun List<SongDto>.toDisplayModels(): List<DisplaySong> {
-    return this.mapNotNull { it.toDisplayModel() }
 }
