@@ -28,7 +28,7 @@ interface UserRecentSongCrossRefDao {
     )
     fun getAllRecentSongs(userId: Int): Flow<List<SongEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(crossRef: UserRecentSongCrossRefEntity)
 
     @Delete

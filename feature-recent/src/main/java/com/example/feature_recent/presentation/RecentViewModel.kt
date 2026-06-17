@@ -35,9 +35,7 @@ class RecentViewModel @Inject constructor(
 ): ViewModel() {
     val recentSongs = getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
     val playlists = playlistUseCases.getAllPlaylist()
-
     val playbackState = playbackController.playbackState
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState

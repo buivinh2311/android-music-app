@@ -38,6 +38,7 @@ class SongRepositoryImpl @Inject constructor(
     override suspend fun updateCounter(songId: String) {
         return try {
             songRemoteDataSource.updateCounter(songId)
+            songLocalDataSource.updateCounter(songId)
         } catch (_: Exception) {
 
         }

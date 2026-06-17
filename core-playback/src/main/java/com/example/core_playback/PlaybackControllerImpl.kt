@@ -9,6 +9,8 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.core_model.Song
+import com.example.core_playback.usecase.AddRecentSongUseCase
+import com.example.core_playback.usecase.IncreasePlayCountUseCase
 import com.example.core_playback.usecase.RestorePlaybackQueueUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +26,9 @@ import javax.inject.Inject
 class PlaybackControllerImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val playbackStateDataSource: PlaybackStateDataSource,
-    private val restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase
+    private val restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase,
+    private val addRecentSongUseCase: AddRecentSongUseCase,
+    private val increasePlayCountUseCase: IncreasePlayCountUseCase
 ) : PlaybackController {
     private val exoPlayer = ExoPlayer.Builder(context).build().apply {
         setAudioAttributes(
@@ -69,6 +73,12 @@ class PlaybackControllerImpl @Inject constructor(
                 mediaItem: MediaItem?,
                 reason: Int
             ) {
+                mediaItem?.mediaId?.let { songId ->
+                    scope.launch {
+                        addRecentSongUseCase(songId)
+                        increasePlayCountUseCase(songId)
+                    }
+                }
                 _playbackState.update {
                     it.copy(
                         currentSongId = mediaItem?.mediaId,

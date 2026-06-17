@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.PlaybackControllerImpl
 import com.example.core_playback.PlaybackStateDataSource
+import com.example.core_playback.usecase.AddRecentSongUseCase
+import com.example.core_playback.usecase.IncreasePlayCountUseCase
 import com.example.core_playback.usecase.RestorePlaybackQueueUseCase
 import dagger.Module
 import dagger.Provides
@@ -20,12 +22,16 @@ object PlaybackModule {
     fun providePlaybackController(
         @ApplicationContext context: Context,
         playbackStateDataSource: PlaybackStateDataSource,
-        restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase
+        restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase,
+        addRecentSongUseCase: AddRecentSongUseCase,
+        increasePlayCountUseCase: IncreasePlayCountUseCase
     ): PlaybackController {
         return PlaybackControllerImpl(
             context,
             playbackStateDataSource,
-            restorePlaybackQueueUseCase
+            restorePlaybackQueueUseCase,
+            addRecentSongUseCase,
+            increasePlayCountUseCase
         )
     }
 }
