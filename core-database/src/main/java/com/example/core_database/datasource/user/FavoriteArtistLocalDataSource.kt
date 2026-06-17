@@ -9,5 +9,6 @@ interface FavoriteArtistLocalDataSource {
     suspend fun insert(userFavoriteArtist: UserFavoriteArtistCrossRefEntity)
     fun isFavoriteArtist(userId: Int, artistName: String): Flow<Boolean>
     fun getFavoriteArtists(userId: Int): Flow<List<FollowedArtistEntity>>
+    fun getFavoriteArtistCount(userId: Int): Flow<Int>
     suspend fun delete(userId: Int, artistName: String)
 }

@@ -7,6 +7,7 @@ object AppRoute {
     const val SETTINGS = "settings"
     const val SEARCH = "search"
     const val ALBUM = "album"
+    const val FAVORITE_ALBUM = "favoriteAlbum"
     const val ALBUM_DETAIL = "albumDetail"
     const val ALBUM_DETAIL_WITH_ARG = "albumDetail/{albumName}"
     const val RECOMMENDED = "recommended"

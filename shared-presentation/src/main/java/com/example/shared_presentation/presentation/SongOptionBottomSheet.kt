@@ -32,7 +32,7 @@ import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.AppIconButton
 import com.example.core_ui.component.showToast
 import com.example.shared_presentation.model.SongOptionAction
 import com.example.shared_presentation.model.SongOptionItem
@@ -125,7 +125,7 @@ private fun SongOptionBottomSheetContent(
             }
             Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.Share,
                 contentDescription = stringResource(R.string.action_view_more),
                 iconSize = AppDimens.Icon.Sm,

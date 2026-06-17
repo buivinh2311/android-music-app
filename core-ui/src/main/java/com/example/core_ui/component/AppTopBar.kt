@@ -37,7 +37,7 @@ fun AppTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if(onBackClick != null) {
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.Back,
                 contentDescription = stringResource(R.string.action_navigate_up),
                 iconSize = AppDimens.Icon.Sm,
@@ -58,7 +58,7 @@ fun AppTopBar(
             color = MaterialTheme.colorScheme.onBackground
         )
         if(onBackClick == null) {
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.Mic,
                 contentDescription = stringResource(R.string.action_search_by_voice),
                 iconSize = AppDimens.Icon.Md,
@@ -68,7 +68,7 @@ fun AppTopBar(
             ) { }
             Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.Search,
                 contentDescription = stringResource(R.string.action_search),
                 iconSize = AppDimens.Icon.Md,

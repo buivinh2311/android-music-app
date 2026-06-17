@@ -38,7 +38,7 @@ object AppDimens {
         val BottomBarHeight = 56.dp
         val ArtistItemHeight = 72.dp
         val MiniPlayerHeight = 64.dp
-        val PlaylistItemHeight = 64.dp
+        val PlaylistItemHeight = 72.dp
         val SongItemHeight = 72.dp
     }
 

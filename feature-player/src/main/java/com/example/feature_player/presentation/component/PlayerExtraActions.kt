@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun PlayerExtraAction(modifier: Modifier = Modifier) {
@@ -32,7 +32,7 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppButton(
+        AppIconButton(
             painter = AppIcons.Comment,
             contentDescription = stringResource(R.string.action_comment),
             iconSize = AppDimens.Icon.Md,
@@ -46,7 +46,7 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.AddToPlaylist,
                 contentDescription = stringResource(R.string.action_add_to_library),
                 iconSize = AppDimens.Icon.Md,
@@ -79,7 +79,7 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
             }
 
             Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.Download,
                 contentDescription = stringResource(R.string.action_download),
                 iconSize = AppDimens.Icon.Md,
@@ -89,7 +89,7 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
             ) { }
         }
 
-        AppButton(
+        AppIconButton(
             painter = AppIcons.Artist,
             contentDescription = stringResource(R.string.action_view_artist),
             iconSize = AppDimens.Icon.Md,

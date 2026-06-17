@@ -4,6 +4,7 @@ import com.example.core_database.dao.user.UserDownloadSongCrossRefDao
 import com.example.core_database.datasource.user.DownloadSongLocalDataSource
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserDownloadSongCrossRefEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DownloadSongLocalDataSourceImpl @Inject constructor(
@@ -13,17 +14,19 @@ class DownloadSongLocalDataSourceImpl @Inject constructor(
         crossRefDao.insert(userDownloadSong)
     }
 
-    override suspend fun isDownloadSong(userId: Int, songId: String): Boolean {
+    override fun isDownloadSong(userId: Int, songId: String): Flow<Boolean> {
         return crossRefDao.isDownloadSong(userId, songId)
     }
 
-    override suspend fun getDownloadSongs(userId: Int): List<SongEntity> {
+    override fun getDownloadSongs(userId: Int): Flow<List<SongEntity>> {
         return crossRefDao.getDownloadSongs(userId)
+    }
+
+    override fun getDownloadSongCount(userId: Int): Flow<Int> {
+        return crossRefDao.getDownloadSongCount(userId)
     }
 
     override suspend fun delete(userId: Int, songId: String) {
         crossRefDao.delete(userId, songId)
     }
-
-
 }

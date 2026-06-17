@@ -36,8 +36,7 @@ fun AlbumInformation(
         style = MaterialTheme.typography.titleLarge
     )
     Text(
-        text = album.size.toString() +
-                stringResource(R.string.text_song),
+        text = album.size.toString() + stringResource(R.string.text_song),
         style = MaterialTheme.typography.bodyLarge
     )
 }

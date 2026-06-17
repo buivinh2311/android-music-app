@@ -1,5 +1,6 @@
-package com.example.feature_library.presentation.screen
+package com.example.feature_library.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.core_resources.R
@@ -29,6 +29,7 @@ import com.example.core_ui.component.ViewAllButton
 @Composable
 fun LibraryPlaylistHeader(
     modifier: Modifier = Modifier,
+    onCreatePlaylistClick: () -> Unit,
     onMorePlaylistClick: () -> Unit
 ) {
     ViewAllButton(
@@ -36,9 +37,9 @@ fun LibraryPlaylistHeader(
         onMoreClick = onMorePlaylistClick
     )
     Surface(
-        onClick = {},
+        onClick = { onCreatePlaylistClick() },
         shape = RoundedCornerShape(AppDimens.Radius.Sm),
-        color = MaterialTheme.colorScheme.surface,
+        color = Color.Transparent,
         modifier = modifier
             .fillMaxWidth()
             .height(AppDimens.Layout.PlaylistItemHeight)
@@ -64,11 +65,10 @@ fun LibraryPlaylistHeader(
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
             Text(
-                text = "tao playist moi",
+                text = stringResource(R.string.action_create_new_playlist),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

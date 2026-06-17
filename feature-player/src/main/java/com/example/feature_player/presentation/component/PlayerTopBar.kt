@@ -17,7 +17,7 @@ import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun PlayerTopBar(
@@ -32,7 +32,7 @@ fun PlayerTopBar(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppButton(
+        AppIconButton(
             painter = AppIcons.Down,
             contentDescription = stringResource(R.string.action_down),
             iconSize = AppDimens.Icon.Md,
@@ -76,7 +76,7 @@ fun PlayerTopBar(
             )
         }
 
-        AppButton(
+        AppIconButton(
             painter = AppIcons.More,
             contentDescription = stringResource(R.string.action_view_more),
             iconSize = AppDimens.Icon.Md,

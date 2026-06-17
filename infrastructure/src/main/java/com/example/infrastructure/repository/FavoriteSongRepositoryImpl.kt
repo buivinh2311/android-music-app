@@ -36,4 +36,9 @@ class FavoriteSongRepositoryImpl @Inject constructor(
         val userId = userManager.getCurrentUserId()
         return localDataSource.isFavoriteSong(userId, songId)
     }
+
+    override fun getFavoriteSongCount(): Flow<Int> {
+        val userId = userManager.getCurrentUserId()
+        return localDataSource.getFavoriteSongCount(userId)
+    }
 }

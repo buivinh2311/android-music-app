@@ -3,7 +3,7 @@ package com.example.musicapplication.navigation.route
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_library.presentation.screen.LibraryScreen
+import com.example.feature_library.presentation.LibraryScreen
 import com.example.musicapplication.navigation.AppRoute
 import com.example.shared_presentation.model.SongOptionItem
 
@@ -24,12 +24,20 @@ fun LibraryRoute(
             navController.navigate(AppRoute.FAVORITE)
         },
 
+        onFavoriteAlbumClick = {
+            navController.navigate(AppRoute.FAVORITE_ALBUM)
+        },
+
         onFollowedArtistClick = {
             navController.navigate(AppRoute.FOLLOWED_ARTIST)
         },
 
         onMorePlaylistClick = {
             navController.navigate(AppRoute.PLAYLIST)
+        },
+
+        onMiniPlayerClick = { songId ->
+            navController.navigate("${AppRoute.PLAYER}/$songId")
         },
 
         onPlaylistClick = { playlistId ->

@@ -1,10 +1,12 @@
 package com.example.core_domain.repository
 
 import com.example.core_model.Album
+import kotlinx.coroutines.flow.Flow
 
 interface FavoriteAlbumRepository {
-    suspend fun getFavoriteAlbums(): List<Album>
-    suspend fun addAlbumToFavorite(albumId: Int)
-    suspend fun removeAlbumFromFavorite(albumId: Int)
-    suspend fun isFavoriteAlbum(albumId: Int): Boolean
+    fun getFavoriteAlbums(): Flow<List<Album>>
+    suspend fun addAlbumToFavorite(albumName: String)
+    suspend fun removeAlbumFromFavorite(albumName: String)
+    fun isFavoriteAlbum(albumName: String): Flow<Boolean>
+    fun getFavoriteAlbumCount(): Flow<Int>
 }

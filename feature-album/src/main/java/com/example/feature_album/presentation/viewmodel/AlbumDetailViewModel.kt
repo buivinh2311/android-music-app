@@ -9,8 +9,11 @@ import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.feature_album.domain.usecase.AddAlbumToFavoriteUseCase
 import com.example.feature_album.domain.usecase.GetAlbumDetailUseCase
 import com.example.feature_album.domain.usecase.GetSongsInAlbumUseCase
+import com.example.feature_album.domain.usecase.ObserveFavoriteAlbumUseCase
+import com.example.feature_album.domain.usecase.RemoveAlbumFromFavoriteUseCase
 import com.example.feature_album.presentation.state.AlbumDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,6 +35,9 @@ class AlbumDetailViewModel @Inject constructor(
     private val playlistUseCases: PlaylistUseCases,
     private val getAlbumDetailUseCase: GetAlbumDetailUseCase,
     private val getSongsInAlbumUseCase: GetSongsInAlbumUseCase,
+    private val addAlbumToFavoriteUseCase: AddAlbumToFavoriteUseCase,
+    private val removeAlbumFromFavoriteUseCase: RemoveAlbumFromFavoriteUseCase,
+    private val observeFavoriteAlbumUseCase: ObserveFavoriteAlbumUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AlbumDetailUiState())
@@ -85,10 +91,23 @@ class AlbumDetailViewModel @Inject constructor(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
     val playlists = playlistUseCases.getAllPlaylist()
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
+    fun isFavoriteAlbum(albumName: String) = observeFavoriteAlbumUseCase(albumName)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {
             playlistUseCases.createPlaylist(playlistName)
+        }
+    }
+
+    fun addAlbumToFavorite(albumName: String) {
+        viewModelScope.launch {
+            addAlbumToFavoriteUseCase(albumName)
+        }
+    }
+
+    fun removeAlbumFromFavorite(albumName: String) {
+        viewModelScope.launch {
+            removeAlbumFromFavoriteUseCase(albumName)
         }
     }
 

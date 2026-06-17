@@ -32,6 +32,12 @@ interface UserFavoriteArtistCrossRefDao {
     )
     fun getFavoriteArtists(userId: Int): Flow<List<FollowedArtistEntity>>
 
+    @Query(
+        "SELECT COUNT(artist_name) FROM user_favorite_artist_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    fun getFavoriteArtistCount(userId: Int): Flow<Int>
+
     @Query("DELETE FROM user_favorite_artist_cross_ref " +
             "WHERE user_id = :userId AND artist_name = :artistName")
     suspend fun delete(userId: Int, artistName: String)

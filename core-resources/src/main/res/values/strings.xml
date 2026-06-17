@@ -69,4 +69,9 @@
     <string name="remove_artist_from_favorite_success">Đã hủy theo dõi %s</string>
     <string name="text_capacity_128">128 Kpbs</string>
     <string name="play_from">PHÁT TỪ</string>
+    <string name="action_library_album">Album</string>
+    <string name="label_favorited">ĐÃ THÍCH</string>
+    <string name="remove_album_from_favorite_success">Đã gỡ %s khỏi thư viện</string>
+    <string name="add_album_from_favorite_success">Đã thêm %s vào thư viện</string>
+    <string name="action_favorite">YÊU THÍCH</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserDownloadSongCrossRefEntity
 import com.example.core_database.entity.user.UserFavoriteSongCrossRefEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDownloadSongCrossRefDao {
@@ -20,7 +21,7 @@ interface UserDownloadSongCrossRefDao {
                 "ORDER BY u.user_id = :userId AND s.song_id = :songId" +
                 ")"
     )
-    suspend fun isDownloadSong(userId: Int, songId: String): Boolean
+    fun isDownloadSong(userId: Int, songId: String): Flow<Boolean>
 
     @Query(
         "SELECT s.* FROM user_download_song_cross_ref u " +
@@ -28,7 +29,13 @@ interface UserDownloadSongCrossRefDao {
                 "WHERE user_id = :userId " +
                 "ORDER BY u.created_at"
     )
-    suspend fun getDownloadSongs(userId: Int): List<SongEntity>
+    fun getDownloadSongs(userId: Int): Flow<List<SongEntity>>
+
+    @Query(
+        "SELECT COUNT(song_id) FROM user_download_song_cross_ref " +
+            "WHERE user_id = :userId"
+    )
+    fun getDownloadSongCount(userId: Int): Flow<Int>
 
     @Query(
         "DELETE FROM user_download_song_cross_ref " +

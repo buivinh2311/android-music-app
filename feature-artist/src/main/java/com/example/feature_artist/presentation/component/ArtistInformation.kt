@@ -23,14 +23,14 @@ import coil.compose.AsyncImage
 import com.example.core_model.Artist
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_ui.component.AppButton
 import com.example.core_utils.util.ArtistUtil
 
 @Composable
 fun ArtistInformation(
     modifier: Modifier = Modifier,
     artist: Artist,
-    isFavoriteArtist: Boolean,
-    onFollowClick: (String) -> Unit
+    isFavoriteArtist: Boolean
 ) {
     AsyncImage(
         model = artist.avatar,
@@ -55,42 +55,4 @@ fun ArtistInformation(
         ) + stringResource(R.string.text_interested),
         style = MaterialTheme.typography.bodyLarge
     )
-    Spacer(modifier = Modifier.height(AppDimens.Space.Md))
-    Row(horizontalArrangement = Arrangement.Center) {
-        Button(
-            onClick = { onFollowClick(artist.name) },
-            colors = if (isFavoriteArtist) ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) else ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            border = if (isFavoriteArtist) BorderStroke(
-                AppDimens.Border.Thin,
-                MaterialTheme.colorScheme.onPrimary
-            ) else null,
-            modifier = Modifier.width(140.dp)
-        ) {
-            Text(
-                text = if (isFavoriteArtist) stringResource(R.string.followed)
-                else stringResource(R.string.follow),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
-        Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            modifier = Modifier.width(140.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.action_play_music),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-    }
 }

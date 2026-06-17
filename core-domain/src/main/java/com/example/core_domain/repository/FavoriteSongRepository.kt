@@ -8,4 +8,5 @@ interface FavoriteSongRepository {
     suspend fun addSongToFavorite(songId: String)
     suspend fun removeSongFromFavorite(songId: String)
     fun isFavoriteSong(songId: String): Flow<Boolean>
+    fun getFavoriteSongCount(): Flow<Int>
 }

@@ -1,18 +1,16 @@
 package com.example.feature_artist.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
 import com.example.feature_artist.domain.usecase.AddArtistToFavoriteUseCase
 import com.example.feature_artist.domain.usecase.GetArtistDetailUseCase
 import com.example.feature_artist.domain.usecase.GetSongsForArtistUseCase
-import com.example.feature_artist.domain.usecase.ObserverFavoriteArtistUseCase
+import com.example.feature_artist.domain.usecase.ObserveFavoriteArtistUseCase
 import com.example.feature_artist.domain.usecase.RemoveArtistFromFavoriteUseCase
 import com.example.feature_artist.presentation.state.ArtistDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +34,7 @@ class ArtistDetailViewModel @Inject constructor(
     private val getArtistDetailUseCase: GetArtistDetailUseCase,
     private val addArtistToFavoriteUseCase: AddArtistToFavoriteUseCase,
     private val removeArtistFromFavoriteUseCase: RemoveArtistFromFavoriteUseCase,
-    private val observerFavoriteArtistUseCase: ObserverFavoriteArtistUseCase,
+    private val observeFavoriteArtistUseCase: ObserveFavoriteArtistUseCase,
     private val getSongsForArtistUseCase: GetSongsForArtistUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
@@ -90,7 +88,7 @@ class ArtistDetailViewModel @Inject constructor(
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    fun isFavoriteArtist(artistName: String) = observerFavoriteArtistUseCase(artistName)
+    fun isFavoriteArtist(artistName: String) = observeFavoriteArtistUseCase(artistName)
     val playlists = playlistUseCases.getAllPlaylist()
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 

@@ -1,20 +1,21 @@
-package com.example.feature_home.presentation
+package com.example.feature_library.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
 import com.example.core_utils.util.AppUtil
-import com.example.feature_home.domain.usecase.GetRecommendedSongsUseCase
-import com.example.feature_home.domain.usecase.GetTopAlbumUseCase
+import com.example.feature_library.domain.usecase.GetDownloadSongCountUseCase
+import com.example.feature_library.domain.usecase.GetFavoriteAlbumCountUseCase
+import com.example.feature_library.domain.usecase.GetFavoriteSongCountUseCase
+import com.example.feature_library.domain.usecase.GetFollowedArtistCountUseCase
+import com.example.feature_library.domain.usecase.GetLimitPlaylistUseCase
+import com.example.feature_library.domain.usecase.GetLimitRecentSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,62 +23,23 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val favoriteSongUseCases: FavoriteSongUseCases,
+class LibraryViewModel @Inject constructor(
+    getLimitPlaylistUseCase: GetLimitPlaylistUseCase,
+    getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase,
+    getDownloadSongCountUseCase: GetDownloadSongCountUseCase,
+    getFavoriteAlbumCountUseCase: GetFavoriteAlbumCountUseCase,
+    getFavoriteSongCountUseCase: GetFavoriteSongCountUseCase,
+    getFollowedArtistCountUseCase: GetFollowedArtistCountUseCase,
     private val playlistUseCases: PlaylistUseCases,
-    private val getTopAlbumUseCase: GetTopAlbumUseCase,
-    private val getRecommendedSongsUseCase: GetRecommendedSongsUseCase,
+    private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playbackController: PlaybackController
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(HomeState())
-    val uiState: StateFlow<HomeState> = _uiState
-
-    init {
-        loadHotAlbums()
-        loadRecommendedSongs()
-    }
-
-    fun loadHotAlbums() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
-            val albums = getTopAlbumUseCase(AppUtil.SECTION_PAGE_SIZE)
-            _uiState.update {
-                it.copy(
-                    hotAlbums = albums,
-                    isLoading = false
-                )
-            }
-        }
-    }
-
-    fun loadRecommendedSongs() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
-            val songs = getRecommendedSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
-            _uiState.update {
-                it.copy(
-                    recommendedSongs = songs,
-                    isLoading = false
-                )
-            }
-        }
-    }
+): ViewModel() {
 
     val playbackState = playbackController.playbackState
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -89,7 +51,12 @@ class HomeViewModel @Inject constructor(
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    val playlists = playlistUseCases.getAllPlaylist()
+    val downloadSongCount = getDownloadSongCountUseCase()
+    val favoriteAlbumCount = getFavoriteAlbumCountUseCase()
+    val favoriteSongCount = getFavoriteSongCountUseCase()
+    val followedArtistCount = getFollowedArtistCountUseCase()
+    val playlists = getLimitPlaylistUseCase(5)
+    val recentSongs = getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
 
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
@@ -132,5 +99,4 @@ class HomeViewModel @Inject constructor(
     fun skipNext() {
         playbackController.skipNext()
     }
-
 }

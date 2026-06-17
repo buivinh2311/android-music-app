@@ -7,12 +7,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_album.presentation.screen.FavoriteAlbumScreen
 import com.example.musicapplication.navigation.route.AlbumDetailRoute
 import com.example.musicapplication.navigation.route.AlbumRoute
 import com.example.musicapplication.navigation.route.ArtistChooserRoute
 import com.example.musicapplication.navigation.route.ArtistDetailRoute
 import com.example.musicapplication.navigation.route.ArtistRoute
 import com.example.musicapplication.navigation.route.DiscoveryRoute
+import com.example.musicapplication.navigation.route.FavoriteAlbumRoute
 import com.example.musicapplication.navigation.route.FavoriteRoute
 import com.example.musicapplication.navigation.route.FollowedArtistRoute
 import com.example.musicapplication.navigation.route.ForYouRoute
@@ -128,6 +130,14 @@ fun AppNavHost() {
                 navController = navController,
                 onBottomActionClick = onBottomActionClick,
                 onBackClick = onBackClick
+            )
+        }
+
+        composable(AppRoute.FAVORITE_ALBUM) {
+            FavoriteAlbumRoute(
+                navController = navController,
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick
             )
         }
 

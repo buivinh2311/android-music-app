@@ -4,7 +4,7 @@ import com.example.core_domain.repository.FavoriteArtistRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserverFavoriteArtistUseCase @Inject constructor(
+class ObserveFavoriteArtistUseCase @Inject constructor(
     private val repository: FavoriteArtistRepository
 ) {
     operator fun invoke(artistName: String): Flow<Boolean> {

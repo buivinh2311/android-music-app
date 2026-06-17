@@ -67,10 +67,16 @@ fun AlbumDetailScreen(
     val album = uiState.album ?: Album(0, albumName, "", songs.size)
     val playlists by albumDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+
+    val isFavoriteAlbum by albumDetailViewModel.isFavoriteAlbum(albumName)
+        .collectAsStateWithLifecycle(false)
+
     val playbackState by albumDetailViewModel.playbackState
         .collectAsStateWithLifecycle()
+
     val isCurrentFavoriteSong by albumDetailViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
 
@@ -103,8 +109,32 @@ fun AlbumDetailScreen(
             ) {
                 item {
                     AlbumInformation(album)
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
-                    AlbumAction()
+                    Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+                    AlbumAction(
+                        album = album,
+                        isFavoriteAlbum = isFavoriteAlbum,
+                        onFavoriteClick = { albumName ->
+                            if(isFavoriteAlbum) {
+                                albumDetailViewModel.removeAlbumFromFavorite(albumName)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.remove_album_from_favorite_success,
+                                        albumName
+                                    )
+                                )
+                            } else {
+                                albumDetailViewModel.addAlbumToFavorite(albumName)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.add_album_from_favorite_success,
+                                        albumName
+                                    )
+                                )
+                            }
+                        }
+                    )
                     Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                 }
 

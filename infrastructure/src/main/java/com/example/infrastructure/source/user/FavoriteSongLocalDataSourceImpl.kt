@@ -22,9 +22,11 @@ class FavoriteSongLocalDataSourceImpl @Inject constructor(
         return crossRefDao.getFavoriteSong(userId)
     }
 
+    override fun getFavoriteSongCount(userId: Int): Flow<Int> {
+        return crossRefDao.getFavoriteSongCount(userId)
+    }
+
     override suspend fun delete(userId: Int, songId: String) {
         crossRefDao.delete(userId, songId)
     }
-
-
 }

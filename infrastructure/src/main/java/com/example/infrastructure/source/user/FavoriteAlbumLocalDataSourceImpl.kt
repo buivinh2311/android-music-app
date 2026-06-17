@@ -18,8 +18,12 @@ class FavoriteAlbumLocalDataSourceImpl @Inject constructor(
         return crossRefDao.isFavoriteAlbum(userId, albumName)
     }
 
-    override suspend fun getFavoriteAlbums(userId: Int): List<AlbumEntity> {
+    override fun getFavoriteAlbums(userId: Int): Flow<List<AlbumEntity>> {
         return crossRefDao.getFavoriteAlbums(userId)
+    }
+
+    override fun getFavoriteAlbumCount(userId: Int): Flow<Int> {
+        return crossRefDao.getFavoriteAlbumCount(userId)
     }
 
     override suspend fun delete(userId: Int, albumName: String) {

@@ -1,4 +1,4 @@
-package com.example.feature_library.presentation.screen
+package com.example.feature_library.presentation.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -33,7 +33,12 @@ import com.example.core_resources.ui.icon.AppIcons
 @Composable
 fun LibraryCategory(
     modifier: Modifier = Modifier,
+    favoriteSongCount: Int,
+    downloadSongCount: Int,
+    favoriteAlbumCount: Int,
+    followedArtistCount: Int,
     onFavoriteClick: () -> Unit,
+    onFavoriteAlbumClick: () -> Unit,
     onFollowedArtistClick: () -> Unit
 ) {
     Row(
@@ -47,23 +52,35 @@ fun LibraryCategory(
         CategoryOption(
             painter = AppIcons.Favorite,
             title = stringResource(R.string.action_library_favorite),
-            tint = Color.Cyan,
+            count = favoriteSongCount,
+            tint = Color(0xFF1ABFDC),
             onClick = onFavoriteClick
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
         CategoryOption(
             painter = AppIcons.Download,
             title = stringResource(R.string.action_library_downloaded),
+            count = downloadSongCount,
             tint = Color(0xFF7A43DA),
             onClick = onFavoriteClick
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
         CategoryOption(
+            painter = AppIcons.Album,
+            title = stringResource(R.string.action_library_album),
+            count = favoriteAlbumCount,
+            tint = Color(0xFFDA9F00),
+            onClick = onFavoriteAlbumClick
+        )
+        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+        CategoryOption(
             painter = AppIcons.Artist,
             title = stringResource(R.string.action_library_artist),
+            count = followedArtistCount,
             tint = Color(0xFFFC4433),
             onClick = onFollowedArtistClick
         )
+        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
     }
 }
 
@@ -72,7 +89,7 @@ private fun CategoryOption(
     modifier: Modifier = Modifier,
     painter: Painter,
     title: String,
-    quantity: Int = 0,
+    count: Int,
     tint: Color = MaterialTheme.colorScheme.onBackground,
     onClick: () -> Unit
 ) {
@@ -109,7 +126,7 @@ private fun CategoryOption(
             )
 
             Text(
-                text = "12",
+                text = count.toString(),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

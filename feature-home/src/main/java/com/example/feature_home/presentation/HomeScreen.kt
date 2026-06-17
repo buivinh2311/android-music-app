@@ -163,7 +163,7 @@ fun HomeScreen(
                         },
                         onFavoriteClick = {
                             if(isCurrentFavoriteSong) {
-                                homeViewModel.removeSongToFavorite(currentSong.id)
+                                homeViewModel.removeSongFromFavorite(currentSong.id)
                                 showToast(
                                     context,
                                     message = context.getString(
@@ -207,7 +207,7 @@ fun HomeScreen(
                     homeViewModel.addSongToFavorite(songId)
                 },
                 onRemoveSongFromFavorite = { songId ->
-                    homeViewModel.removeSongToFavorite(songId)
+                    homeViewModel.removeSongFromFavorite(songId)
                 },
                 onCreatePlaylist = {playlistName ->
                     homeViewModel.createPlaylist(playlistName)

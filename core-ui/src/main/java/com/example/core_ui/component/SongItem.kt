@@ -82,7 +82,7 @@ fun SongItem(
             }
             Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.More,
                 contentDescription = stringResource(R.string.action_view_more),
                 iconSize = AppDimens.Icon.Sm,

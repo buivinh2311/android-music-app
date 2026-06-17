@@ -1,4 +1,4 @@
-package com.example.feature_album.presentation.component
+package com.example.feature_artist.presentation.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -10,30 +10,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.core_model.Album
+import com.example.core_model.Artist
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppButton
 
 @Composable
-fun AlbumAction(
-    modifier: Modifier = Modifier,
-    album: Album,
-    isFavoriteAlbum: Boolean,
-    onFavoriteClick: (String) -> Unit
+fun ArtistAction (
+    artist: Artist,
+    isFavoriteArtist: Boolean,
+    onFollowClick: (String) -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.Center) {
         AppButton(
             modifier = Modifier.width(140.dp),
-            title = if (isFavoriteAlbum) stringResource(R.string.label_favorited)
-            else stringResource(R.string.action_favorite),
-            color = if (isFavoriteAlbum) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+            title = if (isFavoriteArtist) stringResource(R.string.followed)
+            else stringResource(R.string.follow),
+            color = if (isFavoriteArtist) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             else MaterialTheme.colorScheme.primary,
-            border = if (isFavoriteAlbum) BorderStroke(
+            border = if (isFavoriteArtist) BorderStroke(
                 AppDimens.Border.Thin,
                 MaterialTheme.colorScheme.onPrimary
             ) else null,
-            onClick = { onFavoriteClick(album.name) }
+            onClick = { onFollowClick(artist.name) }
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
         AppButton(

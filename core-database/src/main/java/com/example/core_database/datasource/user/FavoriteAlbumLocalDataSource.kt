@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface FavoriteAlbumLocalDataSource {
     suspend fun insert(userFavoriteAlbum: UserFavoriteAlbumCrossRefEntity)
     fun isFavoriteAlbum(userId: Int, albumName: String): Flow<Boolean>
-    suspend fun getFavoriteAlbums(userId: Int): List<AlbumEntity>
+    fun getFavoriteAlbums(userId: Int): Flow<List<AlbumEntity>>
+    fun getFavoriteAlbumCount(userId: Int): Flow<Int>
     suspend fun delete(userId: Int, albumName: String)
 }

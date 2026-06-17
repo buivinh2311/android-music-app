@@ -24,7 +24,6 @@ fun SongLazyHorizontalGrid(
     LazyHorizontalGrid(
         rows = GridCells.Fixed(3),
         modifier = modifier.height(216.dp),
-        verticalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs),
         horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm)
     ) {
         items(

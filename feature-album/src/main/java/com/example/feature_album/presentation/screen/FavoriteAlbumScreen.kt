@@ -1,17 +1,17 @@
-package com.example.feature_playlist.presentation.screen
+package com.example.feature_album.presentation.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,33 +21,35 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.component.AlbumItem
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.PlaylistItem
 import com.example.core_ui.component.showToast
-import com.example.feature_playlist.presentation.viewmodel.PlaylistViewModel
+import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_album.presentation.viewmodel.FavoriteAlbumViewModel
 import com.example.shared_presentation.presentation.MiniPlayer
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
-fun PlaylistScreen(
-    onPlaylistClick: (Int) -> Unit,
+fun FavoriteAlbumScreen(
+    onAlbumClick: (String) -> Unit,
     onMiniPlayerClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    val playlistViewModel: PlaylistViewModel = hiltViewModel()
-    val uiState by playlistViewModel.uiState.collectAsStateWithLifecycle()
-    val playbackState by playlistViewModel.playbackState
+    val favoriteAlbumViewModel: FavoriteAlbumViewModel = hiltViewModel()
+    val favoriteAlbums by favoriteAlbumViewModel.favoriteAlbums
+        .collectAsStateWithLifecycle(emptyList())
+
+    val playbackState by favoriteAlbumViewModel.playbackState
         .collectAsStateWithLifecycle()
-    val isCurrentFavoriteSong by playlistViewModel.currentFavoriteSong
+
+    val isCurrentFavoriteSong by favoriteAlbumViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
-    val playlists = uiState.playlists
-    
-    
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -55,30 +57,36 @@ fun PlaylistScreen(
         },
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_library_playlist),
+                title = stringResource(R.string.action_library_album),
                 onBackClick = onBackClick
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        LazyColumn(
+        LazyVerticalGrid(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
+                .fillMaxSize(),
+            columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(
                 top = AppDimens.Space.Lg,
+                start = AppDimens.Space.Lg,
+                end = AppDimens.Space.Lg,
                 bottom = AppDimens.Space.bottomSpace
-            )
+            ),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.Space.Xl),
+            horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
         ) {
             items(
-                count = playlists.size,
-                key = { index -> playlists[index].id }
+                count = favoriteAlbums.size,
+                key = {index -> favoriteAlbums[index].id}
             ) { index ->
-                PlaylistItem(
-                    modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
-                    playlist = playlists[index],
-                    onPlaylistClick = onPlaylistClick
+                val album = favoriteAlbums[index]
+                AlbumItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    album = album,
+                    titleMinLines = 1,
+                    onAlbumClick = onAlbumClick
                 )
             }
         }
@@ -99,7 +107,7 @@ fun PlaylistScreen(
                     },
                     onFavoriteClick = {
                         if(isCurrentFavoriteSong) {
-                            playlistViewModel.removeSongFromFavorite(currentSong.id)
+                            favoriteAlbumViewModel.removeSongFromFavorite(currentSong.id)
                             showToast(
                                 context,
                                 message = context.getString(
@@ -108,7 +116,7 @@ fun PlaylistScreen(
                                 )
                             )
                         } else {
-                            playlistViewModel.addSongToFavorite(currentSong.id)
+                            favoriteAlbumViewModel.addSongToFavorite(currentSong.id)
                             showToast(
                                 context,
                                 message = context.getString(
@@ -120,13 +128,13 @@ fun PlaylistScreen(
                     },
                     onTogglePlayClick = {
                         if(playbackState.isPlaying) {
-                            playlistViewModel.pause()
+                            favoriteAlbumViewModel.pause()
                         } else {
-                            playlistViewModel.resume()
+                            favoriteAlbumViewModel.resume()
                         }
                     },
                     onNextClick = {
-                        playlistViewModel.skipNext()
+                        favoriteAlbumViewModel.skipNext()
                     }
                 )
             }

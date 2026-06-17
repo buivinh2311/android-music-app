@@ -34,6 +34,7 @@ import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_artist.presentation.component.ArtistAction
 import com.example.feature_artist.presentation.component.ArtistInformation
 import com.example.feature_artist.presentation.viewmodel.ArtistDetailViewModel
 import com.example.shared_presentation.model.SongOptionItem
@@ -60,13 +61,16 @@ fun ArtistDetailScreen(
     }
     val playlists by artistDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
-    val isFavoriteArtist by artistDetailViewModel
-        .isFavoriteArtist(artistName)
+
+    val isFavoriteArtist by artistDetailViewModel.isFavoriteArtist(artistName)
         .collectAsStateWithLifecycle(false)
+
     val playbackState by artistDetailViewModel.playbackState
         .collectAsStateWithLifecycle()
+
     val isCurrentFavoriteSong by artistDetailViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val artist = uiState.artist ?: Artist(0, artistName, "", 0)
     val songs = uiState.songs
@@ -101,6 +105,14 @@ fun ArtistDetailScreen(
             ) {
                 item {
                     ArtistInformation(
+                        artist = artist,
+                        isFavoriteArtist = isFavoriteArtist
+                    )
+                    Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+                }
+
+                item {
+                    ArtistAction(
                         artist = artist,
                         isFavoriteArtist = isFavoriteArtist,
                         onFollowClick = { artistName ->

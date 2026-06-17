@@ -1,10 +1,10 @@
-package com.example.feature_artist.presentation.viewmodel
+package com.example.feature_album.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_playback.PlaybackController
-import com.example.feature_artist.domain.usecase.GetFavoriteArtistUseCase
+import com.example.feature_album.domain.usecase.GetFavoriteAlbumUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,13 +18,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FollowedArtistViewModel @Inject constructor(
-    getFavoriteArtistUseCase: GetFavoriteArtistUseCase,
+class FavoriteAlbumViewModel @Inject constructor(
+    getFavoriteAlbumUseCase: GetFavoriteAlbumUseCase,
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    val followedArtists = getFavoriteArtistUseCase()
-
+    val favoriteAlbums = getFavoriteAlbumUseCase()
     val playbackState = playbackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =

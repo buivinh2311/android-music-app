@@ -8,4 +8,5 @@ interface FavoriteArtistRepository {
     suspend fun addArtistToFavorite(artistName: String)
     suspend fun removeArtistFromFavorite(artistName: String)
     fun isFavoriteArtist(artistName: String): Flow<Boolean>
+    fun getFavoriteArtistCount(): Flow<Int>
 }

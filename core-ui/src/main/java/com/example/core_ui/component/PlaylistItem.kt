@@ -46,8 +46,8 @@ fun PlaylistItem(
                 .padding(
                     start = AppDimens.Space.Md,
                     end = AppDimens.Space.Lg,
-                    top = AppDimens.Space.Xs,
-                    bottom = AppDimens.Space.Xs
+                    top = AppDimens.Space.Sm,
+                    bottom = AppDimens.Space.Sm
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {

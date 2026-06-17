@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun PlayerInfo(
@@ -33,7 +33,7 @@ fun PlayerInfo(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppButton(
+        AppIconButton(
             painter = AppIcons.Share,
             contentDescription = stringResource(R.string.action_share),
             iconSize = AppDimens.Icon.Md,
@@ -69,7 +69,7 @@ fun PlayerInfo(
         }
         Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
-        AppButton(
+        AppIconButton(
             painter = if(isFavoriteSong) AppIcons.Favorite_filled else AppIcons.Favorite,
             contentDescription = stringResource(R.string.action_add_to_library),
             iconSize = AppDimens.Icon.Md,

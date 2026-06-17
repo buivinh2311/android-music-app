@@ -28,7 +28,13 @@ interface UserFavoriteAlbumCrossRefDao {
                 "WHERE user_id = :userId " +
                 "ORDER BY u.created_at"
     )
-    suspend fun getFavoriteAlbums(userId: Int): List<AlbumEntity>
+    fun getFavoriteAlbums(userId: Int): Flow<List<AlbumEntity>>
+
+    @Query(
+        "SELECT COUNT(album_name) FROM user_favorite_album_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    fun getFavoriteAlbumCount(userId: Int): Flow<Int>
 
     @Query(
         "DELETE FROM user_favorite_album_cross_ref " +

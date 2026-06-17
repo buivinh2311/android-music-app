@@ -16,7 +16,7 @@ import com.example.core_playback.RepeatMode
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun PlayerControls(
@@ -34,7 +34,7 @@ fun PlayerControls(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppButton(
+        AppIconButton(
             painter = AppIcons.Mix,
             contentDescription = stringResource(R.string.action_mix),
             iconSize = AppDimens.Icon.Md,
@@ -50,7 +50,7 @@ fun PlayerControls(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.SkipPrevious,
                 contentDescription = stringResource(R.string.action_skip_previous),
                 iconSize = AppDimens.Icon.Lg,
@@ -62,7 +62,7 @@ fun PlayerControls(
             }
             Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
 
-            AppButton(
+            AppIconButton(
                 painter = if(isPlaying) AppIcons.Play else AppIcons.Pause,
                 contentDescription = stringResource(R.string.action_play),
                 iconSize = 72.dp,
@@ -74,7 +74,7 @@ fun PlayerControls(
             }
             Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
 
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.SkipNext,
                 contentDescription = stringResource(R.string.action_skip_next),
                 iconSize = AppDimens.Icon.Lg,
@@ -86,7 +86,7 @@ fun PlayerControls(
             }
         }
 
-        AppButton(
+        AppIconButton(
             painter = if(repeatMode == RepeatMode.ONE) AppIcons.RepeatOne else AppIcons.Repeat,
             contentDescription = stringResource(R.string.action_change_repeat),
             iconSize = AppDimens.Icon.Md,

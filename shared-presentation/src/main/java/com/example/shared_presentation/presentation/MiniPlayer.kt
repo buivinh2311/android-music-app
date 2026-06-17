@@ -30,7 +30,7 @@ import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun MiniPlayer(
@@ -107,7 +107,7 @@ fun MiniPlayer(
                 )
             }
 
-            AppButton(
+            AppIconButton(
                 painter = if (isFavoriteSong) AppIcons.Favorite_filled else AppIcons.Favorite,
                 contentDescription = stringResource(R.string.action_add_to_library),
                 iconSize = AppDimens.Icon.Md,
@@ -119,7 +119,7 @@ fun MiniPlayer(
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
-            AppButton(
+            AppIconButton(
                 painter = if (isPlaying) AppIcons.PauseMini else AppIcons.PlayMini,
                 contentDescription = stringResource(R.string.action_play),
                 iconSize = AppDimens.Icon.Lg,
@@ -130,7 +130,7 @@ fun MiniPlayer(
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
-            AppButton(
+            AppIconButton(
                 painter = AppIcons.SkipNext,
                 contentDescription = stringResource(R.string.action_skip_next),
                 iconSize = AppDimens.Icon.Lg,
