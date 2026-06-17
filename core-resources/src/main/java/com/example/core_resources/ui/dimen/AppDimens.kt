@@ -10,6 +10,7 @@ object AppDimens {
         val Md = 12.dp
         val Lg = 16.dp
         val Xl = 24.dp
+        val bottomSpace = 80.dp
     }
 
     object ImageSize {

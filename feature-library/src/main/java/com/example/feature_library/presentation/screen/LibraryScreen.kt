@@ -50,8 +50,9 @@ fun LibraryScreen(
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background),
             contentPadding = PaddingValues(
-                vertical = AppDimens.Space.Lg
-            )
+                top = AppDimens.Space.Lg,
+                bottom = AppDimens.Space.bottomSpace
+            ),
         ) {
             item {
                 LibraryCategory(

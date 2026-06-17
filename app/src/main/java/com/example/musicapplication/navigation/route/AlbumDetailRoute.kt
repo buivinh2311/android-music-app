@@ -20,6 +20,9 @@ fun AlbumDetailRoute(
         onSongClick = { songId ->
             navController.navigate("${AppRoute.PLAYER}/$songId")
         },
+        onMiniPlayerClick = { songId ->
+            navController.navigate("${AppRoute.PLAYER}/$songId")
+        },
         onBackCLick = onBackClick,
         onBottomActionClick = onBottomActionClick,
         onSongNavigationAction = onSongNavigationAction

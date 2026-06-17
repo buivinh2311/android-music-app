@@ -2,6 +2,7 @@ package com.example.feature_artist.presentation.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Artist
 import com.example.core_model.Song
+import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
@@ -35,6 +37,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_artist.presentation.component.ArtistInformation
 import com.example.feature_artist.presentation.viewmodel.ArtistDetailViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -42,6 +45,7 @@ import com.example.shared_presentation.presentation.SongActionHost
 fun ArtistDetailScreen(
     artistName: String,
     onSongClick: (String) -> Unit,
+    onMiniPlayerClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
@@ -54,13 +58,18 @@ fun ArtistDetailScreen(
     LaunchedEffect(artistName) {
         artistDetailViewModel.loadArtistDetail(artistName)
     }
-    val artist = uiState.artist ?: Artist(0, artistName, "", 0)
-    val songs = uiState.songs
     val playlists by artistDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
     val isFavoriteArtist by artistDetailViewModel
         .isFavoriteArtist(artistName)
         .collectAsStateWithLifecycle(false)
+    val playbackState by artistDetailViewModel.playbackState
+        .collectAsStateWithLifecycle()
+    val isCurrentFavoriteSong by artistDetailViewModel.currentFavoriteSong
+        .collectAsStateWithLifecycle()
+    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
+    val artist = uiState.artist ?: Artist(0, artistName, "", 0)
+    val songs = uiState.songs
     val context = LocalContext.current
     
     Scaffold(
@@ -85,7 +94,8 @@ fun ArtistDetailScreen(
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background),
                 contentPadding = PaddingValues(
-                    vertical = AppDimens.Space.Lg
+                    top = AppDimens.Space.Lg,
+                    bottom = AppDimens.Space.bottomSpace
                 ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -129,7 +139,7 @@ fun ArtistDetailScreen(
                         song = songs[index],
                         onSongClick = { song ->
                             artistDetailViewModel.play(
-                                queueSource = artistName,
+                                queueSource = QueueSource.ARTIST,
                                 queue = songs,
                                 startSong = song
                             )
@@ -137,6 +147,55 @@ fun ArtistDetailScreen(
                         },
                         onMoreClick = { song ->
                             selectedSong = song
+                        }
+                    )
+                }
+            }
+
+            currentSong?.let {
+                Box(
+                    Modifier.fillMaxSize()
+                ) {
+                    MiniPlayer(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .align(Alignment.BottomCenter),
+                        song = currentSong,
+                        isFavoriteSong = isCurrentFavoriteSong,
+                        isPlaying = playbackState.isPlaying,
+                        onMiniPlayerClick = {
+                            onMiniPlayerClick(currentSong.id)
+                        },
+                        onFavoriteClick = {
+                            if(isCurrentFavoriteSong) {
+                                artistDetailViewModel.removeSongFromFavorite(currentSong.id)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.remove_song_from_favorite_success,
+                                        currentSong.title
+                                    )
+                                )
+                            } else {
+                                artistDetailViewModel.addSongToFavorite(currentSong.id)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.add_song_to_favorite_success,
+                                        currentSong.title
+                                    )
+                                )
+                            }
+                        },
+                        onTogglePlayClick = {
+                            if(playbackState.isPlaying) {
+                                artistDetailViewModel.pause()
+                            } else {
+                                artistDetailViewModel.resume()
+                            }
+                        },
+                        onNextClick = {
+                            artistDetailViewModel.skipNext()
                         }
                     )
                 }
@@ -153,7 +212,7 @@ fun ArtistDetailScreen(
                     artistDetailViewModel.addSongToFavorite(songId)
                 },
                 onRemoveSongFromFavorite = { songId ->
-                    artistDetailViewModel.removeSongToFavorite(songId)
+                    artistDetailViewModel.removeSongFromFavorite(songId)
                 },
                 onCreatePlaylist = {playlistName ->
                     artistDetailViewModel.createPlaylist(playlistName)

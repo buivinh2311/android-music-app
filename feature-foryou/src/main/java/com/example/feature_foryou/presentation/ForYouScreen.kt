@@ -1,7 +1,10 @@
 package com.example.feature_foryou.presentation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,24 +26,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Song
+import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_foryou.presentation.ForYouViewModel
 import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun ForYouScreen(
     onSongClick: (String) -> Unit,
+    onMiniPlayerClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
@@ -54,7 +61,12 @@ fun ForYouScreen(
     val songs = uiState.songs
     val playlists by forYouViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
-    val queueSource = stringResource(R.string.title_discovery_for_your)
+    val playbackState by forYouViewModel.playbackState
+        .collectAsStateWithLifecycle()
+    val isCurrentFavoriteSong by forYouViewModel.currentFavoriteSong
+        .collectAsStateWithLifecycle()
+    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
+    val context = LocalContext.current
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -77,10 +89,13 @@ fun ForYouScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(
+                    top = AppDimens.Space.Lg,
+                    bottom = AppDimens.Space.bottomSpace
+                )
             ) {
                 item {
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -115,7 +130,7 @@ fun ForYouScreen(
                         song = songs[index],
                         onSongClick = { song ->
                             forYouViewModel.play(
-                                queueSource = queueSource,
+                                queueSource = QueueSource.FOR_YOU,
                                 queue = songs,
                                 startSong = song
                             )
@@ -123,6 +138,55 @@ fun ForYouScreen(
                         },
                         onMoreClick = { song ->
                             selectedSong = song
+                        }
+                    )
+                }
+            }
+
+            currentSong?.let {
+                Box(
+                    Modifier.fillMaxSize()
+                ) {
+                    MiniPlayer(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .align(Alignment.BottomCenter),
+                        song = currentSong,
+                        isFavoriteSong = isCurrentFavoriteSong,
+                        isPlaying = playbackState.isPlaying,
+                        onMiniPlayerClick = {
+                            onMiniPlayerClick(currentSong.id)
+                        },
+                        onFavoriteClick = {
+                            if(isCurrentFavoriteSong) {
+                                forYouViewModel.removeSongFromFavorite(currentSong.id)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.remove_song_from_favorite_success,
+                                        currentSong.title
+                                    )
+                                )
+                            } else {
+                                forYouViewModel.addSongToFavorite(currentSong.id)
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.add_song_to_favorite_success,
+                                        currentSong.title
+                                    )
+                                )
+                            }
+                        },
+                        onTogglePlayClick = {
+                            if(playbackState.isPlaying) {
+                                forYouViewModel.pause()
+                            } else {
+                                forYouViewModel.resume()
+                            }
+                        },
+                        onNextClick = {
+                            forYouViewModel.skipNext()
                         }
                     )
                 }
@@ -139,7 +203,7 @@ fun ForYouScreen(
                     forYouViewModel.addSongToFavorite(songId)
                 },
                 onRemoveSongFromFavorite = { songId ->
-                    forYouViewModel.removeSongToFavorite(songId)
+                    forYouViewModel.removeSongFromFavorite(songId)
                 },
                 onCreatePlaylist = {playlistName ->
                     forYouViewModel.createPlaylist(playlistName)

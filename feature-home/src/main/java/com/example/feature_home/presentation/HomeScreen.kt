@@ -1,6 +1,7 @@
 package com.example.feature_home.presentation
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Song
+import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.AlbumItem
@@ -70,7 +72,6 @@ fun HomeScreen(
     val isCurrentFavoriteSong by homeViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val queueSource = stringResource(R.string.title_home_recommended_song)
     val context = LocalContext.current
 
     Scaffold(
@@ -92,8 +93,9 @@ fun HomeScreen(
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background),
                 contentPadding = PaddingValues(
-                    vertical = AppDimens.Space.Lg
-                )
+                    top = AppDimens.Space.Lg,
+                    bottom = AppDimens.Space.bottomSpace
+                ),
             ) {
                 item {
                     ViewAllButton(
@@ -132,7 +134,7 @@ fun HomeScreen(
                         song = recommendedSongs[index],
                         onSongClick = { song ->
                             homeViewModel.play(
-                                queueSource = queueSource,
+                                queueSource = QueueSource.RECOMMENDED,
                                 queue = recommendedSongs,
                                 startSong = song
                             )

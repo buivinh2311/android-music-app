@@ -7,6 +7,7 @@ import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
+import com.example.core_playback.QueueSource
 import com.example.core_utils.util.AppUtil
 import com.example.feature_home.domain.usecase.GetRecommendedSongsUseCase
 import com.example.feature_home.domain.usecase.GetTopAlbumUseCase
@@ -116,7 +117,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+    fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
         playbackController.play(queueSource, queue, startSong)
     }
 

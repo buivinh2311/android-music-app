@@ -1,8 +1,6 @@
 package com.example.core_playback
 
 import android.content.Context
-import android.media.AudioFocusRequest
-import android.media.AudioManager
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -11,6 +9,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.core_model.Song
+import com.example.core_playback.usecase.RestorePlaybackQueueUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +22,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PlaybackControllerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
+    private val playbackStateDataSource: PlaybackStateDataSource,
+    private val restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase
 ) : PlaybackController {
     private val exoPlayer = ExoPlayer.Builder(context).build().apply {
         setAudioAttributes(
@@ -34,8 +35,6 @@ class PlaybackControllerImpl @Inject constructor(
             true
         )
     }
-    override val player: Player
-        get() = exoPlayer
     private val _playbackState = MutableStateFlow(PlaybackState())
     override val playbackState: StateFlow<PlaybackState> = _playbackState
 
@@ -45,6 +44,7 @@ class PlaybackControllerImpl @Inject constructor(
 
     init {
         scope.launch {
+            restorePlayback()
             while (true) {
                 _playbackState.update {
                     it.copy(
@@ -76,6 +76,7 @@ class PlaybackControllerImpl @Inject constructor(
                         currentPosition = 0L
                     )
                 }
+                saveState()
             }
 
             override fun onPlaybackStateChanged(state: Int) {
@@ -94,38 +95,13 @@ class PlaybackControllerImpl @Inject constructor(
         })
     }
 
-//    private var shouldResumeAfterFocusGain = false
-//    private val audioManager = context.getSystemService(AudioManager::class.java)
-//    private val audioFocusListener =
-//        AudioManager.OnAudioFocusChangeListener { focusChange ->
-//            when (focusChange) {
-//                AudioManager.AUDIOFOCUS_LOSS -> pause()
-//                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-//                    if (exoPlayer.isPlaying) {
-//                        shouldResumeAfterFocusGain = true
-//                        pause()
-//                    }
-//                }
-//                AudioManager.AUDIOFOCUS_GAIN -> {
-//                    if (shouldResumeAfterFocusGain) {
-//                        resume()
-//                        shouldResumeAfterFocusGain = false
-//                    }
-//                }
-//            }
-//        }
-//    private val audioFocusRequest = AudioFocusRequest.Builder(
-//        AudioManager.AUDIOFOCUS_GAIN
-//    ).setOnAudioFocusChangeListener(
-//        audioFocusListener
-//    ).build()
-
-    override fun play(queueSource: String, queue: List<Song>, startSong: Song) {
-//        val result = audioManager.requestAudioFocus(audioFocusRequest)
-//        if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-//            return
-//        }
-
+    override fun play(
+        queueSource: QueueSource,
+        queue: List<Song>,
+        startSong: Song,
+        playlistId: Int?,
+        sourceName: String?,
+    ) {
         val startIndex = queue.indexOfFirst { it.id == startSong.id }
         val mediaItems = queue.map { song ->
             MediaItem.Builder()
@@ -152,6 +128,8 @@ class PlaybackControllerImpl @Inject constructor(
         _playbackState.update {
             it.copy(
                 queueSource = queueSource,
+                playlistId = playlistId ?: 0,
+                sourceName = sourceName,
                 queue = queue
             )
         }
@@ -159,22 +137,27 @@ class PlaybackControllerImpl @Inject constructor(
 
     override fun pause() {
         exoPlayer.pause()
+        saveState()
     }
 
     override fun resume() {
         exoPlayer.play()
+        saveState()
     }
 
     override fun seekTo(position: Long) {
         exoPlayer.seekTo(position)
+        saveState()
     }
 
     override fun skipNext() {
         exoPlayer.seekToNextMediaItem()
+        saveState()
     }
 
     override fun skipPrevious() {
         exoPlayer.seekToPreviousMediaItem()
+        saveState()
     }
 
     override fun toggleShuffle() {
@@ -201,6 +184,33 @@ class PlaybackControllerImpl @Inject constructor(
                     else -> RepeatMode.ONE
                 }
             )
+        }
+    }
+
+    private fun saveState() {
+        playbackStateDataSource.saveLastPlaybackState(playbackState.value)
+    }
+
+    private suspend fun restorePlayback() {
+        val state = playbackStateDataSource.loadLastPlaybackState()
+        val queue = restorePlaybackQueueUseCase(state)
+        _playbackState.value = state.copy(
+            queue = queue
+        )
+        val mediaItems = queue.map { song ->
+            MediaItem.Builder()
+                .setMediaId(song.id)
+                .setUri(song.sourceUrl)
+                .build()
+        }
+        exoPlayer.setMediaItems(
+            mediaItems,
+            state.currentIndex,
+            state.currentPosition
+        )
+        exoPlayer.prepare()
+        if (state.isPlaying) {
+            exoPlayer.play()
         }
     }
 }

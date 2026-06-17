@@ -16,6 +16,9 @@ fun FollowedArtistRoute(
         onArtistClick = { artistName ->
             navController.navigate("${AppRoute.ARTIST_DETAIL}/$artistName")
         },
+        onMiniPlayerClick = { songId ->
+            navController.navigate("${AppRoute.PLAYER}/$songId")
+        },
         onBackClick = onBackClick,
         onBottomActionClick = onBottomActionClick
     )

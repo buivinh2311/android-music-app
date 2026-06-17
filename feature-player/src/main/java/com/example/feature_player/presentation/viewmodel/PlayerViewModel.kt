@@ -25,7 +25,7 @@ class PlayerViewModel @Inject constructor(
     private val playbackController: PlaybackController,
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
-    private val getSongByIdUseCase: GetSongByIdUseCase,
+    private val getSongByIdUseCase: GetSongByIdUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(PlayerUiState())

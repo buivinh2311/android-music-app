@@ -8,6 +8,7 @@ import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
+import com.example.core_playback.QueueSource
 import com.example.core_utils.util.AppUtil
 import com.example.feature_recent.domain.usecase.GetLimitRecentSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +39,7 @@ class RecentViewModel @Inject constructor(
     val playbackState = playbackController.playbackState
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentSongFavorite: StateFlow<Boolean> =
+    val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
             .map { it.currentSongId }
             .filterNotNull()
@@ -68,13 +69,25 @@ class RecentViewModel @Inject constructor(
         }
     }
 
-    fun removeSongToFavorite(songId: String) {
+    fun removeSongFromFavorite(songId: String) {
         viewModelScope.launch {
             favoriteSongUseCases.removeSongFromFavorite(songId)
         }
     }
 
-    fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+    fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
         playbackController.play(queueSource, queue, startSong)
+    }
+
+    fun pause() {
+        playbackController.pause()
+    }
+
+    fun resume() {
+        playbackController.resume()
+    }
+
+    fun skipNext() {
+        playbackController.skipNext()
     }
 }

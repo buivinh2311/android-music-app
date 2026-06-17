@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import com.example.core_model.Song
+import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -20,7 +22,9 @@ import com.example.core_ui.component.AppButton
 @Composable
 fun PlayerTopBar(
     modifier: Modifier = Modifier,
-    queueSource: String,
+    song: Song,
+    queueSource: QueueSource,
+    sourceName: String,
     onClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -53,7 +57,18 @@ fun PlayerTopBar(
             )
 
             Text(
-                text = queueSource,
+                text = when(queueSource) {
+                    QueueSource.FAVORITE -> stringResource(R.string.label_favorite)
+                    QueueSource.RECOMMENDED -> stringResource(R.string.title_home_recommended_song)
+                    QueueSource.RECENT -> stringResource(R.string.title_library_heard_recently)
+                    QueueSource.MOST_HEARD -> stringResource(R.string.title_discovery_most_listened)
+                    QueueSource.FOR_YOU -> stringResource(R.string.title_discovery_for_your)
+                    QueueSource.ARTIST -> song.artist
+                    QueueSource.ALBUM -> song.album
+                    QueueSource.PLAYLIST -> sourceName
+                    QueueSource.DOWNLOAD -> stringResource(R.string.action_download)
+                    else -> "_"
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 textAlign = TextAlign.Center,

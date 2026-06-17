@@ -8,6 +8,7 @@ import com.example.core_model.Album
 import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
+import com.example.core_playback.QueueSource
 import com.example.feature_album.domain.usecase.GetAlbumDetailUseCase
 import com.example.feature_album.domain.usecase.GetSongsInAlbumUseCase
 import com.example.feature_album.presentation.state.AlbumDetailUiState
@@ -72,9 +73,8 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     val playbackState = playbackController.playbackState
-    val playlists = playlistUseCases.getAllPlaylist()
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentSongFavorite: StateFlow<Boolean> =
+    val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
             .map { it.currentSongId }
             .filterNotNull()
@@ -83,6 +83,7 @@ class AlbumDetailViewModel @Inject constructor(
                 favoriteSongUseCases.observerFavoriteSong(id)
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+    val playlists = playlistUseCases.getAllPlaylist()
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
@@ -103,13 +104,25 @@ class AlbumDetailViewModel @Inject constructor(
         }
     }
 
-    fun removeSongToFavorite(songId: String) {
+    fun removeSongFromFavorite(songId: String) {
         viewModelScope.launch {
             favoriteSongUseCases.removeSongFromFavorite(songId)
         }
     }
 
-    fun play(queueSource: String, queue: List<Song>, startSong: Song) {
+    fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
         playbackController.play(queueSource, queue, startSong)
+    }
+
+    fun pause() {
+        playbackController.pause()
+    }
+
+    fun resume() {
+        playbackController.resume()
+    }
+
+    fun skipNext() {
+        playbackController.skipNext()
     }
 }

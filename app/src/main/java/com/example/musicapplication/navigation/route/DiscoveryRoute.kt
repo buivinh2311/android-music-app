@@ -32,6 +32,10 @@ fun DiscoveryRoute(
             navController.navigate(AppRoute.MOST_LISTENED)
         },
 
+        onMiniPlayerClick = { songId ->
+            navController.navigate("${AppRoute.PLAYER}/$songId")
+        },
+
         onSearchClick = onSearchClick,
         onSongClick = onSongClick,
         onBottomActionClick = onBottomActionClick,
