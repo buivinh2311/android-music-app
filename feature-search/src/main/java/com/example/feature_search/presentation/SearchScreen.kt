@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -38,6 +40,7 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_search.presentation.component.DeleteConfirmDialog
 import com.example.feature_search.presentation.component.SearchTopBar
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
@@ -55,6 +58,10 @@ fun SearchScreen (
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
+    }
+
+    var showConfirmDialog by remember {
+        mutableStateOf(false)
     }
 
     val listState = rememberLazyListState()
@@ -114,6 +121,10 @@ fun SearchScreen (
                 )
             ) {
                 if(songs.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                    }
+
                     items(
                         count = songs.size,
                         key = { index -> songs[index].id }
@@ -148,12 +159,12 @@ fun SearchScreen (
                         ) {
                             Text(
                                 text = stringResource(R.string.search_recently),
-                                style = MaterialTheme.typography.labelLarge,
+                                style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.weight(1f)
                             )
 
                             TextButton(
-                                onClick = {}
+                                onClick = { showConfirmDialog = true }
                             ) {
                                 Text(
                                     text = stringResource(R.string.text_delete),
@@ -236,6 +247,21 @@ fun SearchScreen (
                         }
                     )
                 }
+            }
+
+            if(showConfirmDialog) {
+                DeleteConfirmDialog(
+                    onDismiss = { showConfirmDialog = false },
+                    onConfirm = {
+                        searchViewModel.clearAllSearchSong()
+                        showToast(
+                            context,
+                            message = context.getString(
+                                R.string.delete_search_song_success
+                            )
+                        )
+                    }
+                )
             }
 
             SongActionHost(

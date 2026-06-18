@@ -77,4 +77,7 @@
     <string name="search_recently">Tìm kiếm gần đây</string>
     <string name="text_delete">XÓA</string>
     <string name="hint_query">Nhập tên bài hát, nghệ sĩ</string>
+    <string name="action_confirm">Xác nhận</string>
+    <string name="delete_search_song_success">Đã xóa lịch sử tìm kiếm</string>
+    <string name="delete_search_song_confirm">Bạn có chắc muốn xóa lịch sử tìm kiếm không</string>
 </resources>

@@ -116,6 +116,6 @@ fun SearchTopBar(
                     }
                 }
             )
-            }
+        }
     }
 }
