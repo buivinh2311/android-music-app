@@ -30,6 +30,7 @@
             <option value="$PROJECT_DIR$/feature-playlist" />
             <option value="$PROJECT_DIR$/feature-recent" />
             <option value="$PROJECT_DIR$/feature-recommended" />
+            <option value="$PROJECT_DIR$/feature-search" />
             <option value="$PROJECT_DIR$/infrastructure" />
             <option value="$PROJECT_DIR$/shared-presentation" />
           </set>

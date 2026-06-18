@@ -83,7 +83,8 @@ fun DiscoveryScreen(
         },
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_discovery)
+                title = stringResource(R.string.title_discovery),
+                onSearchClick = onSearchClick
             )
         },
         containerColor = MaterialTheme.colorScheme.background

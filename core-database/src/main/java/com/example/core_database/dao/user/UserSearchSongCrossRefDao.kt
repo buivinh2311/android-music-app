@@ -18,7 +18,7 @@ interface UserSearchSongCrossRefDao {
                 "ORDER BY created_at DESC " +
                 "LIMIT 100"
     )
-    fun getSearchedSongs(userId: Int): List<SongEntity>
+    fun getSearchedSongs(userId: Int): Flow<List<SongEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(crossRef: UserSearchSongCrossRefEntity)
@@ -27,6 +27,9 @@ interface UserSearchSongCrossRefDao {
     suspend fun delete(crossRef: UserSearchSongCrossRefEntity)
 
 
-    @Query("DELETE FROM user_searched_song_cross_ref")
-    suspend fun clearAll()
+    @Query(
+        "DELETE FROM user_searched_song_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    suspend fun clearAll(userId: Int)
 }

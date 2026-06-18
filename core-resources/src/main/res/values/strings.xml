@@ -74,4 +74,7 @@
     <string name="remove_album_from_favorite_success">Đã gỡ %s khỏi thư viện</string>
     <string name="add_album_from_favorite_success">Đã thêm %s vào thư viện</string>
     <string name="action_favorite">YÊU THÍCH</string>
+    <string name="search_recently">Tìm kiếm gần đây</string>
+    <string name="text_delete">XÓA</string>
+    <string name="hint_query">Nhập tên bài hát, nghệ sĩ</string>
 </resources>

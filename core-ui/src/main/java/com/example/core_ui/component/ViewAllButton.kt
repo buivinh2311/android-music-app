@@ -41,7 +41,6 @@ fun ViewAllButton(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 

@@ -5,6 +5,7 @@ import com.example.core_playback.PlaybackController
 import com.example.core_playback.PlaybackControllerImpl
 import com.example.core_playback.PlaybackStateDataSource
 import com.example.core_playback.usecase.AddRecentSongUseCase
+import com.example.core_playback.usecase.GetSongByIdUseCase
 import com.example.core_playback.usecase.IncreasePlayCountUseCase
 import com.example.core_playback.usecase.RestorePlaybackQueueUseCase
 import dagger.Module
@@ -24,14 +25,16 @@ object PlaybackModule {
         playbackStateDataSource: PlaybackStateDataSource,
         restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase,
         addRecentSongUseCase: AddRecentSongUseCase,
-        increasePlayCountUseCase: IncreasePlayCountUseCase
+        increasePlayCountUseCase: IncreasePlayCountUseCase,
+        getSongByIdUseCase: GetSongByIdUseCase
     ): PlaybackController {
         return PlaybackControllerImpl(
             context,
             playbackStateDataSource,
             restorePlaybackQueueUseCase,
             addRecentSongUseCase,
-            increasePlayCountUseCase
+            increasePlayCountUseCase,
+            getSongByIdUseCase
         )
     }
 }

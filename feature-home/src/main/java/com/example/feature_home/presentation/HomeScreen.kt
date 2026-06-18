@@ -65,12 +65,16 @@ fun HomeScreen(
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val hotAlbums = uiState.hotAlbums
     val recommendedSongs = uiState.recommendedSongs
+
     val playlists by homeViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+
     val playbackState by homeViewModel.playbackState
         .collectAsStateWithLifecycle()
+
     val isCurrentFavoriteSong by homeViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
 
@@ -80,7 +84,10 @@ fun HomeScreen(
             AppBottomBar(onBottomActionClick = onBottomActionClick)
         },
         topBar = {
-            AppTopBar(title = stringResource(R.string.title_home))
+            AppTopBar(
+                title = stringResource(R.string.title_home),
+                onSearchClick = onSearchClick
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
@@ -95,7 +102,7 @@ fun HomeScreen(
                 contentPadding = PaddingValues(
                     top = AppDimens.Space.Lg,
                     bottom = AppDimens.Space.bottomSpace
-                ),
+                )
             ) {
                 item {
                     ViewAllButton(
@@ -209,7 +216,7 @@ fun HomeScreen(
                 onRemoveSongFromFavorite = { songId ->
                     homeViewModel.removeSongFromFavorite(songId)
                 },
-                onCreatePlaylist = {playlistName ->
+                onCreatePlaylist = { playlistName ->
                     homeViewModel.createPlaylist(playlistName)
                 },
                 onAddSongToPlaylist = {playlistId, songId ->

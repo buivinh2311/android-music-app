@@ -22,7 +22,8 @@ import com.example.core_resources.ui.icon.AppIcons
 fun AppTopBar(
     modifier: Modifier = Modifier,
     title: String,
-    onBackClick: (() -> Unit)? = null
+    onBackClick: (() -> Unit)? = null,
+    onSearchClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -57,17 +58,19 @@ fun AppTopBar(
                     else MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
-        if(onBackClick == null) {
-            AppIconButton(
-                painter = AppIcons.Mic,
-                contentDescription = stringResource(R.string.action_search_by_voice),
-                iconSize = AppDimens.Icon.Md,
-                rippleRadius = AppDimens.Ripple.Sm,
-                tint = MaterialTheme.colorScheme.onBackground,
-                rippleColor = MaterialTheme.colorScheme.onBackground
-            ) { }
-            Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+//        if(onBackClick == null) {
+//            AppIconButton(
+//                painter = AppIcons.Mic,
+//                contentDescription = stringResource(R.string.action_search_by_voice),
+//                iconSize = AppDimens.Icon.Md,
+//                rippleRadius = AppDimens.Ripple.Sm,
+//                tint = MaterialTheme.colorScheme.onBackground,
+//                rippleColor = MaterialTheme.colorScheme.onBackground
+//            ) { }
+//            Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+//        }
 
+        if(onSearchClick != null) {
             AppIconButton(
                 painter = AppIcons.Search,
                 contentDescription = stringResource(R.string.action_search),
@@ -75,7 +78,9 @@ fun AppTopBar(
                 rippleRadius = AppDimens.Ripple.Sm,
                 tint = MaterialTheme.colorScheme.onBackground,
                 rippleColor = MaterialTheme.colorScheme.onBackground
-            ) { }
+            ) {
+                onSearchClick()
+            }
         }
     }
 }

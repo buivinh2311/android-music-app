@@ -1,6 +1,7 @@
 package com.example.core_playback
 
 import android.content.Context
+import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -10,6 +11,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.core_model.Song
 import com.example.core_playback.usecase.AddRecentSongUseCase
+import com.example.core_playback.usecase.GetSongByIdUseCase
 import com.example.core_playback.usecase.IncreasePlayCountUseCase
 import com.example.core_playback.usecase.RestorePlaybackQueueUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,7 +30,8 @@ class PlaybackControllerImpl @Inject constructor(
     private val playbackStateDataSource: PlaybackStateDataSource,
     private val restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase,
     private val addRecentSongUseCase: AddRecentSongUseCase,
-    private val increasePlayCountUseCase: IncreasePlayCountUseCase
+    private val increasePlayCountUseCase: IncreasePlayCountUseCase,
+    private val getSongByIdUseCase: GetSongByIdUseCase
 ) : PlaybackController {
     private val exoPlayer = ExoPlayer.Builder(context).build().apply {
         setAudioAttributes(
@@ -177,6 +180,7 @@ class PlaybackControllerImpl @Inject constructor(
                 isShuffleEnabled = exoPlayer.shuffleModeEnabled
             )
         }
+        saveState()
     }
 
     override fun changeRepeatMode() {
@@ -195,29 +199,56 @@ class PlaybackControllerImpl @Inject constructor(
                 }
             )
         }
+        saveState()
     }
 
     private fun saveState() {
+        val state = playbackState.value
         playbackStateDataSource.saveLastPlaybackState(playbackState.value)
     }
 
     private suspend fun restorePlayback() {
         val state = playbackStateDataSource.loadLastPlaybackState()
-        val queue = restorePlaybackQueueUseCase(state)
+        var queue = restorePlaybackQueueUseCase(state)
         _playbackState.value = state.copy(
             queue = queue
         )
+        val songId = state.currentSongId ?: return
+        val currentSong = getSongByIdUseCase(songId) ?: return
+        var currentIndex = queue.indexOfFirst { song ->
+            song.id == currentSong.id
+        }
+        if (currentIndex == -1) {
+            queue = buildList {
+                add(currentSong)
+                addAll(queue)
+            }
+            currentIndex = 0
+        }
+
+        _playbackState.value = state.copy(
+            queue = queue,
+            currentIndex = currentIndex
+        )
+
         val mediaItems = queue.map { song ->
             MediaItem.Builder()
                 .setMediaId(song.id)
                 .setUri(song.sourceUrl)
                 .build()
         }
+
         exoPlayer.setMediaItems(
             mediaItems,
-            state.currentIndex,
+            currentIndex,
             state.currentPosition
         )
+        exoPlayer.shuffleModeEnabled = state.isShuffleEnabled
+        exoPlayer.repeatMode = when (state.repeatMode) {
+            RepeatMode.ALL -> Player.REPEAT_MODE_ALL
+            RepeatMode.ONE -> Player.REPEAT_MODE_ONE
+            else -> Player.REPEAT_MODE_OFF
+        }
         exoPlayer.prepare()
         if (state.isPlaying) {
             exoPlayer.play()

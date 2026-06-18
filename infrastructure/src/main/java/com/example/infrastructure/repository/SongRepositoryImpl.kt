@@ -13,6 +13,7 @@ import com.example.core_model.Song
 import com.example.core_network.datasource.SongRemoteDataSource
 import com.example.core_network.dto.PagingParamRequest
 import com.example.infrastructure.mapper.local.toEntities
+import com.example.infrastructure.mapper.local.toEntity
 import com.example.infrastructure.mapper.local.toModel
 import com.example.infrastructure.mapper.local.toModels
 import com.example.infrastructure.mapper.remote.toModels
@@ -127,6 +128,14 @@ class SongRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun findSongsBySongNameOrArtistName(query: String): List<Song> {
+        return try {
+            songRemoteDataSource.findSongsBySongNameOrArtistName(query).songListDto.toModels()
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
     override suspend fun getSongByPlaylistId(playlistId: Int): List<Song> {
         return songLocalDataSource.getSongsInPlaylist(playlistId).toModels()
     }
@@ -201,6 +210,10 @@ class SongRepositoryImpl @Inject constructor(
                 emptyList()
             }
         }
+    }
+
+    override suspend fun insert(song: Song) {
+        songLocalDataSource.insert(song.toEntity())
     }
 
 }

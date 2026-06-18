@@ -100,7 +100,10 @@ fun LibraryScreen(
             AppBottomBar(onBottomActionClick = onBottomActionClick)
         },
         topBar = {
-            AppTopBar(title = stringResource(R.string.title_library))
+            AppTopBar(
+                title = stringResource(R.string.title_library),
+                onSearchClick = onSearchClick
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->

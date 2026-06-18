@@ -26,6 +26,7 @@ import com.example.musicapplication.navigation.route.PlaylistDetailRoute
 import com.example.musicapplication.navigation.route.PlaylistRoute
 import com.example.musicapplication.navigation.route.RecentRoute
 import com.example.musicapplication.navigation.route.RecommendedRoute
+import com.example.musicapplication.navigation.route.SearchRoute
 import com.example.shared_presentation.model.SongOptionAction
 import com.example.shared_presentation.model.SongOptionItem
 
@@ -124,6 +125,16 @@ fun AppNavHost() {
 ////        }
 //
 //        composable(AppRoute) {  }
+
+        composable(AppRoute.SEARCH) {
+            SearchRoute(
+                navController = navController,
+                onSongClick = onSongClick,
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick,
+                onSongNavigationAction = onSongNavigationAction
+            )
+        }
 
         composable(AppRoute.ALBUM) {
             AlbumRoute(
