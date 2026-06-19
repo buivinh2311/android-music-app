@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":feature-artist"))
     implementation(project(":feature-recent"))
     implementation(project(":feature-recommended"))
+    implementation(project(":feature-settings"))
     implementation(project(":core-ui"))
     implementation(project(":core-resources"))
     implementation(project(":core-model"))

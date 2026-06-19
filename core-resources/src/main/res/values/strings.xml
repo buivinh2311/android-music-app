@@ -80,4 +80,12 @@
     <string name="action_confirm">Xác nhận</string>
     <string name="delete_search_song_success">Đã xóa lịch sử tìm kiếm</string>
     <string name="delete_search_song_confirm">Bạn có chắc muốn xóa lịch sử tìm kiếm không</string>
+    <string name="title_theme">Giao diện chủ đề</string>
+    <string name="title_settings">Cài đặt</string>
+    <string name="text_system_default">Mặc định</string>
+    <string name="text_system_default_summary">Bật chủ đề tối khi chế độ chủ đề tối hoặc chế độ tiết kiệm pin của thiết bị được bật.</string>
+    <string name="text_light">Sáng</string>
+    <string name="text_dark">Tối</string>
+    <string name="text_light_summary">Tắt chủ đề tối</string>
+    <string name="text_dark_summary">Bật chủ đề tối</string>
 </resources>

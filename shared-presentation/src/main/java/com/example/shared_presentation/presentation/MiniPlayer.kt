@@ -68,7 +68,7 @@ fun MiniPlayer(
                     clip = false
                 )
                 .clip(RoundedCornerShape(AppDimens.Radius.Sm))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .border(
                     width = AppDimens.Border.Thin,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),

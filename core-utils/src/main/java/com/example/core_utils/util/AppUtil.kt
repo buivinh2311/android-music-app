@@ -1,7 +1,5 @@
 package com.example.core_utils.util
 
-import com.example.core_model.Playlist
-
 object AppUtil {
     const val EXTRA_NETWORK_STATE = "EXTRA_NETWORK_STATE"
     const val PREF_QUEUE_SOURCE = "PREF_QUEUE_SOURCE"

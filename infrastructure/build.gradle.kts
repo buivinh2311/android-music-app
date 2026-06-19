@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":core-network"))
     implementation(project(":core-playback"))
     implementation(project(":core-utils"))
+
     implementation(libs.coil)
 
     //retrofit

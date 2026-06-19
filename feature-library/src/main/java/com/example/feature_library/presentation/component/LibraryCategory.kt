@@ -1,5 +1,6 @@
 package com.example.feature_library.presentation.component
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
@@ -93,17 +94,23 @@ private fun CategoryOption(
     tint: Color = MaterialTheme.colorScheme.onBackground,
     onClick: () -> Unit
 ) {
+    val shape = RoundedCornerShape(AppDimens.Radius.Lg)
     Card(
-        shape = RoundedCornerShape(AppDimens.Radius.Lg),
+        shape = shape,
         colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.9f)
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         modifier = modifier
             .width(100.dp)
-            .clip(RoundedCornerShape(AppDimens.Radius.Lg))
+            .clip(shape = shape)
             .clickable {
                 onClick()
             }
+            .border(
+                width = AppDimens.Border.Thin,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                shape = shape
+            )
         ) {
         Column(
             modifier = Modifier
@@ -121,13 +128,13 @@ private fun CategoryOption(
 
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleMedium
             )
 
             Text(
                 text = count.toString(),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
     }
