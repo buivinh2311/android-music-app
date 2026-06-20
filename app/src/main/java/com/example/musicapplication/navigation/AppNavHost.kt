@@ -1,5 +1,6 @@
 package com.example.musicapplication.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -69,7 +70,8 @@ fun AppNavHost() {
     val onSongNavigationAction: (SongOptionItem) -> Unit = { item ->
         when(item.action) {
             SongOptionAction.VIEW_ALBUM -> {
-                navController.navigate("${AppRoute.ALBUM_DETAIL}/${item.album}")
+                val encodedName = Uri.encode(item.album)
+                navController.navigate("${AppRoute.ALBUM_DETAIL}/${encodedName}")
             }
 
             SongOptionAction.VIEW_ARTIST -> {

@@ -3,17 +3,19 @@ package com.example.feature_album.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
+import com.example.core_model.Album
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_album.domain.usecase.GetTopAlbumsUseCase
-import com.example.feature_album.presentation.state.AlbumUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -29,8 +31,10 @@ class AlbumViewModel @Inject constructor(
     private val getTopAlbumsUseCase: GetTopAlbumsUseCase,
     private val playbackController: PlaybackController
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(AlbumUiState())
-    val uiState: StateFlow<AlbumUiState> = _uiState
+    private val _uiState = MutableStateFlow<UiState<List<Album>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
 
     init {
         loadAlbums()
@@ -38,17 +42,11 @@ class AlbumViewModel @Inject constructor(
 
     private fun loadAlbums() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val albums = getTopAlbumsUseCase(AppUtil.DEFAULT_LIST_SIZE)
-            _uiState.update {
-                it.copy(
-                    albums = albums,
-                    isLoading = false,
-                )
+            _uiState.value = if(albums.isEmpty()) {
+                UiState.Empty
+            } else {
+                UiState.Success(albums)
             }
         }
     }

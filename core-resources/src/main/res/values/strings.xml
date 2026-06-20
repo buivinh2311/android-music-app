@@ -83,9 +83,23 @@
     <string name="title_theme">Giao diện chủ đề</string>
     <string name="title_settings">Cài đặt</string>
     <string name="text_system_default">Mặc định</string>
-    <string name="text_system_default_summary">Bật chủ đề tối khi chế độ chủ đề tối hoặc chế độ tiết kiệm pin của thiết bị được bật.</string>
+    <string name="text_system_default_summary">Bật chủ đề tối khi chế độ chủ đề tối của thiết bị được bật.</string>
     <string name="text_light">Sáng</string>
     <string name="text_dark">Tối</string>
     <string name="text_light_summary">Tắt chủ đề tối</string>
     <string name="text_dark_summary">Bật chủ đề tối</string>
+    <string name="title_no_album_found">Không có album nào</string>
+    <string name="title_no_song_found">Không có bài hát nào</string>
+    <string name="title_no_song_search">Không tìm thấy bài hát phù hợp</string>
+    <string name="title_no_artist_found">Không có nghệ sĩ nào</string>
+    <string name="title_no_playlist_found">Không có Playlist nào</string>
+    <string name="title_favorite_album_empty">Bạn chưa có Album nào</string>
+    <string name="message_favorite_album_empty">Tìm và bấm yêu thích Album để thêm vào thư viện</string>
+    <string name="title_followed_artist_empty">Bạn chưa theo dõi nghệ sĩ nào</string>
+    <string name="message_favorite_artist_empty">Tìm và bấm theo dõi nghệ sĩ để thêm vào thư viện</string>
+    <string name="title_favorite_song_empty">Bạn chưa có bài hát nào</string>
+    <string name="message_favorite_song_empty">Tìm và bấm yêu thích bài hát để thêm vào thư viện</string>
+    <string name="title_playlist_empty">Bạn chưa có playlist nào</string>
+    <string name="message_playlist_empty">Hãy tạo mới</string>
+    <string name="message_playlist_song_empty">Không có bài hát nào trong playlist của bạn. Tìm bài hát để thêm vào Playlist của bạn</string>
 </resources>

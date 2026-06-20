@@ -3,12 +3,18 @@ package com.example.feature_album.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
+import com.example.core_model.Album
+import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
+import com.example.core_ui.state.UiState
+import com.example.core_utils.util.AppUtil
 import com.example.feature_album.domain.usecase.GetFavoriteAlbumUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -19,11 +25,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteAlbumViewModel @Inject constructor(
-    getFavoriteAlbumUseCase: GetFavoriteAlbumUseCase,
+    private val getFavoriteAlbumUseCase: GetFavoriteAlbumUseCase,
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    val favoriteAlbums = getFavoriteAlbumUseCase()
+    private val _uiState = MutableStateFlow<UiState<List<Album>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        observeFavoriteAlbum()
+    }
+
+    private fun observeFavoriteAlbum() {
+        viewModelScope.launch {
+            getFavoriteAlbumUseCase().collect { albums ->
+                _uiState.value = if (albums.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Success(albums)
+                }
+            }
+        }
+    }
     val playbackState = playbackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =

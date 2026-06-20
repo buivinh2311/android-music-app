@@ -3,12 +3,17 @@ package com.example.feature_artist.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
+import com.example.core_model.Album
+import com.example.core_model.Artist
 import com.example.core_playback.PlaybackController
+import com.example.core_ui.state.UiState
 import com.example.feature_artist.domain.usecase.GetFavoriteArtistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -19,11 +24,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FollowedArtistViewModel @Inject constructor(
-    getFavoriteArtistUseCase: GetFavoriteArtistUseCase,
+    private val getFavoriteArtistUseCase: GetFavoriteArtistUseCase,
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    val followedArtists = getFavoriteArtistUseCase()
+    private val _uiState = MutableStateFlow<UiState<List<Artist>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        observeFollowedArtist()
+    }
+
+    private fun observeFollowedArtist() {
+        viewModelScope.launch {
+            getFavoriteArtistUseCase().collect { artists ->
+                _uiState.value = if (artists.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Success(artists)
+                }
+            }
+        }
+    }
 
     val playbackState = playbackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)

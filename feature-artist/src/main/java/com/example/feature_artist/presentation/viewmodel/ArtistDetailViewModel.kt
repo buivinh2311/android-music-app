@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
+import com.example.core_model.Artist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.feature_artist.domain.usecase.AddArtistToFavoriteUseCase
 import com.example.feature_artist.domain.usecase.GetArtistDetailUseCase
 import com.example.feature_artist.domain.usecase.GetSongsForArtistUseCase
@@ -43,34 +45,29 @@ class ArtistDetailViewModel @Inject constructor(
 
     fun loadArtistDetail(artistName: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val artist = getArtistDetailUseCase(artistName)
             _uiState.update {
                 it.copy(
-                    artist = artist,
-                    isLoading = false
+                    artist = if(artist == null) {
+                        UiState.Success(Artist(0, artistName, "", 0))
+                    } else {
+                        UiState.Success(artist)
+                    }
                 )
             }
-            loadSongs(artistName)
         }
     }
 
     fun loadSongs(artistName: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val songs = getSongsForArtistUseCase(artistName)
             _uiState.update {
                 it.copy(
-                    songs = songs,
-                    isLoading = false
+                    songs = if(songs.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(songs)
+                    }
                 )
             }
         }

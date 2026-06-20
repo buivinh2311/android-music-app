@@ -1,7 +1,6 @@
 package com.example.feature_search.presentation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,10 +35,14 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
-import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.LoadingScreen
+import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.DeleteConfirmDialog
 import com.example.feature_search.presentation.component.SearchTopBar
 import com.example.shared_presentation.model.SongOptionItem
@@ -62,6 +65,10 @@ fun SearchScreen (
 
     var showConfirmDialog by remember {
         mutableStateOf(false)
+    }
+
+    var queryStr by remember {
+        mutableStateOf("")
     }
 
     val listState = rememberLazyListState()
@@ -89,7 +96,6 @@ fun SearchScreen (
         .collectAsStateWithLifecycle()
 
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val songs = uiState.songs
     val context = LocalContext.current
     
     Scaffold(
@@ -101,80 +107,110 @@ fun SearchScreen (
             SearchTopBar(
                 onBackClick = onBackClick,
                 onQueryChange = { query ->
+                    queryStr = query
                     searchViewModel.findSongBySongNameOrArtistName(query)
                 }
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if(uiState.isLoading) {
-            
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(MaterialTheme.colorScheme.background),
-                state = listState,
-                contentPadding = PaddingValues(
-                    bottom = AppDimens.Space.bottomSpace
-                )
-            ) {
-                if(songs.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
-                    }
-
-                    items(
-                        count = songs.size,
-                        key = { index -> songs[index].id }
-                    ) { index ->
-                        SongItem(
-                            modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
-                            song = songs[index],
-                            onSongClick = { song ->
-                                keyboardController?.hide()
-                                searchViewModel.addSongToDataBase(song)
-                                searchViewModel.addSongToSearchSong(song.id)
-                                searchViewModel.play(
-                                    queueSource = QueueSource.SEARCH,
-                                    queue = songs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
-                            },
-                            onMoreClick = { song ->
-                                keyboardController?.hide()
-                                selectedSong = song
-                            }
-                        )
-                    }
-                } else {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = AppDimens.Space.Lg),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(R.string.search_recently),
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            TextButton(
-                                onClick = { showConfirmDialog = true }
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.text_delete),
-                                    style = MaterialTheme.typography.titleSmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background),
+            state = listState,
+            contentPadding = PaddingValues(
+                bottom = AppDimens.Space.bottomSpace
+            )
+        ) {
+            if(queryStr.isNotEmpty()) {
+                when(val state = uiState) {
+                    UiState.Loading -> {
+                        item {
+//                            LoadingScreen(
+//                                modifier = Modifier.padding(innerPadding)
+//                            )
                         }
                     }
 
+                    UiState.Empty -> {
+                        item {
+                            EmptyScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                icon = AppIcons.Search,
+                                title = stringResource(R.string.title_no_song_search)
+                            )
+                        }
+                    }
+
+                    is UiState.Success -> {
+                        val songs = state.data
+                        item {
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                        }
+
+                        items(
+                            count = songs.size,
+                            key = { index -> songs[index].id }
+                        ) { index ->
+                            SongItem(
+                                modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
+                                song = songs[index],
+                                onSongClick = { song ->
+                                    keyboardController?.hide()
+                                    searchViewModel.addSongToDataBase(song)
+                                    searchViewModel.addSongToSearchSong(song.id)
+                                    searchViewModel.play(
+                                        queueSource = QueueSource.SEARCH,
+                                        queue = songs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                },
+                                onMoreClick = { song ->
+                                    keyboardController?.hide()
+                                    selectedSong = song
+                                }
+                            )
+                        }
+                    }
+                }
+            } else {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = AppDimens.Space.Lg),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.search_recently),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        TextButton(
+                            onClick = { showConfirmDialog = true }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.text_delete),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+
+                if(searchSong.isEmpty()) {
+                    item {
+                        EmptyScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            icon = AppIcons.Song,
+                            title = stringResource(R.string.title_no_song_found)
+                        )
+                    }
+                } else {
                     items(
                         count = searchSong.size,
                         key = { index -> searchSong[index].id }
@@ -199,92 +235,92 @@ fun SearchScreen (
                     }
                 }
             }
+        }
 
-            currentSong?.let {
-                Box(
-                    Modifier.fillMaxSize()
-                ) {
-                    MiniPlayer(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .align(Alignment.BottomCenter),
-                        song = currentSong,
-                        isFavoriteSong = isCurrentFavoriteSong,
-                        isPlaying = playbackState.isPlaying,
-                        onMiniPlayerClick = {
-                            onMiniPlayerClick(currentSong.id)
-                        },
-                        onFavoriteClick = {
-                            if(isCurrentFavoriteSong) {
-                                searchViewModel.removeSongFromFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.remove_song_from_favorite_success,
-                                        currentSong.title
-                                    )
+        currentSong?.let {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                MiniPlayer(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .align(Alignment.BottomCenter),
+                    song = currentSong,
+                    isFavoriteSong = isCurrentFavoriteSong,
+                    isPlaying = playbackState.isPlaying,
+                    onMiniPlayerClick = {
+                        onMiniPlayerClick(currentSong.id)
+                    },
+                    onFavoriteClick = {
+                        if(isCurrentFavoriteSong) {
+                            searchViewModel.removeSongFromFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_favorite_success,
+                                    currentSong.title
                                 )
-                            } else {
-                                searchViewModel.addSongToFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.add_song_to_favorite_success,
-                                        currentSong.title
-                                    )
-                                )
-                            }
-                        },
-                        onTogglePlayClick = {
-                            if(playbackState.isPlaying) {
-                                searchViewModel.pause()
-                            } else {
-                                searchViewModel.resume()
-                            }
-                        },
-                        onNextClick = {
-                            searchViewModel.skipNext()
-                        }
-                    )
-                }
-            }
-
-            if(showConfirmDialog) {
-                DeleteConfirmDialog(
-                    onDismiss = { showConfirmDialog = false },
-                    onConfirm = {
-                        searchViewModel.clearAllSearchSong()
-                        showToast(
-                            context,
-                            message = context.getString(
-                                R.string.delete_search_song_success
                             )
-                        )
+                        } else {
+                            searchViewModel.addSongToFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.add_song_to_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        }
+                    },
+                    onTogglePlayClick = {
+                        if(playbackState.isPlaying) {
+                            searchViewModel.pause()
+                        } else {
+                            searchViewModel.resume()
+                        }
+                    },
+                    onNextClick = {
+                        searchViewModel.skipNext()
                     }
                 )
             }
+        }
 
-            SongActionHost(
-                selectedSong = selectedSong,
-                playlists = playlists,
-                observeFavoriteSong = { songId ->
-                    searchViewModel.isFavoriteSong(songId)
-                },
-                onDismissSong = { selectedSong = null },
-                onAddSongToFavorite = { songId ->
-                    searchViewModel.addSongToFavorite(songId)
-                },
-                onRemoveSongFromFavorite = { songId ->
-                    searchViewModel.removeSongFromFavorite(songId)
-                },
-                onCreatePlaylist = {playlistName ->
-                    searchViewModel.createPlaylist(playlistName)
-                },
-                onAddSongToPlaylist = {playlistId, songId ->
-                    searchViewModel.addSongToPlaylist(playlistId, songId)
-                },
-                onSongNavigationAction = onSongNavigationAction
+        if(showConfirmDialog) {
+            DeleteConfirmDialog(
+                onDismiss = { showConfirmDialog = false },
+                onConfirm = {
+                    searchViewModel.clearAllSearchSong()
+                    showToast(
+                        context,
+                        message = context.getString(
+                            R.string.delete_search_song_success
+                        )
+                    )
+                }
             )
         }
+
+        SongActionHost(
+            selectedSong = selectedSong,
+            playlists = playlists,
+            observeFavoriteSong = { songId ->
+                searchViewModel.isFavoriteSong(songId)
+            },
+            onDismissSong = { selectedSong = null },
+            onAddSongToFavorite = { songId ->
+                searchViewModel.addSongToFavorite(songId)
+            },
+            onRemoveSongFromFavorite = { songId ->
+                searchViewModel.removeSongFromFavorite(songId)
+            },
+            onCreatePlaylist = {playlistName ->
+                searchViewModel.createPlaylist(playlistName)
+            },
+            onAddSongToPlaylist = {playlistId, songId ->
+                searchViewModel.addSongToPlaylist(playlistId, songId)
+            },
+            onSongNavigationAction = onSongNavigationAction
+        )
     }
 }

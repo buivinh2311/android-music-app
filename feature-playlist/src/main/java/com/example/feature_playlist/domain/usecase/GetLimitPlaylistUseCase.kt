@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetLimitPlaylistUseCase @Inject constructor(
     private val repository: PlaylistRepository
 ) {
-    suspend operator fun invoke(limit: Int): Flow<List<Playlist>> {
+    operator fun invoke(limit: Int): Flow<List<Playlist>> {
         return repository.getAllPlaylist()
     }
 }

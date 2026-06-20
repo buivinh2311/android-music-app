@@ -1,5 +1,6 @@
 package com.example.feature_home.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
@@ -8,6 +9,7 @@ import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_home.domain.usecase.GetRecommendedSongsUseCase
 import com.example.feature_home.domain.usecase.GetTopAlbumUseCase
@@ -44,16 +46,14 @@ class HomeViewModel @Inject constructor(
 
     fun loadHotAlbums() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val albums = getTopAlbumUseCase(AppUtil.SECTION_PAGE_SIZE)
             _uiState.update {
                 it.copy(
-                    hotAlbums = albums,
-                    isLoading = false
+                    hotAlbums = if(albums.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(albums)
+                    }
                 )
             }
         }
@@ -61,16 +61,14 @@ class HomeViewModel @Inject constructor(
 
     fun loadRecommendedSongs() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val songs = getRecommendedSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
             _uiState.update {
                 it.copy(
-                    recommendedSongs = songs,
-                    isLoading = false
+                    recommendedSongs = if(songs.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(songs)
+                    }
                 )
             }
         }

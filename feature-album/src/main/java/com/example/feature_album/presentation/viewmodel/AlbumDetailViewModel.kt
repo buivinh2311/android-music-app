@@ -9,6 +9,7 @@ import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.feature_album.domain.usecase.AddAlbumToFavoriteUseCase
 import com.example.feature_album.domain.usecase.GetAlbumDetailUseCase
 import com.example.feature_album.domain.usecase.GetSongsInAlbumUseCase
@@ -45,34 +46,31 @@ class AlbumDetailViewModel @Inject constructor(
 
     fun loadAlbumDetail(albumName: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val album = getAlbumDetailUseCase(albumName)
             _uiState.update {
                 it.copy(
-                    album = album,
-                    isLoading = false
+                    album = if (album == null) {
+                        UiState.Success(
+                            Album(0, albumName, "", 1)
+                        )
+                    } else {
+                        UiState.Success(album)
+                    }
                 )
             }
-            loadSongs(albumName)
         }
     }
 
     fun loadSongs(albumName: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val songs = getSongsInAlbumUseCase(albumName)
             _uiState.update {
                 it.copy(
-                    songs = songs,
-                    isLoading = false
+                    songs = if (songs.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(songs)
+                    }
                 )
             }
         }

@@ -9,6 +9,7 @@ import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_recent.domain.usecase.GetLimitRecentSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -30,10 +32,30 @@ import javax.inject.Inject
 class RecentViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
-    getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase,
+    private val getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    val recentSongs = getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
+    private val _uiState = MutableStateFlow<UiState<List<Song>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        observeRecentSongs()
+    }
+
+    private fun observeRecentSongs() {
+        viewModelScope.launch {
+            getLimitRecentSongsUseCase(AppUtil.DEFAULT_LIST_SIZE).collect { songs ->
+                _uiState.value = if (songs.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Success(songs)
+                }
+            }
+        }
+    }
+
     val playlists = playlistUseCases.getAllPlaylist()
     val playbackState = playbackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)

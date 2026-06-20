@@ -7,6 +7,7 @@ import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_library.domain.usecase.GetDownloadSongCountUseCase
 import com.example.feature_library.domain.usecase.GetFavoriteAlbumCountUseCase
@@ -16,8 +17,10 @@ import com.example.feature_library.domain.usecase.GetLimitPlaylistUseCase
 import com.example.feature_library.domain.usecase.GetLimitRecentSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -29,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     getLimitPlaylistUseCase: GetLimitPlaylistUseCase,
-    getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase,
+    private val getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase,
     getDownloadSongCountUseCase: GetDownloadSongCountUseCase,
     getFavoriteAlbumCountUseCase: GetFavoriteAlbumCountUseCase,
     getFavoriteSongCountUseCase: GetFavoriteSongCountUseCase,
@@ -38,6 +41,27 @@ class LibraryViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playbackController: PlaybackController
 ): ViewModel() {
+
+    private val _uiState = MutableStateFlow<UiState<List<Song>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        observeRecentSongs()
+    }
+
+    private fun observeRecentSongs() {
+        viewModelScope.launch {
+            getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE).collect { songs ->
+                _uiState.value = if (songs.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Success(songs)
+                }
+            }
+        }
+    }
 
     val playbackState = playbackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -56,7 +80,6 @@ class LibraryViewModel @Inject constructor(
     val favoriteSongCount = getFavoriteSongCountUseCase()
     val followedArtistCount = getFollowedArtistCountUseCase()
     val playlists = getLimitPlaylistUseCase(5)
-    val recentSongs = getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
 
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 

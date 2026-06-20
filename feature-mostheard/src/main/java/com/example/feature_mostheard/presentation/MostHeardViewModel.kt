@@ -8,6 +8,7 @@ import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_mostheard.domain.GetMostHeardSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -32,8 +34,10 @@ class MostHeardViewModel @Inject constructor(
     private val getMostHeardSongsUseCase: GetMostHeardSongsUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(MostHeardUiState())
-    val uiState: StateFlow<MostHeardUiState> = _uiState
+    private val _uiState = MutableStateFlow<UiState<List<Song>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
 
     init {
         loadMostHeardSongs()
@@ -41,17 +45,11 @@ class MostHeardViewModel @Inject constructor(
 
     private fun loadMostHeardSongs() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val songs = getMostHeardSongsUseCase(AppUtil.DEFAULT_LIST_SIZE)
-            _uiState.update {
-                it.copy(
-                    songs = songs,
-                    isLoading = false
-                )
+            _uiState.value = if(songs.isEmpty()) {
+                UiState.Empty
+            } else {
+                UiState.Success(songs)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.core_ui.component
+package com.example.shared_presentation.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height

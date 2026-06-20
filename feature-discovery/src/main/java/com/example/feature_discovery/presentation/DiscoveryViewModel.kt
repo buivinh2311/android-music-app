@@ -7,6 +7,7 @@ import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_discovery.domain.usecase.GetForYouSongsUseCase
 import com.example.feature_discovery.domain.usecase.GetMostHeardSongsUseCase
@@ -45,16 +46,14 @@ class DiscoveryViewModel @Inject constructor(
 
     private fun loadHotArtists() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val artists = getTopArtistUseCase(AppUtil.SECTION_PAGE_SIZE)
             _uiState.update {
                 it.copy(
-                    hotArtists = artists,
-                    isLoading = false
+                    hotArtists = if(artists.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(artists)
+                    }
                 )
             }
         }
@@ -62,16 +61,14 @@ class DiscoveryViewModel @Inject constructor(
 
     private fun loadMostHeardSongs() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val songs = getMostHeardSongUseCase(AppUtil.SECTION_PAGE_SIZE)
             _uiState.update {
                 it.copy(
-                    mostHeardSongs = songs,
-                    isLoading = false
+                    mostHeardSongs = if(songs.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(songs)
+                    }
                 )
             }
         }
@@ -79,16 +76,14 @@ class DiscoveryViewModel @Inject constructor(
 
     private fun loadForYouSongs() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val songs = getForYouSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
             _uiState.update {
                 it.copy(
-                    forYouSongs = songs,
-                    isLoading = false
+                    forYouSongs = if(songs.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(songs)
+                    }
                 )
             }
         }

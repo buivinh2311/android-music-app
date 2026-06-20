@@ -7,17 +7,18 @@ import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.feature_search.domain.AddSongToDatabaseUseCase
 import com.example.feature_search.domain.AddSongToSearchSongUseCase
 import com.example.feature_search.domain.ClearAllSearchSongsUseCase
 import com.example.feature_search.domain.FindSongBySongNameOrArtistNameUseCase
 import com.example.feature_search.domain.GetSearchSongsUseCase
-import com.example.feature_search.presentation.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -38,8 +39,10 @@ class SearchViewModel @Inject constructor(
     private val addSongToDatabaseUseCase: AddSongToDatabaseUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(SearchUiState())
-    val uiState: StateFlow<SearchUiState> = _uiState
+    private val _uiState = MutableStateFlow<UiState<List<Song>>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
     val playbackState = playbackController.playbackState
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -61,17 +64,12 @@ class SearchViewModel @Inject constructor(
 
     fun findSongBySongNameOrArtistName(query: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
+            _uiState.value = UiState.Loading
             val songs = findSongBySongNameOrArtistNameUseCase(query)
-            _uiState.update {
-                it.copy(
-                    songs = songs,
-                    isLoading = false
-                )
+            _uiState.value = if(songs.isEmpty()) {
+                UiState.Empty
+            } else {
+                UiState.Success(songs)
             }
         }
     }

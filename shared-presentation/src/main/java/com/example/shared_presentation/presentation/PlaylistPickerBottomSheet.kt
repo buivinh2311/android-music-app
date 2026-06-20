@@ -31,7 +31,6 @@ import com.example.core_model.Playlist
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
-import com.example.core_ui.component.PlaylistItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

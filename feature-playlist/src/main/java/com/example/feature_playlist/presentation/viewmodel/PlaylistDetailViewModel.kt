@@ -8,15 +8,16 @@ import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.PlaybackController
 import com.example.core_playback.QueueSource
+import com.example.core_ui.state.UiState
 import com.example.feature_playlist.domain.usecase.GetPlaylistByIdUseCase
 import com.example.feature_playlist.domain.usecase.GetSongInPlaylistUseCase
-import com.example.feature_playlist.presentation.state.PlaylistDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -34,38 +35,20 @@ class PlaylistDetailViewModel @Inject constructor(
     private val getSongInPlaylistUseCase: GetSongInPlaylistUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(PlaylistDetailUiState())
-    val uiState: StateFlow<PlaylistDetailUiState> = _uiState
+    private val _uiState = MutableStateFlow<UiState<Playlist>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
+    fun songInPlaylist(playlistId: Int) = getSongInPlaylistUseCase(playlistId)
 
     fun loadPlaylist(playlistId: Int) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             val playlist = getPlaylistByIdUseCase(playlistId)
-            _uiState.update {
-                it.copy(
-                    playlist = playlist,
-                    isLoading = false
-                )
+            _uiState.value = if(playlist == null) {
+                UiState.Empty
+            } else {
+                UiState.Success(playlist)
             }
-        }
-        loadSongs(playlistId)
-    }
-
-    fun loadSongs(playlistId: Int) {
-        viewModelScope.launch {
-            getSongInPlaylistUseCase(playlistId)
-                .collect { songs ->
-                    _uiState.update {
-                        it.copy(
-                            songs = songs,
-                            isLoading = false
-                        )
-                    }
-                }
         }
     }
 

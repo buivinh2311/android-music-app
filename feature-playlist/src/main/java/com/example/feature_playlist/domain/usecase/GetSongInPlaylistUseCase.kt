@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetSongInPlaylistUseCase @Inject constructor(
     private val repository: PlaylistSongRepository
 ) {
-    suspend operator fun invoke(playlistId: Int): Flow<List<Song>> {
+    operator fun invoke(playlistId: Int): Flow<List<Song>> {
         return repository.getSongsInPlaylist(playlistId)
     }
 }

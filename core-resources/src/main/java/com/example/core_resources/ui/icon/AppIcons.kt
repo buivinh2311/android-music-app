@@ -146,4 +146,8 @@ object AppIcons {
     val PauseMini
         @Composable
         get() = painterResource(R.drawable.ic_pause_mini)
+
+    val Song
+        @Composable
+        get() = painterResource(R.drawable.ic_music_note)
 }

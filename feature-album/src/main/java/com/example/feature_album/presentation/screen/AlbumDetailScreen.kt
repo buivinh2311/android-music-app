@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,11 +30,17 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.EmptySection
+import com.example.core_ui.component.LoadingScreen
+import com.example.core_ui.component.LoadingSection
+import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.feature_album.presentation.component.AlbumAction
 import com.example.feature_album.presentation.component.AlbumInformation
 import com.example.feature_album.presentation.viewmodel.AlbumDetailViewModel
@@ -62,9 +67,8 @@ fun AlbumDetailScreen(
     val uiState by albumDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(albumName) {
         albumDetailViewModel.loadAlbumDetail(albumName)
+        albumDetailViewModel.loadSongs(albumName)
     }
-    val songs = uiState.songs
-    val album = uiState.album ?: Album(0, albumName, "", songs.size)
     val playlists by albumDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
 
@@ -87,151 +91,183 @@ fun AlbumDetailScreen(
         },
         topBar = {
             AppTopBar(
-                title = album.name,
+                title = albumName,
                 onBackClick = onBackCLick
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if (uiState.isLoading) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(
+                top = AppDimens.Space.Lg,
+                bottom = AppDimens.Space.bottomSpace
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                when(val state = uiState.album) {
+                    UiState.Loading -> {
+                        LoadingSection()
+                    }
 
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(
-                    top = AppDimens.Space.Lg,
-                    bottom = AppDimens.Space.bottomSpace
-                ),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    AlbumInformation(album)
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Md))
-                    AlbumAction(
-                        album = album,
-                        isFavoriteAlbum = isFavoriteAlbum,
-                        onFavoriteClick = { albumName ->
-                            if(isFavoriteAlbum) {
-                                albumDetailViewModel.removeAlbumFromFavorite(albumName)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.remove_album_from_favorite_success,
-                                        albumName
+                    UiState.Empty -> {
+                        EmptySection(
+                            icon = AppIcons.Album,
+                            title = stringResource(R.string.title_no_album_found)
+                        )
+                    }
+
+                    is UiState.Success -> {
+                        val album = state.data
+                        AlbumInformation(album)
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+                        AlbumAction(
+                            album = album,
+                            isFavoriteAlbum = isFavoriteAlbum,
+                            onFavoriteClick = { albumName ->
+                                if(isFavoriteAlbum) {
+                                    albumDetailViewModel.removeAlbumFromFavorite(albumName)
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.remove_album_from_favorite_success,
+                                            albumName
+                                        )
                                     )
-                                )
-                            } else {
-                                albumDetailViewModel.addAlbumToFavorite(albumName)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.add_album_from_favorite_success,
-                                        albumName
+                                } else {
+                                    albumDetailViewModel.addAlbumToFavorite(albumName)
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.add_album_from_favorite_success,
+                                            albumName
+                                        )
                                     )
-                                )
+                                }
                             }
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                        )
+                    }
                 }
-
-                items(
-                    count = songs.size,
-                    key = { index -> songs[index].id }
-                ) { index ->
-                    SongItem(
-                        modifier = Modifier
-                            .padding(horizontal = AppDimens.Space.Xs)
-                            .fillMaxWidth(),
-                        song = songs[index],
-                        onSongClick = { song ->
-                            albumDetailViewModel.play(
-                                queueSource = QueueSource.ALBUM,
-                                queue = songs,
-                                startSong = song
-                            )
-                            onSongClick(song.id)
-                        },
-                        onMoreClick = { song ->
-                            selectedSong = song
-                        }
-                    )
-                }
+                Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
             }
 
-            currentSong?.let {
-                Box(
-                    Modifier.fillMaxSize()
-                ) {
-                    MiniPlayer(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .align(Alignment.BottomCenter),
-                        song = currentSong,
-                        isFavoriteSong = isCurrentFavoriteSong,
-                        isPlaying = playbackState.isPlaying,
-                        onMiniPlayerClick = {
-                            onMiniPlayerClick(currentSong.id)
-                        },
-                        onFavoriteClick = {
-                            if(isCurrentFavoriteSong) {
-                                albumDetailViewModel.removeSongFromFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.remove_song_from_favorite_success,
-                                        currentSong.title
-                                    )
+            when(val state = uiState.songs) {
+                UiState.Loading -> {
+                    item {
+                        LoadingSection()
+                    }
+                }
+
+                UiState.Empty -> {
+                    item {
+                        EmptySection(
+                            icon = AppIcons.Song,
+                            title = stringResource(R.string.title_no_song_found)
+                        )
+                    }
+                }
+
+                is UiState.Success -> {
+                    val songs = state.data
+                    items(
+                        count = songs.size,
+                        key = { index -> songs[index].id }
+                    ) { index ->
+                        SongItem(
+                            modifier = Modifier
+                                .padding(horizontal = AppDimens.Space.Xs)
+                                .fillMaxWidth(),
+                            song = songs[index],
+                            onSongClick = { song ->
+                                albumDetailViewModel.play(
+                                    queueSource = QueueSource.ALBUM,
+                                    queue = songs,
+                                    startSong = song
                                 )
-                            } else {
-                                albumDetailViewModel.addSongToFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.add_song_to_favorite_success,
-                                        currentSong.title
-                                    )
-                                )
+                                onSongClick(song.id)
+                            },
+                            onMoreClick = { song ->
+                                selectedSong = song
                             }
-                        },
-                        onTogglePlayClick = {
-                            if(playbackState.isPlaying) {
-                                albumDetailViewModel.pause()
-                            } else {
-                                albumDetailViewModel.resume()
-                            }
-                        },
-                        onNextClick = {
-                            albumDetailViewModel.skipNext()
-                        }
-                    )
+                        )
+                    }
                 }
             }
-
-            SongActionHost(
-                selectedSong = selectedSong,
-                playlists = playlists,
-                observeFavoriteSong = { songId ->
-                    albumDetailViewModel.isFavoriteSong(songId)
-                },
-                onDismissSong = { selectedSong = null },
-                onAddSongToFavorite = { songId ->
-                    albumDetailViewModel.addSongToFavorite(songId)
-                },
-                onRemoveSongFromFavorite = { songId ->
-                    albumDetailViewModel.removeSongFromFavorite(songId)
-                },
-                onCreatePlaylist = { playlistName ->
-                    albumDetailViewModel.createPlaylist(playlistName)
-                },
-                onAddSongToPlaylist = { playlistId, songId ->
-                    albumDetailViewModel.addSongToPlaylist(playlistId, songId)
-                },
-                onSongNavigationAction = onSongNavigationAction
-            )
         }
+
+        currentSong?.let {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                MiniPlayer(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .align(Alignment.BottomCenter),
+                    song = currentSong,
+                    isFavoriteSong = isCurrentFavoriteSong,
+                    isPlaying = playbackState.isPlaying,
+                    onMiniPlayerClick = {
+                        onMiniPlayerClick(currentSong.id)
+                    },
+                    onFavoriteClick = {
+                        if(isCurrentFavoriteSong) {
+                            albumDetailViewModel.removeSongFromFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        } else {
+                            albumDetailViewModel.addSongToFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.add_song_to_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        }
+                    },
+                    onTogglePlayClick = {
+                        if(playbackState.isPlaying) {
+                            albumDetailViewModel.pause()
+                        } else {
+                            albumDetailViewModel.resume()
+                        }
+                    },
+                    onNextClick = {
+                        albumDetailViewModel.skipNext()
+                    }
+                )
+            }
+        }
+
+        SongActionHost(
+            selectedSong = selectedSong,
+            playlists = playlists,
+            observeFavoriteSong = { songId ->
+                albumDetailViewModel.isFavoriteSong(songId)
+            },
+            onDismissSong = { selectedSong = null },
+            onAddSongToFavorite = { songId ->
+                albumDetailViewModel.addSongToFavorite(songId)
+            },
+            onRemoveSongFromFavorite = { songId ->
+                albumDetailViewModel.removeSongFromFavorite(songId)
+            },
+            onCreatePlaylist = { playlistName ->
+                albumDetailViewModel.createPlaylist(playlistName)
+            },
+            onAddSongToPlaylist = { playlistId, songId ->
+                albumDetailViewModel.addSongToPlaylist(playlistId, songId)
+            },
+            onSongNavigationAction = onSongNavigationAction
+        )
     }
 }

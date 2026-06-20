@@ -34,11 +34,15 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.LoadingScreen
+import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
@@ -56,14 +60,16 @@ fun RecentScreen(
         mutableStateOf(null)
     }
     val recentViewModel: RecentViewModel = hiltViewModel()
+    val uiState by recentViewModel.uiState.collectAsStateWithLifecycle()
     val playlists by recentViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
-    val recentSongs by recentViewModel.recentSongs
-        .collectAsStateWithLifecycle(emptyList())
+
     val playbackState by recentViewModel.playbackState
         .collectAsStateWithLifecycle()
+
     val isCurrentFavoriteSong by recentViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
 
@@ -80,57 +86,74 @@ fun RecentScreen(
     },
     containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                Row(
+        when(val state = uiState) {
+            UiState.Loading -> {
+                LoadingScreen(modifier = Modifier.padding(innerPadding))
+            }
+
+            UiState.Empty -> {
+                EmptyScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    icon = AppIcons.Song,
+                    title = stringResource(R.string.title_no_song_found)
+                )
+            }
+
+            is UiState.Success -> {
+                val recentSongs = state.data
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .background(MaterialTheme.colorScheme.background),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.width(200.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = Color.White,
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(R.string.action_play_random),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White
+                    item {
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Button(
+                                onClick = {},
+                                modifier = Modifier.width(200.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.action_play_random),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                    }
+
+                    items(
+                        count = recentSongs.size,
+                        key = { index -> recentSongs[index].id }
+                    ) { index ->
+                        SongItem(
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                            song = recentSongs[index],
+                            onSongClick = { song ->
+                                recentViewModel.play(
+                                    queueSource = QueueSource.RECENT,
+                                    queue = recentSongs,
+                                    startSong = song
+                                )
+                                onSongClick(song.id)
+                            },
+                            onMoreClick = { song ->
+                                selectedSong = song
+                            }
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-            }
-
-            items(
-                count = recentSongs.size,
-                key = { index -> recentSongs[index].id }
-            ) { index ->
-                SongItem(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    song = recentSongs[index],
-                    onSongClick = { song ->
-                        recentViewModel.play(
-                            queueSource = QueueSource.RECENT,
-                            queue = recentSongs,
-                            startSong = song
-                        )
-                        onSongClick(song.id)
-                    },
-                    onMoreClick = { song ->
-                        selectedSong = song
-                    }
-                )
             }
         }
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_playback.PlaybackController
 import com.example.feature_playlist.domain.usecase.GetLimitPlaylistUseCase
-import com.example.feature_playlist.presentation.state.PlaylistUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,33 +23,10 @@ import javax.inject.Inject
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val getLimitPlaylistUseCase: GetLimitPlaylistUseCase,
+    getLimitPlaylistUseCase: GetLimitPlaylistUseCase,
     private val playbackController: PlaybackController
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(PlaylistUiState())
-    val uiState: StateFlow<PlaylistUiState> = _uiState
-
-    init {
-        loadPlaylists()
-    }
-
-    private fun loadPlaylists() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
-            val playlists = getLimitPlaylistUseCase(0).first()
-            _uiState.update {
-                it.copy(
-                    playlists = playlists,
-                    isLoading = false
-                )
-            }
-        }
-    }
-
+    val playlist = getLimitPlaylistUseCase(1000)
     val playbackState = playbackController.playbackState
 
     @OptIn(ExperimentalCoroutinesApi::class)

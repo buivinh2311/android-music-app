@@ -32,11 +32,15 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.LoadingScreen
+import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
@@ -54,14 +58,17 @@ fun FavoriteScreen(
         mutableStateOf(null)
     }
     val favoriteViewModel: FavoriteViewModel = hiltViewModel()
-    val favoriteSongs by favoriteViewModel.songs
-        .collectAsStateWithLifecycle(emptyList())
+    val uiState by favoriteViewModel.uiState.collectAsStateWithLifecycle()
+
     val playlists by favoriteViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+
     val playbackState by favoriteViewModel.playbackState
         .collectAsStateWithLifecycle()
+
     val isCurrentFavoriteSong by favoriteViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
     
@@ -78,66 +85,86 @@ fun FavoriteScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(
-                top = AppDimens.Space.Lg,
-                bottom = AppDimens.Space.bottomSpace
-            )
-        ) {
-            item {
-                Text(
-                    text = stringResource(R.string.label_favorite),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-                Text(
-                    text = favoriteSongs.size.toString() + stringResource(R.string.text_song),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                Button(
-                    onClick = {},
-                    modifier = Modifier.width(150.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.White,
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.action_play_music),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onPrimary
+            when(val state = uiState) {
+                UiState.Loading -> {
+                    LoadingScreen(
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-            }
 
-            items(
-                count = favoriteSongs.size,
-                key = { index -> favoriteSongs[index].id }
-            ) { index ->
-                SongItem(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    song = favoriteSongs[index],
-                    onSongClick = { song ->
-                        favoriteViewModel.play(
-                            queueSource = QueueSource.FAVORITE,
-                            queue = favoriteSongs,
-                            startSong = song
+                UiState.Empty -> {
+                    EmptyScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        icon = AppIcons.Favorite,
+                        title = stringResource(R.string.title_favorite_song_empty),
+                        message = stringResource(R.string.message_favorite_song_empty)
+                    )
+                }
+
+                is UiState.Success -> {
+                    val favoriteSongs = state.data
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .background(MaterialTheme.colorScheme.background),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        contentPadding = PaddingValues(
+                            top = AppDimens.Space.Lg,
+                            bottom = AppDimens.Space.bottomSpace
                         )
-                        onSongClick(song.id)
-                    },
-                    onMoreClick = { song ->
-                        selectedSong = song
-                    }
-                )
+                    ) {
+                        item {
+                            Text(
+                                text = stringResource(R.string.label_favorite),
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+                            Text(
+                                text = favoriteSongs.size.toString() + stringResource(R.string.text_song),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                            Button(
+                                onClick = {},
+                                modifier = Modifier.width(150.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.action_play_music),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                        }
+
+                        items(
+                            count = favoriteSongs.size,
+                            key = { index -> favoriteSongs[index].id }
+                        ) { index ->
+                            SongItem(
+                                modifier = Modifier.padding(horizontal = 4.dp),
+                                song = favoriteSongs[index],
+                                onSongClick = { song ->
+                                    favoriteViewModel.play(
+                                        queueSource = QueueSource.FAVORITE,
+                                        queue = favoriteSongs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                },
+                                onMoreClick = { song ->
+                                    selectedSong = song
+                                }
+                            )
+                        }
+                }
             }
         }
 

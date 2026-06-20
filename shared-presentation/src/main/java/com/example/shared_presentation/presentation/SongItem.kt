@@ -1,9 +1,8 @@
-package com.example.core_ui.component
+package com.example.shared_presentation.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,67 +19,80 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
-import com.example.core_model.Playlist
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
+import com.example.core_ui.component.AppIconButton
 
 @Composable
-fun PlaylistItem(
+fun SongItem(
     modifier: Modifier = Modifier,
-    playlist: Playlist,
-    onPlaylistClick: (Int) -> Unit
+    song: Song,
+    onSongClick: (Song) -> Unit,
+    onMoreClick: (Song) -> Unit
 ) {
     Surface(
-        onClick = { onPlaylistClick(playlist.id) },
+        onClick = {
+            onSongClick(song)
+        },
         shape = RoundedCornerShape(AppDimens.Radius.Sm),
         color = Color.Transparent,
-        modifier = modifier.height(AppDimens.Layout.PlaylistItemHeight)
+        modifier = modifier.height(AppDimens.Layout.SongItemHeight)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(
                     start = AppDimens.Space.Md,
-                    end = AppDimens.Space.Lg,
                     top = AppDimens.Space.Sm,
+                    end = AppDimens.Space.Sm,
                     bottom = AppDimens.Space.Sm
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = playlist.artwork,
+                model = song.artworkUrl,
                 contentDescription = null,
-                modifier = Modifier
-                    .size(AppDimens.ImageSize.Md)
-                    .clip(shape = RoundedCornerShape(AppDimens.Space.Sm)),
                 placeholder = painterResource(R.drawable.logo),
                 error = painterResource(R.drawable.logo),
-                contentScale = ContentScale.Fit
+                modifier = Modifier
+                    .size(AppDimens.ImageSize.Md)
+                    .clip(shape = RoundedCornerShape(AppDimens.Radius.Sm)),
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = playlist.name,
-                    style = MaterialTheme.typography.titleMedium,
+                    text = song.title,
+                    style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
                 Text(
-                    text = playlist.size.toString() + stringResource(R.string.text_song),
+                    text = song.artist,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+            }
+            Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
+
+            AppIconButton(
+                painter = AppIcons.More,
+                contentDescription = stringResource(R.string.action_view_more),
+                iconSize = AppDimens.Icon.Sm,
+                rippleRadius = AppDimens.Ripple.Sm,
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground
+            ) {
+                onMoreClick(song)
             }
         }
     }

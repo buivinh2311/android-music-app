@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,12 +35,15 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.LoadingScreen
+import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_recommended.presentation.RecommendedViewModel
+import com.example.core_ui.state.UiState
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
@@ -60,7 +62,6 @@ fun RecommendedScreen(
     }
     val recommendedViewModel: RecommendedViewModel = hiltViewModel()
     val uiState by recommendedViewModel.uiState.collectAsStateWithLifecycle()
-    val songs = uiState.songs
     val playlists by recommendedViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
     val playbackState by recommendedViewModel.playbackState
@@ -83,138 +84,153 @@ fun RecommendedScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if(uiState.isLoading) {
-
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = PaddingValues(
-                    top = AppDimens.Space.Lg,
-                    bottom = AppDimens.Space.bottomSpace
+        when(val state = uiState) {
+            UiState.Loading -> {
+                LoadingScreen(
+                    modifier = Modifier.padding(innerPadding)
                 )
-            ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Button(
-                            onClick = {},
-                            modifier = Modifier.width(200.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                containerColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(R.string.action_play_random),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                }
-
-                items(
-                    count = songs.size,
-                    key = { index -> songs[index].id }
-                ) { index ->
-                    SongItem(
-                        modifier = Modifier
-                            .padding(horizontal = AppDimens.Space.Xs)
-                            .fillMaxWidth(),
-                        song = songs[index],
-                        onSongClick = { song ->
-                            recommendedViewModel.play(
-                                queueSource = QueueSource.RECOMMENDED,
-                                queue = songs,
-                                startSong = song
-                            )
-                            onSongClick(song.id)
-                        },
-                        onMoreClick = { song ->
-                            selectedSong = song
-                        }
-                    )
-                }
             }
 
-            currentSong?.let {
-                Box(
-                    Modifier.fillMaxSize()
+            UiState.Empty -> {
+                EmptyScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    icon = AppIcons.Song,
+                    title = stringResource(R.string.title_no_song_found)
+                )
+            }
+
+            is UiState.Success -> {
+                val songs = state.data
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .background(MaterialTheme.colorScheme.background),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    contentPadding = PaddingValues(
+                        top = AppDimens.Space.Lg,
+                        bottom = AppDimens.Space.bottomSpace
+                    )
                 ) {
-                    MiniPlayer(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .align(Alignment.BottomCenter),
-                        song = currentSong,
-                        isFavoriteSong = isCurrentFavoriteSong,
-                        isPlaying = playbackState.isPlaying,
-                        onMiniPlayerClick = {
-                            onMiniPlayerClick(currentSong.id)
-                        },
-                        onFavoriteClick = {
-                            if(isCurrentFavoriteSong) {
-                                recommendedViewModel.removeSongFromFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.remove_song_from_favorite_success,
-                                        currentSong.title
-                                    )
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Button(
+                                onClick = {},
+                                modifier = Modifier.width(200.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = MaterialTheme.colorScheme.primary
                                 )
-                            } else {
-                                recommendedViewModel.addSongToFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.add_song_to_favorite_success,
-                                        currentSong.title
-                                    )
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.action_play_random),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.White
                                 )
                             }
-                        },
-                        onTogglePlayClick = {
-                            if(playbackState.isPlaying) {
-                                recommendedViewModel.pause()
-                            } else {
-                                recommendedViewModel.resume()
-                            }
-                        },
-                        onNextClick = {
-                            recommendedViewModel.skipNext()
                         }
-                    )
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                    }
+
+                    items(
+                        count = songs.size,
+                        key = { index -> songs[index].id }
+                    ) { index ->
+                        SongItem(
+                            modifier = Modifier
+                                .padding(horizontal = AppDimens.Space.Xs)
+                                .fillMaxWidth(),
+                            song = songs[index],
+                            onSongClick = { song ->
+                                recommendedViewModel.play(
+                                    queueSource = QueueSource.RECOMMENDED,
+                                    queue = songs,
+                                    startSong = song
+                                )
+                                onSongClick(song.id)
+                            },
+                            onMoreClick = { song ->
+                                selectedSong = song
+                            }
+                        )
+                    }
                 }
             }
-
-            SongActionHost(
-                selectedSong = selectedSong,
-                playlists = playlists,
-                observeFavoriteSong = { songId ->
-                    recommendedViewModel.isFavoriteSong(songId)
-                },
-                onDismissSong = { selectedSong = null },
-                onAddSongToFavorite = { songId ->
-                    recommendedViewModel.addSongToFavorite(songId)
-                },
-                onRemoveSongFromFavorite = { songId ->
-                    recommendedViewModel.removeSongFromFavorite(songId)
-                },
-                onCreatePlaylist = {playlistName ->
-                    recommendedViewModel.createPlaylist(playlistName)
-                },
-                onAddSongToPlaylist = {playlistId, songId ->
-                    recommendedViewModel.addSongToPlaylist(playlistId, songId)
-                },
-                onSongNavigationAction = onSongNavigationAction
-            )
         }
+
+        currentSong?.let {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                MiniPlayer(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .align(Alignment.BottomCenter),
+                    song = currentSong,
+                    isFavoriteSong = isCurrentFavoriteSong,
+                    isPlaying = playbackState.isPlaying,
+                    onMiniPlayerClick = {
+                        onMiniPlayerClick(currentSong.id)
+                    },
+                    onFavoriteClick = {
+                        if(isCurrentFavoriteSong) {
+                            recommendedViewModel.removeSongFromFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        } else {
+                            recommendedViewModel.addSongToFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.add_song_to_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        }
+                    },
+                    onTogglePlayClick = {
+                        if(playbackState.isPlaying) {
+                            recommendedViewModel.pause()
+                        } else {
+                            recommendedViewModel.resume()
+                        }
+                    },
+                    onNextClick = {
+                        recommendedViewModel.skipNext()
+                    }
+                )
+            }
+        }
+
+        SongActionHost(
+            selectedSong = selectedSong,
+            playlists = playlists,
+            observeFavoriteSong = { songId ->
+                recommendedViewModel.isFavoriteSong(songId)
+            },
+            onDismissSong = { selectedSong = null },
+            onAddSongToFavorite = { songId ->
+                recommendedViewModel.addSongToFavorite(songId)
+            },
+            onRemoveSongFromFavorite = { songId ->
+                recommendedViewModel.removeSongFromFavorite(songId)
+            },
+            onCreatePlaylist = {playlistName ->
+                recommendedViewModel.createPlaylist(playlistName)
+            },
+            onAddSongToPlaylist = {playlistId, songId ->
+                recommendedViewModel.addSongToPlaylist(playlistId, songId)
+            },
+            onSongNavigationAction = onSongNavigationAction
+        )
     }
 }

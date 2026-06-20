@@ -28,13 +28,17 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.PlaylistItem
-import com.example.core_ui.component.SongLazyHorizontalGrid
+import com.example.core_ui.component.EmptySection
+import com.example.core_ui.component.LoadingScreen
+import com.example.shared_presentation.presentation.PlaylistItem
+import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 import com.example.core_ui.component.ViewAllButton
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.feature_library.presentation.component.LibraryCategory
 import com.example.feature_library.presentation.component.LibraryPlaylistHeader
 import com.example.shared_presentation.model.SongOptionItem
@@ -79,8 +83,7 @@ fun LibraryScreen(
     val followedArtistCount by libraryViewModel.followedArtistCount
         .collectAsStateWithLifecycle(0)
 
-    val recentSongs by libraryViewModel.recentSongs
-        .collectAsStateWithLifecycle(emptyList())
+    val uiState by libraryViewModel.uiState.collectAsStateWithLifecycle()
 
     val playlists by libraryViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
@@ -132,21 +135,40 @@ fun LibraryScreen(
                     title = stringResource(R.string.title_library_heard_recently),
                     onMoreClick = onRecentClick
                 )
-                SongLazyHorizontalGrid(
-                    songs = recentSongs,
-                    rowWidth = 300.dp,
-                    onSongClick = { song ->
-                        libraryViewModel.play(
-                            queueSource = QueueSource.RECENT,
-                            queue = recentSongs,
-                            startSong = song
+
+                when(val state = uiState) {
+                    UiState.Loading -> {
+                        LoadingScreen(
+                            modifier = Modifier.padding(innerPadding)
                         )
-                        onSongClick(song.id)
-                    },
-                    onMoreClick = { song ->
-                        selectedSong = song
                     }
-                )
+
+                    UiState.Empty -> {
+                        EmptySection(
+                            icon = AppIcons.Song,
+                            title = stringResource(R.string.title_no_song_found)
+                        )
+                    }
+
+                    is UiState.Success -> {
+                        val recentSongs = state.data
+                        SongLazyHorizontalGrid(
+                            songs = recentSongs,
+                            rowWidth = 300.dp,
+                            onSongClick = { song ->
+                                libraryViewModel.play(
+                                    queueSource = QueueSource.RECENT,
+                                    queue = recentSongs,
+                                    startSong = song
+                                )
+                                onSongClick(song.id)
+                            },
+                            onMoreClick = { song ->
+                                selectedSong = song
+                            }
+                        )
+                    }
+                }
             }
 
             item {

@@ -32,14 +32,20 @@ import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.ArtistItem
-import com.example.core_ui.component.SongItem
-import com.example.core_ui.component.SongLazyHorizontalGrid
+import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.EmptySection
+import com.example.core_ui.component.LoadingScreen
+import com.example.core_ui.component.LoadingSection
+import com.example.shared_presentation.presentation.ArtistItem
+import com.example.shared_presentation.presentation.SongItem
+import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 import com.example.core_ui.component.ViewAllButton
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.shared_presentation.model.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
@@ -70,9 +76,6 @@ fun DiscoveryScreen(
     val isCurrentFavoriteSong by discoveryViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val hotArtists = uiState.hotArtists
-    val mostHeardSongs = uiState.mostHeardSongs
-    val forYouSongs = uiState.forYouSongs
     val context = LocalContext.current
     
     Scaffold(
@@ -89,8 +92,11 @@ fun DiscoveryScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if(uiState.isLoading) {
-
+        val isLoading = uiState.hotArtists is UiState.Loading ||
+                uiState.forYouSongs is UiState.Loading ||
+                uiState.mostHeardSongs is UiState.Loading
+        if(isLoading) {
+            LoadingScreen(modifier = Modifier.padding(innerPadding))
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -107,143 +113,199 @@ fun DiscoveryScreen(
                         title = stringResource(R.string.title_discovery_outstanding_singer),
                         onMoreClick = onMoreArtistClick
                     )
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = AppDimens.Space.Lg),
-                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Lg)
-                    ) {
-                        items(
-                            count = hotArtists.size,
-                            key = { index -> hotArtists[index].id }
-                        ) { index ->
-                            ArtistItem(
-                                modifier = Modifier.width(150.dp),
-                                artist = hotArtists[index],
-                                titleMinLines = 2,
-                                onArtistClick = onArtistClick
+                    when(val state = uiState.hotArtists) {
+                        UiState.Loading -> {
+
+                        }
+
+                        UiState.Empty -> {
+                            EmptySection(
+                                icon = AppIcons.Artist,
+                                title = stringResource(R.string.title_no_artist_found)
                             )
+                        }
+
+                        is UiState.Success -> {
+                            val hotArtists = state.data
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = AppDimens.Space.Lg),
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Lg)
+                            ) {
+                                items(
+                                    count = hotArtists.size,
+                                    key = { index -> hotArtists[index].id }
+                                ) { index ->
+                                    ArtistItem(
+                                        modifier = Modifier.width(150.dp),
+                                        artist = hotArtists[index],
+                                        titleMinLines = 2,
+                                        onArtistClick = onArtistClick
+                                    )
+                                }
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+                }
+
+                item {
                     ViewAllButton(
                         title = stringResource(R.string.title_discovery_most_listened),
                         onMoreClick = onMostListenedClick
                     )
-                    SongLazyHorizontalGrid(
-                        songs = mostHeardSongs,
-                        rowWidth = 300.dp,
-                        onSongClick = { song ->
-                            discoveryViewModel.play(
-                                queueSource = QueueSource.MOST_HEARD,
-                                queue = mostHeardSongs,
-                                startSong = song
-                            )
-                            onSongClick(song.id)
-                        },
-                        onMoreClick = { song ->
-                            selectedSong = song
+                    when(val state = uiState.mostHeardSongs) {
+                        UiState.Loading -> {
+
                         }
-                    )
+
+                        UiState.Empty -> {
+                            EmptySection(
+                                icon = AppIcons.Song,
+                                title = stringResource(R.string.title_no_song_found)
+                            )
+                        }
+
+                        is UiState.Success -> {
+                            val mostHeardSongs = state.data
+                            SongLazyHorizontalGrid(
+                                songs = mostHeardSongs,
+                                rowWidth = 300.dp,
+                                onSongClick = { song ->
+                                    discoveryViewModel.play(
+                                        queueSource = QueueSource.MOST_HEARD,
+                                        queue = mostHeardSongs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                },
+                                onMoreClick = { song ->
+                                    selectedSong = song
+                                }
+                            )
+                        }
+                    }
                     Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                }
+
+                item {
                     ViewAllButton(
                         title = stringResource(R.string.title_discovery_for_your),
                         onMoreClick = onForYouClick
                     )
                 }
 
-                items(
-                    count = forYouSongs.size,
-                    key = { index -> forYouSongs[index].id }
-                ) { index ->
-                    SongItem(
-                        modifier = Modifier
-                            .padding(horizontal = AppDimens.Space.Xs)
-                            .fillMaxWidth(),
-                        song = forYouSongs[index],
-                        onSongClick = { song ->
-                            discoveryViewModel.play(
-                                queueSource = QueueSource.FOR_YOU,
-                                queue = forYouSongs,
-                                startSong = song
+                when(val state = uiState.forYouSongs) {
+                    UiState.Loading -> {
+
+                    }
+
+                    UiState.Empty -> {
+                        item {
+                            EmptySection(
+                                icon = AppIcons.Song,
+                                title = stringResource(R.string.title_no_song_found)
                             )
-                            onSongClick(song.id)
-                        },
-                        onMoreClick = { song ->
-                            selectedSong = song
                         }
-                    )
+                    }
+
+                    is UiState.Success -> {
+                        val forYouSongs = state.data
+                        items(
+                            count = forYouSongs.size,
+                            key = { index -> forYouSongs[index].id }
+                        ) { index ->
+                            SongItem(
+                                modifier = Modifier
+                                    .padding(horizontal = AppDimens.Space.Xs)
+                                    .fillMaxWidth(),
+                                song = forYouSongs[index],
+                                onSongClick = { song ->
+                                    discoveryViewModel.play(
+                                        queueSource = QueueSource.FOR_YOU,
+                                        queue = forYouSongs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                },
+                                onMoreClick = { song ->
+                                    selectedSong = song
+                                }
+                            )
+                        }
+                    }
                 }
             }
-
-            currentSong?.let {
-                Box(
-                    Modifier.fillMaxSize()
-                ) {
-                    MiniPlayer(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .align(Alignment.BottomCenter),
-                        song = currentSong,
-                        isFavoriteSong = isCurrentFavoriteSong,
-                        isPlaying = playbackState.isPlaying,
-                        onMiniPlayerClick = {
-                            onMiniPlayerClick(currentSong.id)
-                        },
-                        onFavoriteClick = {
-                            if(isCurrentFavoriteSong) {
-                                discoveryViewModel.removeSongFromFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.remove_song_from_favorite_success,
-                                        currentSong.title
-                                    )
-                                )
-                            } else {
-                                discoveryViewModel.addSongToFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.add_song_to_favorite_success,
-                                        currentSong.title
-                                    )
-                                )
-                            }
-                        },
-                        onTogglePlayClick = {
-                            if(playbackState.isPlaying) {
-                                discoveryViewModel.pause()
-                            } else {
-                                discoveryViewModel.resume()
-                            }
-                        },
-                        onNextClick = {
-                            discoveryViewModel.skipNext()
-                        }
-                    )
-                }
-            }
-
-            SongActionHost(
-                selectedSong = selectedSong,
-                playlists = playlists,
-                observeFavoriteSong = { songId ->
-                    discoveryViewModel.isFavoriteSong(songId)
-                },
-                onDismissSong = { selectedSong = null },
-                onAddSongToFavorite = { songId ->
-                    discoveryViewModel.addSongToFavorite(songId)
-                },
-                onRemoveSongFromFavorite = { songId ->
-                    discoveryViewModel.removeSongFromFavorite(songId)
-                },
-                onCreatePlaylist = {playlistName ->
-                    discoveryViewModel.createPlaylist(playlistName)
-                },
-                onAddSongToPlaylist = {playlistId, songId ->
-                    discoveryViewModel.addSongToPlaylist(playlistId, songId)
-                },
-                onSongNavigationAction = onSongNavigationAction
-            )
         }
+
+        currentSong?.let {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                MiniPlayer(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .align(Alignment.BottomCenter),
+                    song = currentSong,
+                    isFavoriteSong = isCurrentFavoriteSong,
+                    isPlaying = playbackState.isPlaying,
+                    onMiniPlayerClick = {
+                        onMiniPlayerClick(currentSong.id)
+                    },
+                    onFavoriteClick = {
+                        if(isCurrentFavoriteSong) {
+                            discoveryViewModel.removeSongFromFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        } else {
+                            discoveryViewModel.addSongToFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.add_song_to_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        }
+                    },
+                    onTogglePlayClick = {
+                        if(playbackState.isPlaying) {
+                            discoveryViewModel.pause()
+                        } else {
+                            discoveryViewModel.resume()
+                        }
+                    },
+                    onNextClick = {
+                        discoveryViewModel.skipNext()
+                    }
+                )
+            }
+        }
+
+        SongActionHost(
+            selectedSong = selectedSong,
+            playlists = playlists,
+            observeFavoriteSong = { songId ->
+                discoveryViewModel.isFavoriteSong(songId)
+            },
+            onDismissSong = { selectedSong = null },
+            onAddSongToFavorite = { songId ->
+                discoveryViewModel.addSongToFavorite(songId)
+            },
+            onRemoveSongFromFavorite = { songId ->
+                discoveryViewModel.removeSongFromFavorite(songId)
+            },
+            onCreatePlaylist = {playlistName ->
+                discoveryViewModel.createPlaylist(playlistName)
+            },
+            onAddSongToPlaylist = {playlistId, songId ->
+                discoveryViewModel.addSongToPlaylist(playlistId, songId)
+            },
+            onSongNavigationAction = onSongNavigationAction
+        )
     }
 }

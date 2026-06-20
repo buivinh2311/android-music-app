@@ -28,12 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name="com.example.core_playback.PlaybackService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="false">
-        </service>
     </application>
 
 </manifest>

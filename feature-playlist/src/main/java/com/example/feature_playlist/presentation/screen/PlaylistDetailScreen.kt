@@ -18,7 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,15 +30,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.component.SongItem
+import com.example.core_ui.component.EmptySection
+import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.feature_playlist.presentation.component.PlaylistInformation
 import com.example.feature_playlist.presentation.viewmodel.PlaylistDetailViewModel
 import com.example.shared_presentation.model.SongOptionItem
@@ -64,15 +67,20 @@ fun PlaylistDetailScreen(
     LaunchedEffect(playlistId) {
         playlistDetailViewModel.loadPlaylist(playlistId)
     }
+
     val playlists by playlistDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+
     val playbackState by playlistDetailViewModel.playbackState
         .collectAsStateWithLifecycle()
+
     val isCurrentFavoriteSong by playlistDetailViewModel.currentFavoriteSong
         .collectAsStateWithLifecycle()
+
+    val songsInPlaylist by playlistDetailViewModel.songInPlaylist(playlistId)
+        .collectAsStateWithLifecycle(emptyList())
+
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val playlist = uiState.playlist
-    val songs = uiState.songs
     val context = LocalContext.current
 
     Scaffold(
@@ -82,16 +90,27 @@ fun PlaylistDetailScreen(
         },
         topBar = {
             AppTopBar(
-                title = playlist?.name ?: "",
+                title = when(val state = uiState) {
+                    is UiState.Success -> state.data.name
+                    else -> ""
+                },
                 onBackClick = onBackCLick
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if(uiState.isLoading) {
+        when(val state = uiState) {
+            UiState.Loading -> { }
+            UiState.Empty -> {
+                EmptySection(
+                    modifier = Modifier.padding(innerPadding),
+                    icon = AppIcons.AddToPlaylist,
+                    title = stringResource(R.string.title_no_album_found)
+                )
+            }
 
-        } else {
-            playlist?.let {
+            is UiState.Success -> {
+                val playlist = state.data
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -122,103 +141,111 @@ fun PlaylistDetailScreen(
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                     }
 
-                    items(
-                        count = songs.size,
-                        key = { index -> songs[index].id }
-                    ) { index ->
-                        SongItem(
-                            modifier = Modifier
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth(),
-                            song = songs[index],
-                            onSongClick = { song ->
-                                playlistDetailViewModel.play(
-                                    queueSource = QueueSource.PLAYLIST,
-                                    queue = songs,
-                                    startSong = song,
-                                    playlistId = playlist.id,
-                                    playlistName = playlist.name
-                                )
-                                onSongClick(song.id)
-                            },
-                            onMoreClick = { song ->
-                                selectedSong = song
-                            }
-                        )
+                    if(songsInPlaylist.isEmpty()) {
+                        item {
+                            EmptySection(
+                                message = stringResource(R.string.message_playlist_song_empty)
+                            )
+                        }
+                    } else {
+                        items(
+                            count = songsInPlaylist.size,
+                            key = { index -> songsInPlaylist[index].id }
+                        ) { index ->
+                            SongItem(
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .fillMaxWidth(),
+                                song = songsInPlaylist[index],
+                                onSongClick = { song ->
+                                    playlistDetailViewModel.play(
+                                        queueSource = QueueSource.PLAYLIST,
+                                        queue = songsInPlaylist,
+                                        startSong = song,
+                                        playlistId = playlist.id,
+                                        playlistName = playlist.name
+                                    )
+                                    onSongClick(song.id)
+                                },
+                                onMoreClick = { song ->
+                                    selectedSong = song
+                                }
+                            )
+                        }
                     }
                 }
             }
-
-            currentSong?.let {
-                Box(
-                    Modifier.fillMaxSize()
-                ) {
-                    MiniPlayer(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .align(Alignment.BottomCenter),
-                        song = currentSong,
-                        isFavoriteSong = isCurrentFavoriteSong,
-                        isPlaying = playbackState.isPlaying,
-                        onMiniPlayerClick = {
-                            onMiniPlayerClick(currentSong.id)
-                        },
-                        onFavoriteClick = {
-                            if(isCurrentFavoriteSong) {
-                                playlistDetailViewModel.removeSongFromFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.remove_song_from_favorite_success,
-                                        currentSong.title
-                                    )
-                                )
-                            } else {
-                                playlistDetailViewModel.addSongToFavorite(currentSong.id)
-                                showToast(
-                                    context,
-                                    message = context.getString(
-                                        R.string.add_song_to_favorite_success,
-                                        currentSong.title
-                                    )
-                                )
-                            }
-                        },
-                        onTogglePlayClick = {
-                            if(playbackState.isPlaying) {
-                                playlistDetailViewModel.pause()
-                            } else {
-                                playlistDetailViewModel.resume()
-                            }
-                        },
-                        onNextClick = {
-                            playlistDetailViewModel.skipNext()
-                        }
-                    )
-                }
-            }
-
-            SongActionHost(
-                selectedSong = selectedSong,
-                playlists = playlists,
-                observeFavoriteSong = { songId ->
-                    playlistDetailViewModel.isFavoriteSong(songId)
-                },
-                onDismissSong = { selectedSong = null },
-                onAddSongToFavorite = { songId ->
-                    playlistDetailViewModel.addSongToFavorite(songId)
-                },
-                onRemoveSongFromFavorite = { songId ->
-                    playlistDetailViewModel.removeSongFromFavorite(songId)
-                },
-                onCreatePlaylist = {playlistName ->
-                    playlistDetailViewModel.createPlaylist(playlistName)
-                },
-                onAddSongToPlaylist = {playlistId, songId ->
-                    playlistDetailViewModel.addSongToPlaylist(playlistId, songId)
-                },
-                onSongNavigationAction = onSongNavigationAction
-            )
         }
+
+        currentSong?.let {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                MiniPlayer(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .align(Alignment.BottomCenter),
+                    song = currentSong,
+                    isFavoriteSong = isCurrentFavoriteSong,
+                    isPlaying = playbackState.isPlaying,
+                    onMiniPlayerClick = {
+                        onMiniPlayerClick(currentSong.id)
+                    },
+                    onFavoriteClick = {
+                        if(isCurrentFavoriteSong) {
+                            playlistDetailViewModel.removeSongFromFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        } else {
+                            playlistDetailViewModel.addSongToFavorite(currentSong.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.add_song_to_favorite_success,
+                                    currentSong.title
+                                )
+                            )
+                        }
+                    },
+                    onTogglePlayClick = {
+                        if(playbackState.isPlaying) {
+                            playlistDetailViewModel.pause()
+                        } else {
+                            playlistDetailViewModel.resume()
+                        }
+                    },
+                    onNextClick = {
+                        playlistDetailViewModel.skipNext()
+                    }
+                )
+            }
+        }
+
+        SongActionHost(
+            selectedSong = selectedSong,
+            playlists = playlists,
+            observeFavoriteSong = { songId ->
+                playlistDetailViewModel.isFavoriteSong(songId)
+            },
+            onDismissSong = { selectedSong = null },
+            onAddSongToFavorite = { songId ->
+                playlistDetailViewModel.addSongToFavorite(songId)
+            },
+            onRemoveSongFromFavorite = { songId ->
+                playlistDetailViewModel.removeSongFromFavorite(songId)
+            },
+            onCreatePlaylist = {playlistName ->
+                playlistDetailViewModel.createPlaylist(playlistName)
+            },
+            onAddSongToPlaylist = {playlistId, songId ->
+                playlistDetailViewModel.addSongToPlaylist(playlistId, songId)
+            },
+            onSongNavigationAction = onSongNavigationAction
+        )
     }
 }

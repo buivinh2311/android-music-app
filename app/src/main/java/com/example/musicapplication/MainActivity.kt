@@ -3,14 +3,14 @@ package com.example.musicapplication
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resources.ui.theme.MusicApplicationTheme
@@ -36,7 +36,12 @@ class MainActivity : ComponentActivity() {
             MusicApplicationTheme(
                 themeMode = themeMode
             ) {
-                AppNavHost()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AppNavHost()
+                }
             }
         }
     }
