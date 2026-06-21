@@ -72,7 +72,9 @@ dependencies {
     implementation(project(":core-utils"))
     implementation(project(":infrastructure"))
     implementation(project(":shared-presentation"))
+
     implementation(libs.navigation)
+    implementation(libs.androidx.core.splashscreen)
 
     //hilt
     implementation(libs.hilt.android)
