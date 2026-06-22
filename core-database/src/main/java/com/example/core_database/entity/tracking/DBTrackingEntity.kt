@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "db_tracking")
 data class DBTrackingEntity (
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
 
     @ColumnInfo("last_artist_updated")
     val lastArtistUpdated: Long = 0,

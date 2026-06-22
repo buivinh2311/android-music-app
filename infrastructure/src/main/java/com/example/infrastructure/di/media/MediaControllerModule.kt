@@ -1,4 +1,4 @@
-package com.example.infrastructure.di.core
+package com.example.infrastructure.di.media
 
 import com.example.core_playback.MediaControllerProvider
 import com.example.infrastructure.media.MediaControllerHolder

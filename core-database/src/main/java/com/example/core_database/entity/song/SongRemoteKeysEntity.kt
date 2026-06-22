@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class SongRemoteKeysEntity(
     @PrimaryKey
     @ColumnInfo(name = "song_id")
-    val id: Int,
+    val id: String,
 
     @ColumnInfo(name = "prev_page")
     val prevKey: Int? = null,
