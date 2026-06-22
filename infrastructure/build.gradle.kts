@@ -47,8 +47,14 @@ dependencies {
     implementation(project(":core-network"))
     implementation(project(":core-playback"))
     implementation(project(":core-utils"))
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.session)
 
     implementation(libs.coil)
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.window)
 
     //retrofit
     implementation(libs.retrofit)

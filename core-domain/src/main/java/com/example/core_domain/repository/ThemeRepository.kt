@@ -1,6 +1,6 @@
-package com.example.feature_settings.domain.repository
+package com.example.core_domain.repository
 
-import com.example.core_resources.ui.theme.ThemeMode
+import com.example.core_model.ThemeMode
 import kotlinx.coroutines.flow.Flow
 
 interface ThemeRepository {

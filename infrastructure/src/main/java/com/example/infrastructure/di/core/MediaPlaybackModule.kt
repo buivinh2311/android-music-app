@@ -1,40 +1,39 @@
-package com.example.core_playback.di
+package com.example.infrastructure.di.core
 
-import android.content.Context
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.PlaybackControllerImpl
+import com.example.core_playback.MediaControllerProvider
+import com.example.core_playback.MediaPlaybackController
 import com.example.core_playback.PlaybackStateDataSource
 import com.example.core_playback.usecase.AddRecentSongUseCase
 import com.example.core_playback.usecase.GetSongByIdUseCase
 import com.example.core_playback.usecase.IncreasePlayCountUseCase
 import com.example.core_playback.usecase.RestorePlaybackQueueUseCase
+import com.example.infrastructure.media.MediaPlaybackControllerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object PlaybackModule {
+object MediaPlaybackModule {
     @Provides
     @Singleton
-    fun providePlaybackController(
-        @ApplicationContext context: Context,
+    fun provideMediaPlaybackController(
         playbackStateDataSource: PlaybackStateDataSource,
         restorePlaybackQueueUseCase: RestorePlaybackQueueUseCase,
         addRecentSongUseCase: AddRecentSongUseCase,
         increasePlayCountUseCase: IncreasePlayCountUseCase,
-        getSongByIdUseCase: GetSongByIdUseCase
-    ): PlaybackController {
-        return PlaybackControllerImpl(
-            context,
+        getSongByIdUseCase: GetSongByIdUseCase,
+        mediaControllerProvider: MediaControllerProvider
+    ): MediaPlaybackController {
+        return MediaPlaybackControllerImpl(
             playbackStateDataSource,
             restorePlaybackQueueUseCase,
             addRecentSongUseCase,
             increasePlayCountUseCase,
-            getSongByIdUseCase
+            getSongByIdUseCase,
+            mediaControllerProvider
         )
     }
 }

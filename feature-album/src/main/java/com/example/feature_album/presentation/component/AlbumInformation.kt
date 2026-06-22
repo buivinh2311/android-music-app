@@ -25,7 +25,7 @@ fun AlbumInformation(
         model = album.artworkUrl,
         contentDescription = "album avatar",
         placeholder = painterResource(R.drawable.logo),
-        error = painterResource(R.drawable.logo),
+        error = painterResource(R.drawable.ic_album),
         modifier = Modifier
             .size(220.dp)
             .clip(shape = RoundedCornerShape(AppDimens.Space.Lg))

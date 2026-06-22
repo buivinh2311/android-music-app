@@ -1,21 +1,18 @@
 package com.example.feature_home.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.Playlist
 import com.example.core_model.Song
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
+import com.example.core_model.QueueSource
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_home.domain.usecase.GetRecommendedSongsUseCase
 import com.example.feature_home.domain.usecase.GetTopAlbumUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +31,7 @@ class HomeViewModel @Inject constructor(
     private val playlistUseCases: PlaylistUseCases,
     private val getTopAlbumUseCase: GetTopAlbumUseCase,
     private val getRecommendedSongsUseCase: GetRecommendedSongsUseCase,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeState())
     val uiState: StateFlow<HomeState> = _uiState
@@ -74,7 +71,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
@@ -116,19 +113,19 @@ class HomeViewModel @Inject constructor(
     }
 
     fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
-        playbackController.play(queueSource, queue, startSong)
+        mediaPlaybackController.play(queueSource, queue, startSong)
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 
 }

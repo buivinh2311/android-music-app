@@ -6,8 +6,8 @@ import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Artist
 import com.example.core_model.Song
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
+import com.example.core_model.QueueSource
 import com.example.core_ui.state.UiState
 import com.example.feature_artist.domain.usecase.AddArtistToFavoriteUseCase
 import com.example.feature_artist.domain.usecase.GetArtistDetailUseCase
@@ -38,7 +38,7 @@ class ArtistDetailViewModel @Inject constructor(
     private val removeArtistFromFavoriteUseCase: RemoveArtistFromFavoriteUseCase,
     private val observeFavoriteArtistUseCase: ObserveFavoriteArtistUseCase,
     private val getSongsForArtistUseCase: GetSongsForArtistUseCase,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow(ArtistDetailState())
     val uiState: StateFlow<ArtistDetailState> = _uiState
@@ -73,7 +73,7 @@ class ArtistDetailViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -126,18 +126,18 @@ class ArtistDetailViewModel @Inject constructor(
     }
 
     fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
-        playbackController.play(queueSource, queue, startSong)
+        mediaPlaybackController.play(queueSource, queue, startSong)
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 }

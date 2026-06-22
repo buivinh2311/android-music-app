@@ -6,14 +6,13 @@ import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Playlist
 import com.example.core_model.Song
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
+import com.example.core_model.QueueSource
 import com.example.core_ui.state.UiState
 import com.example.feature_playlist.domain.usecase.GetPlaylistByIdUseCase
 import com.example.feature_playlist.domain.usecase.GetSongInPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,7 +31,7 @@ class PlaylistDetailViewModel @Inject constructor(
     private val playlistUseCases: PlaylistUseCases,
     private val getPlaylistByIdUseCase: GetPlaylistByIdUseCase,
     private val getSongInPlaylistUseCase: GetSongInPlaylistUseCase,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<Playlist>>(
         UiState.Loading
@@ -52,7 +50,7 @@ class PlaylistDetailViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -98,18 +96,18 @@ class PlaylistDetailViewModel @Inject constructor(
         playlistId: Int,
         playlistName: String
     ) {
-        playbackController.play(queueSource, queue, startSong, playlistId, playlistName)
+        mediaPlaybackController.play(queueSource, queue, startSong, playlistId, playlistName)
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 }

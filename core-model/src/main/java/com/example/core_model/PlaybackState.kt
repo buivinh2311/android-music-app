@@ -1,12 +1,4 @@
-package com.example.core_playback
-
-import com.example.core_model.Song
-
-enum class RepeatMode {
-    OFF,
-    ALL,
-    ONE
-}
+package com.example.core_model
 
 data class PlaybackState (
     val queueSource: QueueSource = QueueSource.DEFAULT,

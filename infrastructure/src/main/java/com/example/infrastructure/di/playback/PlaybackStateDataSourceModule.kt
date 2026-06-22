@@ -1,7 +1,7 @@
-package com.example.core_playback.di
+package com.example.infrastructure.di.playback
 
 import com.example.core_playback.PlaybackStateDataSource
-import com.example.core_playback.PlaybackStateDataSourceImpl
+import com.example.infrastructure.source.playback.PlaybackStateDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

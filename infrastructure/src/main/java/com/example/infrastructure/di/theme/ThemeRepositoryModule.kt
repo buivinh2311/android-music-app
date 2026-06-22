@@ -1,7 +1,7 @@
-package com.example.feature_settings.di
+package com.example.infrastructure.di.theme
 
-import com.example.feature_settings.domain.repository.ThemeRepository
-import com.example.feature_settings.domain.repository.ThemeRepositoryImpl
+import com.example.core_domain.repository.ThemeRepository
+import com.example.infrastructure.repository.ThemeRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

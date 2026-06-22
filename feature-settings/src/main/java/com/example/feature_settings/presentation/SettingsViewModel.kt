@@ -3,9 +3,9 @@ package com.example.feature_settings.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_model.Song
-import com.example.core_resources.ui.theme.ThemeMode
+import com.example.core_model.ThemeMode
 import com.example.core_ui.state.UiState
-import com.example.feature_settings.domain.repository.ThemeRepository
+import com.example.core_domain.repository.ThemeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

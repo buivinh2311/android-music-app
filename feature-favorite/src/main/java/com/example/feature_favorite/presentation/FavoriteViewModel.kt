@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.Artist
 import com.example.core_model.Song
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
+import com.example.core_model.QueueSource
 import com.example.core_ui.state.UiState
 import com.example.feature_favorite.domain.usecase.GetAllFavoriteSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +28,7 @@ class FavoriteViewModel @Inject constructor(
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
     private val getAllFavoriteSongsUseCase: GetAllFavoriteSongsUseCase,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<List<Song>>>(
         UiState.Loading
@@ -52,7 +51,7 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -93,18 +92,18 @@ class FavoriteViewModel @Inject constructor(
     }
 
     fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
-        playbackController.play(queueSource, queue, startSong)
+        mediaPlaybackController.play(queueSource, queue, startSong)
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 }

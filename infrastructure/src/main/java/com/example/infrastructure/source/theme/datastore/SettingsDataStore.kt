@@ -1,4 +1,4 @@
-package com.example.feature_settings.DataStore
+package com.example.infrastructure.source.theme.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

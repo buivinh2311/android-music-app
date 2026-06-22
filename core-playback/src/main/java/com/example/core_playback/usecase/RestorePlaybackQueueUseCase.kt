@@ -5,8 +5,8 @@ import com.example.core_domain.repository.PlaylistSongRepository
 import com.example.core_domain.repository.RecentSongRepository
 import com.example.core_domain.repository.SongRepository
 import com.example.core_model.Song
-import com.example.core_playback.PlaybackState
-import com.example.core_playback.QueueSource
+import com.example.core_model.PlaybackState
+import com.example.core_model.QueueSource
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

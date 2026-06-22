@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_model.Artist
-import com.example.core_playback.PlaybackController
+import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
 import com.example.feature_artist.domain.usecase.GetTopArtistsUseCase
@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +26,7 @@ import javax.inject.Inject
 class ArtistViewModel @Inject constructor(
     private val getTopArtistsUseCase: GetTopArtistsUseCase,
     private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<List<Artist>>>(
         UiState.Loading
@@ -49,7 +48,7 @@ class ArtistViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -74,14 +73,14 @@ class ArtistViewModel @Inject constructor(
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 }

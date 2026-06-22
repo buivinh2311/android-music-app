@@ -1,4 +1,4 @@
-package com.example.core_playback
+package com.example.core_model
 
 enum class QueueSource {
     DEFAULT,

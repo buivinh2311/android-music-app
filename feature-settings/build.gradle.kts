@@ -45,10 +45,6 @@ dependencies {
     implementation(project(":core-utils"))
     implementation(project(":shared-presentation"))
 
-    implementation(libs.androidx.datastore.preferences.core)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.window)
-
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

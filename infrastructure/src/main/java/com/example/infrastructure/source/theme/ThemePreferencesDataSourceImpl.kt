@@ -1,17 +1,17 @@
-package com.example.feature_settings.source
+package com.example.infrastructure.source.theme
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.core_resources.ui.theme.ThemeMode
-import com.example.feature_settings.DataStore.dataStore
+import com.example.core_model.ThemeMode
+import com.example.infrastructure.source.theme.datastore.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ThemeLocalDataSourceImpl @Inject constructor(
+class ThemePreferencesDataSourceImpl @Inject constructor(
     private val context: Context
-): ThemeLocalDataSource {
+): ThemePreferencesDataSource {
     private val dataStore = context.dataStore
     private val darkThemeKey = stringPreferencesKey("dark_theme")
 

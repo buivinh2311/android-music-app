@@ -3,9 +3,8 @@ package com.example.feature_artist.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
-import com.example.core_model.Album
 import com.example.core_model.Artist
-import com.example.core_playback.PlaybackController
+import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
 import com.example.feature_artist.domain.usecase.GetFavoriteArtistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +25,7 @@ import javax.inject.Inject
 class FollowedArtistViewModel @Inject constructor(
     private val getFavoriteArtistUseCase: GetFavoriteArtistUseCase,
     private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<List<Artist>>>(
         UiState.Loading
@@ -49,7 +48,7 @@ class FollowedArtistViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -74,14 +73,14 @@ class FollowedArtistViewModel @Inject constructor(
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 }

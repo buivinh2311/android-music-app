@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_playback.PlaybackController
+import com.example.core_playback.MediaPlaybackController
 import com.example.feature_player.domain.usecase.GetSongByIdUseCase
 import com.example.feature_player.presentation.state.PlayerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val playbackController: PlaybackController,
+    private val mediaPlaybackController: MediaPlaybackController,
     private val favoriteSongUseCases: FavoriteSongUseCases,
     private val playlistUseCases: PlaylistUseCases,
     private val getSongByIdUseCase: GetSongByIdUseCase
@@ -45,34 +45,34 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun seekTo(position: Long) {
-        playbackController.seekTo(position)
+        mediaPlaybackController.seekTo(position)
     }
 
     fun skipPrevious() {
-        playbackController.skipPrevious()
+        mediaPlaybackController.skipPrevious()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 
     fun toggleShuffle() {
-        playbackController.toggleShuffle()
+        mediaPlaybackController.toggleShuffle()
     }
 
     fun changeRepeatMode() {
-        playbackController.changeRepeatMode()
+        mediaPlaybackController.changeRepeatMode()
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     val playlists = playlistUseCases.getAllPlaylist()
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentSongFavorite: StateFlow<Boolean> =

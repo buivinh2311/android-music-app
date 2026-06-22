@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Album
-import com.example.core_model.Playlist
 import com.example.core_model.Song
-import com.example.core_playback.PlaybackController
-import com.example.core_playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
+import com.example.core_model.QueueSource
 import com.example.core_ui.state.UiState
 import com.example.feature_album.domain.usecase.AddAlbumToFavoriteUseCase
 import com.example.feature_album.domain.usecase.GetAlbumDetailUseCase
@@ -39,7 +38,7 @@ class AlbumDetailViewModel @Inject constructor(
     private val addAlbumToFavoriteUseCase: AddAlbumToFavoriteUseCase,
     private val removeAlbumFromFavoriteUseCase: RemoveAlbumFromFavoriteUseCase,
     private val observeFavoriteAlbumUseCase: ObserveFavoriteAlbumUseCase,
-    private val playbackController: PlaybackController
+    private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AlbumDetailUiState())
     val uiState: StateFlow<AlbumDetailUiState> = _uiState
@@ -76,7 +75,7 @@ class AlbumDetailViewModel @Inject constructor(
         }
     }
 
-    val playbackState = playbackController.playbackState
+    val playbackState = mediaPlaybackController.playbackState
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =
         playbackState
@@ -128,18 +127,18 @@ class AlbumDetailViewModel @Inject constructor(
     }
 
     fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
-        playbackController.play(queueSource, queue, startSong)
+        mediaPlaybackController.play(queueSource, queue, startSong)
     }
 
     fun pause() {
-        playbackController.pause()
+        mediaPlaybackController.pause()
     }
 
     fun resume() {
-        playbackController.resume()
+        mediaPlaybackController.resume()
     }
 
     fun skipNext() {
-        playbackController.skipNext()
+        mediaPlaybackController.skipNext()
     }
 }
