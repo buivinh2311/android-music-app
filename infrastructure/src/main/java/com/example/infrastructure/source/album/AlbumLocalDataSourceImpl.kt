@@ -33,6 +33,14 @@ class AlbumLocalDataSourceImpl @Inject constructor(
         albumDao.insertAll(albums)
     }
 
+    override suspend fun delete(albumId: Int) {
+        albumDao.delete(albumId)
+    }
+
+    override suspend fun deleteAlbumNotIn(validNames: Set<String>) {
+        albumDao.deleteAlbumNotIn(validNames)
+    }
+
     override suspend fun clearAll(albums: List<AlbumEntity>) {
         albumDao.clearAll()
     }

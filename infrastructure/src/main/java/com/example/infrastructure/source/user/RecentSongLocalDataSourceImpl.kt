@@ -21,6 +21,10 @@ class RecentSongLocalDataSourceImpl @Inject constructor(
         return crossRefDao.getAllRecentSongs(userId)
     }
 
+    override suspend fun getAllRecentSongIds(userId: Int): List<String> {
+        return crossRefDao.getAllRecentSongIds(userId)
+    }
+
     override suspend fun insert(userId: Int, songId: String) {
         crossRefDao.insert(UserRecentSongCrossRefEntity(songId, userId))
     }

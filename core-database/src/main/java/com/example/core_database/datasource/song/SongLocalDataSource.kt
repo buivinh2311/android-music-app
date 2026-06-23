@@ -19,5 +19,6 @@ interface SongLocalDataSource {
     suspend fun insertAll(songs: List<SongEntity>)
     suspend fun updateCounter(songId: String)
     suspend fun delete(songId: String)
+    suspend fun deleteSongNotIn(validSongIds: Set<String>)
     suspend fun clearAll()
 }

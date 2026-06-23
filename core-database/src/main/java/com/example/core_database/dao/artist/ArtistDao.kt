@@ -34,6 +34,9 @@ interface ArtistDao {
     @Query("DELETE FROM artists WHERE artist_id = :artistId")
     suspend fun delete(artistId: Int)
 
+    @Query("DELETE FROM artists WHERE name NOT IN (:validNames)")
+    suspend fun deleteArtistNotIn(validNames: Set<String>)
+
     @Query("DELETE FROM artists")
     suspend fun clearAll()
 }

@@ -9,5 +9,6 @@ interface FavoriteAlbumLocalDataSource {
     fun isFavoriteAlbum(userId: Int, albumName: String): Flow<Boolean>
     fun getFavoriteAlbums(userId: Int): Flow<List<AlbumEntity>>
     fun getFavoriteAlbumCount(userId: Int): Flow<Int>
+    suspend fun getAllFavoriteAlbumNames(userId: Int): List<String>
     suspend fun delete(userId: Int, albumName: String)
 }

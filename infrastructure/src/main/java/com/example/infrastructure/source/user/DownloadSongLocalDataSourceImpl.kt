@@ -26,6 +26,10 @@ class DownloadSongLocalDataSourceImpl @Inject constructor(
         return crossRefDao.getDownloadSongCount(userId)
     }
 
+    override suspend fun getAllDownloadSongIds(userId: Int): List<String> {
+        return crossRefDao.getAllDownloadSongIds(userId)
+    }
+
     override suspend fun delete(userId: Int, songId: String) {
         crossRefDao.delete(userId, songId)
     }

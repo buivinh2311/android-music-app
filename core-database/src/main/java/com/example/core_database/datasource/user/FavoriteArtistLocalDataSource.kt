@@ -10,5 +10,6 @@ interface FavoriteArtistLocalDataSource {
     fun isFavoriteArtist(userId: Int, artistName: String): Flow<Boolean>
     fun getFavoriteArtists(userId: Int): Flow<List<FollowedArtistEntity>>
     fun getFavoriteArtistCount(userId: Int): Flow<Int>
+    suspend fun getAllFollowedArtistNames(userId: Int): List<String>
     suspend fun delete(userId: Int, artistName: String)
 }

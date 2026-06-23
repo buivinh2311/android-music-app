@@ -28,6 +28,12 @@ interface UserRecentSongCrossRefDao {
     )
     fun getAllRecentSongs(userId: Int): Flow<List<SongEntity>>
 
+    @Query(
+        "SELECT song_id FROM user_recent_song_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    suspend fun getAllRecentSongIds(userId: Int): List<String>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(crossRef: UserRecentSongCrossRefEntity)
 

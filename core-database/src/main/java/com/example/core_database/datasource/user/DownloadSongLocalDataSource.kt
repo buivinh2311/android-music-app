@@ -9,5 +9,6 @@ interface DownloadSongLocalDataSource {
     fun isDownloadSong(userId: Int, songId: String): Flow<Boolean>
     fun getDownloadSongs(userId: Int): Flow<List<SongEntity>>
     fun getDownloadSongCount(userId: Int): Flow<Int>
+    suspend fun getAllDownloadSongIds(userId: Int): List<String>
     suspend fun delete(userId: Int, songId: String)
 }

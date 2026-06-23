@@ -26,6 +26,10 @@ class FavoriteAlbumLocalDataSourceImpl @Inject constructor(
         return crossRefDao.getFavoriteAlbumCount(userId)
     }
 
+    override suspend fun getAllFavoriteAlbumNames(userId: Int): List<String> {
+        return crossRefDao.getAllFavoriteAlbumNames(userId)
+    }
+
     override suspend fun delete(userId: Int, albumName: String) {
         crossRefDao.delete(userId, albumName)
     }

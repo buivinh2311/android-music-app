@@ -1,6 +1,7 @@
 package com.example.core_database.datasource.artist
 
 import androidx.paging.PagingSource
+import androidx.room.Query
 import com.example.core_database.entity.artist.ArtistEntity
 
 interface ArtistLocalDataSource {
@@ -12,5 +13,6 @@ interface ArtistLocalDataSource {
     suspend fun insert(artist: ArtistEntity)
     suspend fun insertAll(artists: List<ArtistEntity>)
     suspend fun delete(artistId: Int)
+    suspend fun deleteArtistNotIn(validNames: Set<String>)
     suspend fun clearAll()
 }

@@ -70,6 +70,10 @@ class SongLocalDataSourceImpl @Inject constructor(
         songDao.delete(songId)
     }
 
+    override suspend fun deleteSongNotIn(validSongIds: Set<String>) {
+        songDao.deleteSongNotIn(validSongIds)
+    }
+
     override suspend fun clearAll() {
         songDao.clearAll()
     }

@@ -37,6 +37,12 @@ interface UserFavoriteAlbumCrossRefDao {
     fun getFavoriteAlbumCount(userId: Int): Flow<Int>
 
     @Query(
+        "SELECT album_name FROM user_favorite_album_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    suspend fun getAllFavoriteAlbumNames(userId: Int): List<String>
+
+    @Query(
         "DELETE FROM user_favorite_album_cross_ref " +
                 "WHERE user_id = :userId AND album_name = :albumName"
     )

@@ -12,7 +12,15 @@ class SongListLocalDataSourceImpl @Inject constructor(
         songListDao.insertAll(songLists)
     }
 
+    override suspend fun getSongIds(listType: String): List<String> {
+        return songListDao.getSongIds(listType)
+    }
+
     override suspend fun deleteByType(type: String) {
         songListDao.deleteByType(type)
+    }
+
+    override suspend fun clearAll() {
+        songListDao.clearAll()
     }
 }

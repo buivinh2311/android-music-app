@@ -4,6 +4,7 @@ import com.example.core_model.Song
 import com.example.core_network.dto.PagingParamRequest
 
 interface SongRepository {
+    suspend fun cleanUp()
     suspend fun loadSongPaging(param: PagingParamRequest): List<Song>
     suspend fun updateCounter(songId: String)
     suspend fun getFirstNSongs(playlistId: Int, limit: Int): List<Song>

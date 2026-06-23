@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface RecentSongLocalDataSource {
     fun getLimitRecentSongs(userId: Int, limit: Int): Flow<List<SongEntity>>
     fun getAllRecentSongs(userId: Int): Flow<List<SongEntity>>
+    suspend fun getAllRecentSongIds(userId: Int): List<String>
     suspend fun insert(userId: Int, songId: String)
     suspend fun delete(userId: Int, songId: String)
     suspend fun clearAll(userId: Int)

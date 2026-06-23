@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchSongLocalDataSource {
     fun getSearchedSongs(userId: Int): Flow<List<SongEntity>>
+    suspend fun getAllSearchSongIds(userId: Int): List<String>
     suspend fun insert(crossRef: UserSearchSongCrossRefEntity)
     suspend fun delete(crossRef: UserSearchSongCrossRefEntity)
     suspend fun clearAll(userId: Int)

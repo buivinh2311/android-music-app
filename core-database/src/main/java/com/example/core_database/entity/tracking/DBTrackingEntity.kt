@@ -15,6 +15,18 @@ data class DBTrackingEntity (
     @ColumnInfo("last_album_updated")
     val lastAlbumUpdated: Long = 0,
 
+    @ColumnInfo("last_recommended_song_updated")
+    val lastRecommendedSongUpdated: Long = 0,
+
+    @ColumnInfo("last_most_heard_song_updated")
+    val lastMostHeardSongUpdated: Long = 0,
+
+    @ColumnInfo("last_for_you_song_updated")
+    val lastForYouSongUpdated: Long = 0,
+
     @ColumnInfo("last_song_updated")
-    val lastSongUpdated: Long = 0
+    val lastSongUpdated: Long = 0,
+
+    @ColumnInfo("last_clean_up_time")
+    val lastCleanUpTime: Long = 0
 )

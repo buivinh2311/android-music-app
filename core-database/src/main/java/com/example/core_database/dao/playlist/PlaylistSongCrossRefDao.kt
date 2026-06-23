@@ -38,6 +38,9 @@ interface PlaylistSongCrossRefDao {
     )
     fun getSongsInPlaylist(playlistId: Int): Flow<List<SongEntity>>
 
+    @Query("SELECT DISTINCT song_id FROM playlist_song_cross_ref")
+    suspend fun getAllSongIds(): List<String>
+
     @Query(
         "DELETE FROM playlist_song_cross_ref " +
                 "WHERE playlist_id = :playlistId AND song_id = :songId"

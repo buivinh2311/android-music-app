@@ -94,6 +94,9 @@ interface SongDao {
     @Query("DELETE FROM songs WHERE song_id = :songId")
     suspend fun delete(songId: String)
 
+    @Query("DELETE FROM songs WHERE song_id NOT IN (:validSongIds)")
+    suspend fun deleteSongNotIn(validSongIds: Set<String>)
+
     @Query("DELETE FROM songs")
     suspend fun clearAll()
 }

@@ -33,6 +33,9 @@ interface AlbumDao {
     @Query("DELETE FROM albums WHERE album_id = :albumId")
     suspend fun delete(albumId: Int)
 
+    @Query("DELETE FROM albums WHERE name NOT IN (:validNames)")
+    suspend fun deleteAlbumNotIn(validNames: Set<String>)
+
     @Query("DELETE FROM albums")
     suspend fun clearAll()
 }

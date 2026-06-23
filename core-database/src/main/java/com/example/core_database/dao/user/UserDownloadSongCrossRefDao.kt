@@ -33,9 +33,15 @@ interface UserDownloadSongCrossRefDao {
 
     @Query(
         "SELECT COUNT(song_id) FROM user_download_song_cross_ref " +
-            "WHERE user_id = :userId"
+                "WHERE user_id = :userId"
     )
     fun getDownloadSongCount(userId: Int): Flow<Int>
+
+    @Query(
+        "SELECT song_id FROM user_download_song_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    suspend fun getAllDownloadSongIds(userId: Int): List<String>
 
     @Query(
         "DELETE FROM user_download_song_cross_ref " +

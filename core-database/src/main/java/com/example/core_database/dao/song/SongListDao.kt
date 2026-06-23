@@ -11,6 +11,12 @@ interface SongListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(songLists: List<SongListEntity>)
 
+    @Query("SELECT song_id FROM song_lists WHERE list_type = :listType")
+    suspend fun getSongIds(listType: String): List<String>
+
     @Query("DELETE FROM song_lists WHERE list_type = :type")
     suspend fun deleteByType(type: String)
+
+    @Query("DELETE FROM song_lists")
+    suspend fun clearAll()
 }

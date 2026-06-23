@@ -41,6 +41,10 @@ class ArtistLocalDataSourceImpl @Inject constructor(
         artistDao.delete(artistId)
     }
 
+    override suspend fun deleteArtistNotIn(validNames: Set<String>) {
+        artistDao.deleteArtistNotIn(validNames)
+    }
+
     override suspend fun clearAll() {
         artistDao.clearAll()
     }

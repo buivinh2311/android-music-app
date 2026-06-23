@@ -9,6 +9,7 @@ interface PlaylistSongLocalDataSource {
     suspend fun getCrossRefByPlaylistId(playlistId: Int): List<PlaylistSongCrossRefEntity>
     suspend fun isSongInPlaylist(playlistId: Int, songId: String): Boolean
     fun getSongsInPlaylist(playlistId: Int): Flow<List<SongEntity>>
+    suspend fun getAllSongIds(): List<String>
     suspend fun delete(playlistId: Int, songId: String)
     suspend fun clearAll()
 }

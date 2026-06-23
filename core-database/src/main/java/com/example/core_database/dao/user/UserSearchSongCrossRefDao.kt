@@ -20,12 +20,17 @@ interface UserSearchSongCrossRefDao {
     )
     fun getSearchedSongs(userId: Int): Flow<List<SongEntity>>
 
+    @Query(
+        "SELECT song_id FROM user_searched_song_cross_ref " +
+                "WHERE user_id = :userId"
+    )
+    suspend fun getAllSearchSongIds(userId: Int): List<String>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(crossRef: UserSearchSongCrossRefEntity)
 
     @Delete
     suspend fun delete(crossRef: UserSearchSongCrossRefEntity)
-
 
     @Query(
         "DELETE FROM user_searched_song_cross_ref " +
