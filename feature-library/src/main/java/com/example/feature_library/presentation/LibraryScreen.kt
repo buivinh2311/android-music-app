@@ -41,7 +41,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_library.presentation.component.LibraryCategory
 import com.example.feature_library.presentation.component.LibraryPlaylistHeader
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.CreatePlaylistDialog
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
@@ -58,7 +58,6 @@ fun LibraryScreen(
     onPlaylistClick: (Int) -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
@@ -88,13 +87,6 @@ fun LibraryScreen(
     val playlists by libraryViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
 
-    val playbackState by libraryViewModel.playbackState
-        .collectAsStateWithLifecycle()
-
-    val isCurrentFavoriteSong by libraryViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
 
     Scaffold(
@@ -188,55 +180,6 @@ fun LibraryScreen(
                     modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
                     playlist = playlists[index],
                     onPlaylistClick = onPlaylistClick
-                )
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            libraryViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            libraryViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            libraryViewModel.pause()
-                        } else {
-                            libraryViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        libraryViewModel.skipNext()
-                    }
                 )
             }
         }

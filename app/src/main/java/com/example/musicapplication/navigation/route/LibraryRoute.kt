@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_library.presentation.LibraryScreen
 import com.example.musicapplication.navigation.AppRoute
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun LibraryRoute(
@@ -36,9 +36,6 @@ fun LibraryRoute(
             navController.navigate(AppRoute.PLAYLIST)
         },
 
-        onMiniPlayerClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
-        },
 
         onPlaylistClick = { playlistId ->
             navController.navigate("${AppRoute.PLAYLIST_DETAIL}/$playlistId")

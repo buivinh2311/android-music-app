@@ -44,7 +44,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.DeleteConfirmDialog
 import com.example.feature_search.presentation.component.SearchTopBar
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
@@ -53,7 +53,6 @@ import com.example.shared_presentation.presentation.SongActionHost
 @Composable
 fun SearchScreen (
     onSongClick: (String) -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
@@ -88,13 +87,6 @@ fun SearchScreen (
     val playlists by searchViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
 
-    val playbackState by searchViewModel.playbackState
-        .collectAsStateWithLifecycle()
-
-    val isCurrentFavoriteSong by searchViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
     
     Scaffold(
@@ -233,55 +225,6 @@ fun SearchScreen (
                         )
                     }
                 }
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            searchViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            searchViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            searchViewModel.pause()
-                        } else {
-                            searchViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        searchViewModel.skipNext()
-                    }
-                )
             }
         }
 

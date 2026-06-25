@@ -102,4 +102,5 @@
     <string name="title_playlist_empty">Bạn chưa có playlist nào</string>
     <string name="message_playlist_empty">Hãy tạo mới</string>
     <string name="message_playlist_song_empty">Không có bài hát nào trong playlist của bạn. Tìm bài hát để thêm vào Playlist của bạn</string>
+    <string name="no_internet">Bạn không có kết nối mạng</string>
 </resources>

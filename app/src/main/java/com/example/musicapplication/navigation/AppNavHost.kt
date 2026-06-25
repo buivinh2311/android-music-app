@@ -1,14 +1,33 @@
 package com.example.musicapplication.navigation
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.core_model.Song
+import com.example.core_resources.R
+import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_ui.component.NetworkBanner
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_album.presentation.screen.FavoriteAlbumScreen
 import com.example.musicapplication.navigation.route.AlbumDetailRoute
 import com.example.musicapplication.navigation.route.AlbumRoute
 import com.example.musicapplication.navigation.route.ArtistChooserRoute
@@ -29,11 +48,19 @@ import com.example.musicapplication.navigation.route.RecentRoute
 import com.example.musicapplication.navigation.route.RecommendedRoute
 import com.example.musicapplication.navigation.route.SearchRoute
 import com.example.musicapplication.navigation.route.SettingsRoute
-import com.example.shared_presentation.model.SongOptionAction
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionAction
+import com.example.shared_presentation.menu.SongOptionItem
+import com.example.shared_presentation.presentation.MiniPlayer
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(
+    currentSong: Song?,
+    isFavoriteSong: Boolean,
+    isPlaying: Boolean,
+    onFavoriteClick: (Song) -> Unit,
+    onTogglePlayClick: () -> Unit,
+    onNextClick: () -> Unit
+) {
     val navController = rememberNavController()
     val onSongClick: (String) -> Unit = { songId ->
         navController.navigate("${AppRoute.PLAYER}/$songId")
@@ -48,7 +75,7 @@ fun AppNavHost() {
         navController.navigateUp()
     }
     val onBottomActionClick: (AppBottomBarAction) -> Unit = { action ->
-        when(action) {
+        when (action) {
             AppBottomBarAction.HOME -> {
                 navController.navigate(AppRoute.HOME)
             }
@@ -68,7 +95,7 @@ fun AppNavHost() {
     }
 
     val onSongNavigationAction: (SongOptionItem) -> Unit = { item ->
-        when(item.action) {
+        when (item.action) {
             SongOptionAction.VIEW_ALBUM -> {
                 val encodedName = Uri.encode(item.album)
                 navController.navigate("${AppRoute.ALBUM_DETAIL}/${encodedName}")
@@ -76,7 +103,7 @@ fun AppNavHost() {
 
             SongOptionAction.VIEW_ARTIST -> {
                 val artistStr = item.artist
-                if(artistStr != null && artistStr.contains(" ft ")) {
+                if (artistStr != null && artistStr.contains(" ft ")) {
                     navController.navigate("${AppRoute.ARTIST_CHOOSER}/${item.artist}")
                 } else {
                     navController.navigate("${AppRoute.ARTIST_DETAIL}/${item.artist}")
@@ -282,13 +309,77 @@ fun AppNavHost() {
             )
         }
 
-        composable(AppRoute.PLAYER_WITH_ARG) { backStackEntry ->
+        composable(
+            AppRoute.PLAYER_WITH_ARG,
+            enterTransition = {
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(900)
+                )
+            },
+            exitTransition = {
+                slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(900)
+                )
+            }
+        ) { backStackEntry ->
             val songId = backStackEntry.arguments?.getString("songId")
             songId?.let {
                 PlayerRoute(
                     songId = songId,
                     onBackClick = onBackClick,
                     onSongNavigationAction = onSongNavigationAction
+                )
+            }
+        }
+    }
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showMiniPlayer = currentRoute !in setOf(
+        AppRoute.PLAYER_WITH_ARG
+    )
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        NetworkBanner(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(
+                    bottom = AppDimens.Layout.BottomBarHeight +
+                            AppDimens.Layout.MiniPlayerHeight
+                )
+                .align(Alignment.BottomCenter)
+        )
+    }
+
+    AnimatedVisibility(
+        visible = showMiniPlayer,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        currentSong?.let {
+            Box(
+                Modifier.fillMaxSize()
+            ) {
+                MiniPlayer(
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .padding(bottom = AppDimens.Layout.BottomBarHeight)
+                        .align(Alignment.BottomCenter),
+                    song = currentSong,
+                    isFavoriteSong = isFavoriteSong,
+                    isPlaying = isPlaying,
+                    onMiniPlayerClick = {
+                        navController.navigate("${AppRoute.PLAYER}/${currentSong.id}")
+                    },
+                    onFavoriteClick = {
+                        onFavoriteClick(currentSong)
+                    },
+                    onTogglePlayClick = onTogglePlayClick,
+                    onNextClick = onNextClick
                 )
             }
         }

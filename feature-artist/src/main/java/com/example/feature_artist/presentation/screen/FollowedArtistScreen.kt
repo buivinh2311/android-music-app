@@ -5,7 +5,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,30 +40,20 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptyScreen
 import com.example.core_ui.component.LoadingScreen
-import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.ArtistUtil
 import com.example.feature_artist.presentation.viewmodel.FollowedArtistViewModel
-import com.example.shared_presentation.presentation.MiniPlayer
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun FollowedArtistScreen(
     onArtistClick: (String) -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val followedArtistViewModel: FollowedArtistViewModel = hiltViewModel()
     val uiState by followedArtistViewModel.uiState.collectAsStateWithLifecycle()
-
-    val playbackState by followedArtistViewModel.playbackState
-        .collectAsStateWithLifecycle()
-    val isCurrentFavoriteSong by followedArtistViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val context = LocalContext.current
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -187,55 +175,6 @@ fun FollowedArtistScreen(
                         }
                     }
                 }
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            followedArtistViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            followedArtistViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            followedArtistViewModel.pause()
-                        } else {
-                            followedArtistViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        followedArtistViewModel.skipNext()
-                    }
-                )
             }
         }
     }

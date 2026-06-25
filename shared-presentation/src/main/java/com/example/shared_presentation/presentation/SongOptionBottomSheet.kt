@@ -33,9 +33,8 @@ import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppIconButton
-import com.example.core_ui.component.showToast
-import com.example.shared_presentation.model.SongOptionAction
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionAction
+import com.example.shared_presentation.menu.SongOptionItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

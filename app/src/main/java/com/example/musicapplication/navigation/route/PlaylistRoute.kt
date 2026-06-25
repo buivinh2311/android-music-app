@@ -16,9 +16,6 @@ fun PlaylistRoute(
         onPlaylistClick = { playlistId ->
             navController.navigate("${AppRoute.PLAYLIST_DETAIL}/$playlistId")
         },
-        onMiniPlayerClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
-        },
         onBackClick = onBackClick,
         onBottomActionClick = onBottomActionClick
     )

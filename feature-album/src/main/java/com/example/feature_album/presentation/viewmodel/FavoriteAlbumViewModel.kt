@@ -23,9 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteAlbumViewModel @Inject constructor(
-    private val getFavoriteAlbumUseCase: GetFavoriteAlbumUseCase,
-    private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val mediaPlaybackController: MediaPlaybackController
+    private val getFavoriteAlbumUseCase: GetFavoriteAlbumUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<List<Album>>>(
         UiState.Loading
@@ -46,40 +44,5 @@ class FavoriteAlbumViewModel @Inject constructor(
                 }
             }
         }
-    }
-    val playbackState = mediaPlaybackController.playbackState
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val currentFavoriteSong: StateFlow<Boolean> =
-        playbackState
-            .map { it.currentSongId }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { id ->
-                favoriteSongUseCases.observerFavoriteSong(id)
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
-        }
-    }
-
-    fun pause() {
-        mediaPlaybackController.pause()
-    }
-
-    fun resume() {
-        mediaPlaybackController.resume()
-    }
-
-    fun skipNext() {
-        mediaPlaybackController.skipNext()
     }
 }

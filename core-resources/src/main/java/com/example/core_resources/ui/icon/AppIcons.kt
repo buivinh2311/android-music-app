@@ -150,4 +150,8 @@ object AppIcons {
     val Song
         @Composable
         get() = painterResource(R.drawable.ic_music_note)
+
+    val NoInternet
+        @Composable
+        get() = painterResource(R.drawable.ic_no_internet)
 }

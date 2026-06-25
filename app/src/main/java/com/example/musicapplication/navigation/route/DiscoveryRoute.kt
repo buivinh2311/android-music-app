@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_discovery.presentation.DiscoveryScreen
 import com.example.musicapplication.navigation.AppRoute
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun DiscoveryRoute(
@@ -30,10 +30,6 @@ fun DiscoveryRoute(
 
         onMostListenedClick = {
             navController.navigate(AppRoute.MOST_LISTENED)
-        },
-
-        onMiniPlayerClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
         },
 
         onSearchClick = onSearchClick,

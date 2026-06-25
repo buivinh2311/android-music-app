@@ -2,7 +2,6 @@ package com.example.feature_artist.presentation.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.Song
 import com.example.core_model.QueueSource
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -33,23 +32,21 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptySection
 import com.example.core_ui.component.LoadingSection
-import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_artist.presentation.component.ArtistAction
 import com.example.feature_artist.presentation.component.ArtistInformation
 import com.example.feature_artist.presentation.viewmodel.ArtistDetailViewModel
-import com.example.shared_presentation.model.SongOptionItem
-import com.example.shared_presentation.presentation.MiniPlayer
+import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun ArtistDetailScreen(
     artistName: String,
     onSongClick: (String) -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
@@ -68,14 +65,6 @@ fun ArtistDetailScreen(
 
     val isFavoriteArtist by artistDetailViewModel.isFavoriteArtist(artistName)
         .collectAsStateWithLifecycle(false)
-
-    val playbackState by artistDetailViewModel.playbackState
-        .collectAsStateWithLifecycle()
-
-    val isCurrentFavoriteSong by artistDetailViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
     
     Scaffold(
@@ -194,55 +183,6 @@ fun ArtistDetailScreen(
                         )
                     }
                 }
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            artistDetailViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            artistDetailViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            artistDetailViewModel.pause()
-                        } else {
-                            artistDetailViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        artistDetailViewModel.skipNext()
-                    }
-                )
             }
         }
 

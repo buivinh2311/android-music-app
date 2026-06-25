@@ -19,46 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(
-    private val favoriteSongUseCases: FavoriteSongUseCases,
-    getLimitPlaylistUseCase: GetLimitPlaylistUseCase,
-    private val mediaPlaybackController: MediaPlaybackController
+    getLimitPlaylistUseCase: GetLimitPlaylistUseCase
 ): ViewModel() {
     val playlist = getLimitPlaylistUseCase(1000)
-    val playbackState = mediaPlaybackController.playbackState
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val currentFavoriteSong: StateFlow<Boolean> =
-        playbackState
-            .map { it.currentSongId }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { id ->
-                favoriteSongUseCases.observerFavoriteSong(id)
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
-        }
-    }
-
-    fun pause() {
-        mediaPlaybackController.pause()
-    }
-
-    fun resume() {
-        mediaPlaybackController.resume()
-    }
-
-    fun skipNext() {
-        mediaPlaybackController.skipNext()
-    }
-
 }

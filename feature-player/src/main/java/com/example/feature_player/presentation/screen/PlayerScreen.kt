@@ -37,7 +37,7 @@ import com.example.feature_player.presentation.component.PlayerInfo
 import com.example.feature_player.presentation.component.PlayerProgress
 import com.example.feature_player.presentation.component.PlayerTopBar
 import com.example.feature_player.presentation.viewmodel.PlayerViewModel
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.SongActionHost
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -61,7 +61,7 @@ fun PlayerScreen(
         .collectAsStateWithLifecycle()
     val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
-    
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

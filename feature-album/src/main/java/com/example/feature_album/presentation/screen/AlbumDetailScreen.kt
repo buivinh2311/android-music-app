@@ -41,7 +41,7 @@ import com.example.core_ui.state.UiState
 import com.example.feature_album.presentation.component.AlbumAction
 import com.example.feature_album.presentation.component.AlbumInformation
 import com.example.feature_album.presentation.viewmodel.AlbumDetailViewModel
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
@@ -52,7 +52,6 @@ fun AlbumDetailScreen(
     albumName: String,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 
@@ -72,13 +71,6 @@ fun AlbumDetailScreen(
     val isFavoriteAlbum by albumDetailViewModel.isFavoriteAlbum(albumName)
         .collectAsStateWithLifecycle(false)
 
-    val playbackState by albumDetailViewModel.playbackState
-        .collectAsStateWithLifecycle()
-
-    val isCurrentFavoriteSong by albumDetailViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
 
     Scaffold(
@@ -193,55 +185,6 @@ fun AlbumDetailScreen(
                         )
                     }
                 }
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            albumDetailViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            albumDetailViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            albumDetailViewModel.pause()
-                        } else {
-                            albumDetailViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        albumDetailViewModel.skipNext()
-                    }
-                )
             }
         }
 

@@ -2,7 +2,7 @@ package com.example.musicapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import com.example.feature_player.presentation.screen.PlayerScreen
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun PlayerRoute(

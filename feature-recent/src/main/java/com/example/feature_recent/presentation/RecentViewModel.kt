@@ -53,17 +53,6 @@ class RecentViewModel @Inject constructor(
     }
 
     val playlists = playlistUseCases.getAllPlaylist()
-    val playbackState = mediaPlaybackController.playbackState
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val currentFavoriteSong: StateFlow<Boolean> =
-        playbackState
-            .map { it.currentSongId }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { id ->
-                favoriteSongUseCases.observerFavoriteSong(id)
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
@@ -93,17 +82,5 @@ class RecentViewModel @Inject constructor(
 
     fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
         mediaPlaybackController.play(queueSource, queue, startSong)
-    }
-
-    fun pause() {
-        mediaPlaybackController.pause()
-    }
-
-    fun resume() {
-        mediaPlaybackController.resume()
-    }
-
-    fun skipNext() {
-        mediaPlaybackController.skipNext()
     }
 }

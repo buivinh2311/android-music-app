@@ -1,4 +1,4 @@
-package com.example.shared_presentation.model
+package com.example.shared_presentation.menu
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter

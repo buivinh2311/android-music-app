@@ -44,7 +44,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_playlist.presentation.component.PlaylistInformation
 import com.example.feature_playlist.presentation.viewmodel.PlaylistDetailViewModel
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
@@ -53,7 +53,6 @@ import com.example.shared_presentation.presentation.SongActionHost
 fun PlaylistDetailScreen(
     playlistId: Int,
     onSongClick: (String) -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
@@ -70,17 +69,8 @@ fun PlaylistDetailScreen(
     val playlists by playlistDetailViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
 
-    val playbackState by playlistDetailViewModel.playbackState
-        .collectAsStateWithLifecycle()
-
-    val isCurrentFavoriteSong by playlistDetailViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-
     val songsInPlaylist by playlistDetailViewModel.songInPlaylist(playlistId)
         .collectAsStateWithLifecycle(emptyList())
-
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -173,55 +163,6 @@ fun PlaylistDetailScreen(
                         }
                     }
                 }
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            playlistDetailViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            playlistDetailViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            playlistDetailViewModel.pause()
-                        } else {
-                            playlistDetailViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        playlistDetailViewModel.skipNext()
-                    }
-                )
             }
         }
 

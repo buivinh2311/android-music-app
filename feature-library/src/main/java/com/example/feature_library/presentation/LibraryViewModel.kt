@@ -63,18 +63,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    val playbackState = mediaPlaybackController.playbackState
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val currentFavoriteSong: StateFlow<Boolean> =
-        playbackState
-            .map { it.currentSongId }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { id ->
-                favoriteSongUseCases.observerFavoriteSong(id)
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-
     val downloadSongCount = getDownloadSongCountUseCase()
     val favoriteAlbumCount = getFavoriteAlbumCountUseCase()
     val favoriteSongCount = getFavoriteSongCountUseCase()
@@ -111,15 +99,4 @@ class LibraryViewModel @Inject constructor(
         mediaPlaybackController.play(queueSource, queue, startSong)
     }
 
-    fun pause() {
-        mediaPlaybackController.pause()
-    }
-
-    fun resume() {
-        mediaPlaybackController.resume()
-    }
-
-    fun skipNext() {
-        mediaPlaybackController.skipNext()
-    }
 }

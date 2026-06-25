@@ -38,21 +38,11 @@ import com.example.shared_presentation.presentation.MiniPlayer
 @Composable
 fun FavoriteAlbumScreen(
     onAlbumClick: (String) -> Unit,
-    onMiniPlayerClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val favoriteAlbumViewModel: FavoriteAlbumViewModel = hiltViewModel()
     val uiState by favoriteAlbumViewModel.uiState.collectAsStateWithLifecycle()
-
-    val playbackState by favoriteAlbumViewModel.playbackState
-        .collectAsStateWithLifecycle()
-
-    val isCurrentFavoriteSong by favoriteAlbumViewModel.currentFavoriteSong
-        .collectAsStateWithLifecycle()
-
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
-    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -112,55 +102,6 @@ fun FavoriteAlbumScreen(
                         )
                     }
                 }
-            }
-        }
-
-        currentSong?.let {
-            Box(
-                Modifier.fillMaxSize()
-            ) {
-                MiniPlayer(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .align(Alignment.BottomCenter),
-                    song = currentSong,
-                    isFavoriteSong = isCurrentFavoriteSong,
-                    isPlaying = playbackState.isPlaying,
-                    onMiniPlayerClick = {
-                        onMiniPlayerClick(currentSong.id)
-                    },
-                    onFavoriteClick = {
-                        if(isCurrentFavoriteSong) {
-                            favoriteAlbumViewModel.removeSongFromFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        } else {
-                            favoriteAlbumViewModel.addSongToFavorite(currentSong.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.add_song_to_favorite_success,
-                                    currentSong.title
-                                )
-                            )
-                        }
-                    },
-                    onTogglePlayClick = {
-                        if(playbackState.isPlaying) {
-                            favoriteAlbumViewModel.pause()
-                        } else {
-                            favoriteAlbumViewModel.resume()
-                        }
-                    },
-                    onNextClick = {
-                        favoriteAlbumViewModel.skipNext()
-                    }
-                )
             }
         }
     }

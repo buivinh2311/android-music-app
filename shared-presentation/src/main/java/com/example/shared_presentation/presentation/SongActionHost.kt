@@ -2,7 +2,6 @@ package com.example.shared_presentation.presentation
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,8 +12,8 @@ import com.example.core_model.Song
 import com.example.core_model.Playlist
 import com.example.core_resources.R
 import com.example.core_ui.component.showToast
-import com.example.shared_presentation.model.SongOptionAction
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionAction
+import com.example.shared_presentation.menu.SongOptionItem
 import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("LocalContextGetResourceValueCall")

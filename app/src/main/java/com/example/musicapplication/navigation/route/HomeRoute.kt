@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_home.presentation.HomeScreen
 import com.example.musicapplication.navigation.AppRoute
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun HomeRoute(
@@ -26,10 +26,6 @@ fun HomeRoute(
 
         onRecommendedClick = {
             navController.navigate(AppRoute.RECOMMENDED)
-        },
-
-        onMiniPlayerClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
         },
 
         onSearchClick = onSearchClick,

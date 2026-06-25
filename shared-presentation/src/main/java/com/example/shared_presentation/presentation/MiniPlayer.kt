@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,11 +53,13 @@ fun MiniPlayer(
         shape = RoundedCornerShape(AppDimens.Radius.Sm),
         color = Color.Transparent,
         modifier = modifier
+            .fillMaxWidth()
             .height(AppDimens.Layout.MiniPlayerHeight)
             .background(color = MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(
                     start = AppDimens.Space.Sm,
                     end = AppDimens.Space.Sm,

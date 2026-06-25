@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_recent.presentation.RecentScreen
 import com.example.musicapplication.navigation.AppRoute
-import com.example.shared_presentation.model.SongOptionItem
+import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun RecentRoute(
@@ -16,9 +16,6 @@ fun RecentRoute(
 ) {
     RecentScreen(
         onSongClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
-        },
-        onMiniPlayerClick = { songId ->
             navController.navigate("${AppRoute.PLAYER}/$songId")
         },
         onBackCLick = onBackClick,

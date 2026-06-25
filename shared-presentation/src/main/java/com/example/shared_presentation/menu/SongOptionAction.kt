@@ -1,4 +1,4 @@
-package com.example.shared_presentation.model
+package com.example.shared_presentation.menu
 
 enum class SongOptionAction {
     DOWNLOAD,
