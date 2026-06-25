@@ -18,5 +18,5 @@ object AppUtil {
     const val SECTION_PAGE_SIZE = 12
     const val DEFAULT_PAGE_SIZE = 20
     const val DEFAULT_LIST_SIZE = 40
-    const val CACHE_TIMEOUT =  180 * 1000L
+    const val CACHE_TIMEOUT =  24 * 60 * 60 * 1000L
 }
