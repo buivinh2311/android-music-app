@@ -30,7 +30,7 @@ fun NetworkBanner(
             .padding(
                 start = AppDimens.Space.Sm,
                 end = AppDimens.Space.Sm,
-                bottom = AppDimens.Space.Lg
+                bottom = AppDimens.Space.Sm
             )
             .clip(RoundedCornerShape(AppDimens.Radius.Sm))
             .background(MaterialTheme.colorScheme.onBackground)

@@ -46,6 +46,7 @@ import com.example.shared_presentation.presentation.SongItem
 @Composable
 fun ArtistDetailScreen(
     artistName: String,
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -170,12 +171,21 @@ fun ArtistDetailScreen(
                                 .fillMaxWidth(),
                             song = songs[index],
                             onSongClick = { song ->
-                                artistDetailViewModel.play(
-                                    queueSource = QueueSource.ARTIST,
-                                    queue = songs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    artistDetailViewModel.play(
+                                        queueSource = QueueSource.ARTIST,
+                                        queue = songs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 selectedSong = song

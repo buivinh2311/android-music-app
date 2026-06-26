@@ -6,6 +6,7 @@ import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.QueueSource
 import com.example.core_model.Song
+import com.example.core_network.NetworkMonitor
 import com.example.core_playback.MediaPlaybackController
 import com.example.feature_home.domain.usecase.GetRecommendedSongsUseCase
 import com.example.feature_home.domain.usecase.GetTopAlbumUseCase
@@ -26,7 +27,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val cleanUpUseCase: CleanUpUseCase,
     private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val mediaPlaybackController: MediaPlaybackController
+    private val mediaPlaybackController: MediaPlaybackController,
+    networkMonitor: NetworkMonitor
 ) : ViewModel() {
     init {
         viewModelScope.launch {
@@ -35,6 +37,7 @@ class MainViewModel @Inject constructor(
     }
 
     val playbackState = mediaPlaybackController.playbackState
+    val isConnect = networkMonitor.isConnect
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentFavoriteSong: StateFlow<Boolean> =

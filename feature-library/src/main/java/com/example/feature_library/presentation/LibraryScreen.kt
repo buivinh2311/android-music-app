@@ -2,7 +2,6 @@ package com.example.feature_library.presentation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,15 +16,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.Song
 import com.example.core_model.QueueSource
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -33,8 +31,6 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptySection
 import com.example.core_ui.component.LoadingScreen
-import com.example.shared_presentation.presentation.PlaylistItem
-import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 import com.example.core_ui.component.ViewAllButton
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
@@ -43,13 +39,15 @@ import com.example.feature_library.presentation.component.LibraryCategory
 import com.example.feature_library.presentation.component.LibraryPlaylistHeader
 import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.CreatePlaylistDialog
-import com.example.shared_presentation.presentation.MiniPlayer
+import com.example.shared_presentation.presentation.PlaylistItem
 import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
+    isConnect: Boolean,
     onRecentClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     onFavoriteAlbumClick: () -> Unit,
@@ -148,12 +146,21 @@ fun LibraryScreen(
                             songs = recentSongs,
                             rowWidth = 300.dp,
                             onSongClick = { song ->
-                                libraryViewModel.play(
-                                    queueSource = QueueSource.RECENT,
-                                    queue = recentSongs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    libraryViewModel.play(
+                                        queueSource = QueueSource.RECENT,
+                                        queue = recentSongs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 selectedSong = song

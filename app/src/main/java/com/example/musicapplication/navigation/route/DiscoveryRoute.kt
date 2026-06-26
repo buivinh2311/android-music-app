@@ -10,12 +10,14 @@ import com.example.shared_presentation.menu.SongOptionItem
 @Composable
 fun DiscoveryRoute(
     navController: NavController,
+    isConnect: Boolean,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     DiscoveryScreen(
+        isConnect = isConnect,
         onMoreArtistClick = {
             navController.navigate(AppRoute.ARTIST)
         },

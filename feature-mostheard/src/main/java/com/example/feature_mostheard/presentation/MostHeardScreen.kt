@@ -3,7 +3,6 @@ package com.example.feature_mostheard.presentation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,8 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.Song
 import com.example.core_model.QueueSource
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -40,17 +39,17 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptyScreen
 import com.example.core_ui.component.LoadingScreen
-import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun MostListenedScreen(
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -63,6 +62,7 @@ fun MostListenedScreen(
     val uiState by mostHeardViewModel.uiState.collectAsStateWithLifecycle()
     val playlists by mostHeardViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val context = LocalContext.current
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -139,12 +139,21 @@ fun MostListenedScreen(
                                 .fillMaxWidth(),
                             song = songs[index],
                             onSongClick = { song ->
-                                mostHeardViewModel.play(
-                                    queueSource = QueueSource.MOST_HEARD,
-                                    queue = songs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    mostHeardViewModel.play(
+                                        queueSource = QueueSource.MOST_HEARD,
+                                        queue = songs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 selectedSong = song

@@ -10,12 +10,14 @@ import com.example.shared_presentation.menu.SongOptionItem
 @Composable
 fun HomeRoute(
     navController: NavController,
+    isConnect: Boolean,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     HomeScreen(
+        isConnect = isConnect,
         onMoreAlbumClick = {
             navController.navigate(AppRoute.ALBUM)
         },

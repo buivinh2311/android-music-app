@@ -50,6 +50,7 @@ import com.example.shared_presentation.presentation.SongActionHost
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun RecentScreen(
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -62,6 +63,7 @@ fun RecentScreen(
     val uiState by recentViewModel.uiState.collectAsStateWithLifecycle()
     val playlists by recentViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val context = LocalContext.current
 
     Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -131,12 +133,21 @@ fun RecentScreen(
                             modifier = Modifier.padding(horizontal = 4.dp),
                             song = recentSongs[index],
                             onSongClick = { song ->
-                                recentViewModel.play(
-                                    queueSource = QueueSource.RECENT,
-                                    queue = recentSongs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    recentViewModel.play(
+                                        queueSource = QueueSource.RECENT,
+                                        queue = recentSongs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 selectedSong = song

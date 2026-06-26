@@ -10,16 +10,16 @@ import com.example.shared_presentation.menu.SongOptionItem
 @Composable
 fun ArtistDetailRoute(
     artistName: String,
-    navController: NavController,
+    isConnect: Boolean,
+    onSongClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     ArtistDetailScreen(
         artistName = artistName,
-        onSongClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
-        },
+        isConnect = isConnect,
+        onSongClick = onSongClick,
         onBackCLick = onBackClick,
         onBottomActionClick = onBottomActionClick,
         onSongNavigationAction = onSongNavigationAction

@@ -52,6 +52,7 @@ import com.example.shared_presentation.presentation.SongActionHost
 @Composable
 fun PlaylistDetailScreen(
     playlistId: Int,
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -71,6 +72,8 @@ fun PlaylistDetailScreen(
 
     val songsInPlaylist by playlistDetailViewModel.songInPlaylist(playlistId)
         .collectAsStateWithLifecycle(emptyList())
+
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -147,14 +150,23 @@ fun PlaylistDetailScreen(
                                     .fillMaxWidth(),
                                 song = songsInPlaylist[index],
                                 onSongClick = { song ->
-                                    playlistDetailViewModel.play(
-                                        queueSource = QueueSource.PLAYLIST,
-                                        queue = songsInPlaylist,
-                                        startSong = song,
-                                        playlistId = playlist.id,
-                                        playlistName = playlist.name
-                                    )
-                                    onSongClick(song.id)
+                                    if(isConnect) {
+                                        playlistDetailViewModel.play(
+                                            queueSource = QueueSource.PLAYLIST,
+                                            queue = songsInPlaylist,
+                                            startSong = song,
+                                            playlistId = playlist.id,
+                                            playlistName = playlist.name
+                                        )
+                                        onSongClick(song.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
                                 },
                                 onMoreClick = { song ->
                                     selectedSong = song

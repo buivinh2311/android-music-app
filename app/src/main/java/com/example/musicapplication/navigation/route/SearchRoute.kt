@@ -9,13 +9,14 @@ import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun SearchRoute(
-    navController: NavController,
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     SearchScreen(
+        isConnect = isConnect,
         onSongClick = onSongClick,
         onBackClick = onBackClick,
         onBottomActionClick = onBottomActionClick,

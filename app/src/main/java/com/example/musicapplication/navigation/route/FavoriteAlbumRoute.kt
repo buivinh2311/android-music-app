@@ -8,14 +8,12 @@ import com.example.musicapplication.navigation.AppRoute
 
 @Composable
 fun FavoriteAlbumRoute (
-    navController: NavController,
+    onAlbumClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     FavoriteAlbumScreen(
-        onAlbumClick = { albumName ->
-            navController.navigate("${AppRoute.ALBUM_DETAIL}/${albumName}")
-        },
+        onAlbumClick = onAlbumClick,
         onBackClick = onBackClick,
         onBottomActionClick = onBottomActionClick
     )

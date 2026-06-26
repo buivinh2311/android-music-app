@@ -52,6 +52,7 @@ import com.example.shared_presentation.presentation.SongActionHost
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen (
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -96,7 +97,10 @@ fun SearchScreen (
         },
         topBar = {
             SearchTopBar(
-                onBackClick = onBackClick,
+                onBackClick = {
+                    keyboardController?.hide()
+                    onBackClick()
+                },
                 onQueryChange = { query ->
                     queryStr = query
                     searchViewModel.findSongBySongNameOrArtistName(query)
@@ -210,13 +214,22 @@ fun SearchScreen (
                             modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
                             song = searchSong[index],
                             onSongClick = { song ->
-                                keyboardController?.hide()
-                                searchViewModel.play(
-                                    queueSource = QueueSource.SEARCH,
-                                    queue = searchSong,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    keyboardController?.hide()
+                                    searchViewModel.play(
+                                        queueSource = QueueSource.SEARCH,
+                                        queue = searchSong,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 keyboardController?.hide()

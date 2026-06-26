@@ -9,15 +9,13 @@ import com.example.musicapplication.navigation.AppRoute
 @Composable
 fun ArtistChooserRoute(
     artistStr: String,
-    navController: NavController,
+    onArtistClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onBackClick: () -> Unit
 ) {
     ArtistChooserScreen(
         artistStr = artistStr,
-        onArtistClick = { artistName ->
-            navController.navigate("${AppRoute.ARTIST_DETAIL}/$artistName")
-        },
+        onArtistClick = onArtistClick,
         onBackClick = onBackClick,
         onBottomActionClick = onBottomActionClick
     )

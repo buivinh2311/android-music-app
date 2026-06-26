@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -35,6 +36,7 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptyScreen
 import com.example.core_ui.component.LoadingScreen
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.shared_presentation.menu.SongOptionItem
@@ -44,6 +46,7 @@ import com.example.shared_presentation.presentation.SongItem
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun FavoriteScreen(
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -57,6 +60,8 @@ fun FavoriteScreen(
 
     val playlists by favoriteViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+
+    val context = LocalContext.current
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -138,12 +143,21 @@ fun FavoriteScreen(
                                 modifier = Modifier.padding(horizontal = 4.dp),
                                 song = favoriteSongs[index],
                                 onSongClick = { song ->
-                                    favoriteViewModel.play(
-                                        queueSource = QueueSource.FAVORITE,
-                                        queue = favoriteSongs,
-                                        startSong = song
-                                    )
-                                    onSongClick(song.id)
+                                    if(isConnect) {
+                                        favoriteViewModel.play(
+                                            queueSource = QueueSource.FAVORITE,
+                                            queue = favoriteSongs,
+                                            startSong = song
+                                        )
+                                        onSongClick(song.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
                                 },
                                 onMoreClick = { song ->
                                     selectedSong = song

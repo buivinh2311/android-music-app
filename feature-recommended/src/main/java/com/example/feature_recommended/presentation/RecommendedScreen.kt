@@ -51,6 +51,7 @@ import com.example.shared_presentation.presentation.SongActionHost
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun RecommendedScreen(
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -63,6 +64,7 @@ fun RecommendedScreen(
     val uiState by recommendedViewModel.uiState.collectAsStateWithLifecycle()
     val playlists by recommendedViewModel.playlists
         .collectAsStateWithLifecycle(emptyList())
+    val context = LocalContext.current
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -139,12 +141,21 @@ fun RecommendedScreen(
                                 .fillMaxWidth(),
                             song = songs[index],
                             onSongClick = { song ->
-                                recommendedViewModel.play(
-                                    queueSource = QueueSource.RECOMMENDED,
-                                    queue = songs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    recommendedViewModel.play(
+                                        queueSource = QueueSource.RECOMMENDED,
+                                        queue = songs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 selectedSong = song

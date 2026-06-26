@@ -10,12 +10,14 @@ import com.example.shared_presentation.menu.SongOptionItem
 @Composable
 fun LibraryRoute(
     navController: NavController,
+    isConnect: Boolean,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     LibraryScreen(
+        isConnect = isConnect,
         onRecentClick = {
             navController.navigate(AppRoute.RECENT)
         },

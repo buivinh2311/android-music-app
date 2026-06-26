@@ -64,6 +64,9 @@ class MainActivity : ComponentActivity() {
             val isCurrentFavoriteSong by mainViewModel.currentFavoriteSong
                 .collectAsStateWithLifecycle()
 
+            val isConnect by mainViewModel.isConnect
+                .collectAsStateWithLifecycle()
+
             val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
             val context = LocalContext.current
 
@@ -81,6 +84,7 @@ class MainActivity : ComponentActivity() {
                             AppNavHost(
                                 currentSong = currentSong,
                                 isFavoriteSong = isCurrentFavoriteSong,
+                                isConnect = isConnect,
                                 isPlaying = playbackState.isPlaying,
                                 onFavoriteClick = { song ->
                                     if (isCurrentFavoriteSong) {

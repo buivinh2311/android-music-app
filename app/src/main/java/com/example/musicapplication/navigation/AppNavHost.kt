@@ -56,6 +56,7 @@ import com.example.shared_presentation.presentation.MiniPlayer
 fun AppNavHost(
     currentSong: Song?,
     isFavoriteSong: Boolean,
+    isConnect: Boolean,
     isPlaying: Boolean,
     onFavoriteClick: (Song) -> Unit,
     onTogglePlayClick: () -> Unit,
@@ -65,12 +66,27 @@ fun AppNavHost(
     val onSongClick: (String) -> Unit = { songId ->
         navController.navigate("${AppRoute.PLAYER}/$songId")
     }
+
+    val onPlaylistClick: (Int) -> Unit = { playlistId ->
+        navController.navigate("${AppRoute.PLAYLIST_DETAIL}/$playlistId")
+    }
+
+    val onAlbumClick: (String) -> Unit = { albumName ->
+        navController.navigate("${AppRoute.ALBUM_DETAIL}/$albumName")
+    }
+
+    val onArtistClick: (String) -> Unit = { artistName ->
+        navController.navigate("${AppRoute.ARTIST_DETAIL}/$artistName")
+    }
+
     val onVoiceSearchClick: () -> Unit = {
         navController.navigate(AppRoute.SEARCH)
     }
+
     val onSearchClick: () -> Unit = {
         navController.navigate(AppRoute.SEARCH)
     }
+
     val onBackClick: () -> Unit = {
         navController.navigateUp()
     }
@@ -122,6 +138,7 @@ fun AppNavHost(
         composable(AppRoute.HOME) {
             HomeRoute(
                 navController = navController,
+                isConnect = isConnect,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
                 onBottomActionClick = onBottomActionClick,
@@ -132,6 +149,7 @@ fun AppNavHost(
         composable(AppRoute.LIBRARY) {
             LibraryRoute(
                 navController = navController,
+                isConnect = isConnect,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
                 onBottomActionClick = onBottomActionClick,
@@ -142,6 +160,7 @@ fun AppNavHost(
         composable(AppRoute.DISCOVERY) {
             DiscoveryRoute(
                 navController = navController,
+                isConnect = isConnect,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
                 onBottomActionClick = onBottomActionClick,
@@ -158,7 +177,7 @@ fun AppNavHost(
 
         composable(AppRoute.SEARCH) {
             SearchRoute(
-                navController = navController,
+                isConnect = isConnect,
                 onSongClick = onSongClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
@@ -168,7 +187,7 @@ fun AppNavHost(
 
         composable(AppRoute.ALBUM) {
             AlbumRoute(
-                navController = navController,
+                onAlbumClick = onAlbumClick,
                 onBottomActionClick = onBottomActionClick,
                 onBackClick = onBackClick
             )
@@ -176,7 +195,7 @@ fun AppNavHost(
 
         composable(AppRoute.FAVORITE_ALBUM) {
             FavoriteAlbumRoute(
-                navController = navController,
+                onAlbumClick = onAlbumClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -186,8 +205,9 @@ fun AppNavHost(
             val albumName = backStackEntry.arguments?.getString("albumName")
             albumName?.let {
                 AlbumDetailRoute(
-                    navController = navController,
                     albumName = albumName,
+                    isConnect = isConnect,
+                    onSongClick = onSongClick,
                     onBackClick = onBackClick,
                     onBottomActionClick = onBottomActionClick,
                     onSongNavigationAction = onSongNavigationAction
@@ -197,7 +217,8 @@ fun AppNavHost(
 
         composable(AppRoute.RECOMMENDED) {
             RecommendedRoute(
-                navController = navController,
+                isConnect = isConnect,
+                onSongClick = onSongClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
                 onSongNavigationAction = onSongNavigationAction
@@ -206,7 +227,8 @@ fun AppNavHost(
 
         composable(AppRoute.FAVORITE) {
             FavoriteRoute(
-                navController = navController,
+                isConnect = isConnect,
+                onSongClick = onSongClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
                 onSongNavigationAction = onSongNavigationAction
@@ -215,7 +237,8 @@ fun AppNavHost(
 
         composable(AppRoute.RECENT) {
             RecentRoute(
-                navController = navController,
+                isConnect = isConnect,
+                onSongClick = onSongClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
                 onSongNavigationAction = onSongNavigationAction
@@ -224,7 +247,7 @@ fun AppNavHost(
 
         composable(AppRoute.PLAYLIST) {
             PlaylistRoute(
-                navController = navController,
+                onPlaylistClick = onPlaylistClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -242,7 +265,8 @@ fun AppNavHost(
             playlistId?.let {
                 PlaylistDetailRoute(
                     playlistId = playlistId,
-                    navController = navController,
+                    isConnect = isConnect,
+                    onSongClick = onSongClick,
                     onBackClick = onBackClick,
                     onBottomActionClick = onBottomActionClick,
                     onSongNavigationAction = onSongNavigationAction
@@ -252,7 +276,7 @@ fun AppNavHost(
 
         composable(AppRoute.ARTIST) {
             ArtistRoute(
-                navController = navController,
+                onArtistClick = onArtistClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -260,7 +284,7 @@ fun AppNavHost(
 
         composable(AppRoute.FOLLOWED_ARTIST) {
             FollowedArtistRoute(
-                navController = navController,
+                onArtistClick = onArtistClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -271,7 +295,7 @@ fun AppNavHost(
             artistStr?.let {
                 ArtistChooserRoute(
                     artistStr = artistStr,
-                    navController = navController,
+                    onArtistClick = onArtistClick,
                     onBackClick = onBackClick,
                     onBottomActionClick = onBottomActionClick
                 )
@@ -283,7 +307,8 @@ fun AppNavHost(
             artistName?.let {
                 ArtistDetailRoute(
                     artistName = artistName,
-                    navController = navController,
+                    isConnect = isConnect,
+                    onSongClick = onSongClick,
                     onBackClick = onBackClick,
                     onBottomActionClick = onBottomActionClick,
                     onSongNavigationAction = onSongNavigationAction
@@ -293,7 +318,8 @@ fun AppNavHost(
 
         composable(AppRoute.MOST_LISTENED) {
             MostListenedRoute(
-                navController = navController,
+                isConnect = isConnect,
+                onSongClick = onSongClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
                 onSongNavigationAction = onSongNavigationAction
@@ -302,7 +328,8 @@ fun AppNavHost(
 
         composable(AppRoute.FOR_YOU) {
             ForYouRoute(
-                navController = navController,
+                isConnect = isConnect,
+                onSongClick = onSongClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick,
                 onSongNavigationAction = onSongNavigationAction
@@ -341,19 +368,9 @@ fun AppNavHost(
         AppRoute.PLAYER_WITH_ARG
     )
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        NetworkBanner(
-            modifier = Modifier
-                .navigationBarsPadding()
-                .padding(
-                    bottom = AppDimens.Layout.BottomBarHeight +
-                            AppDimens.Layout.MiniPlayerHeight
-                )
-                .align(Alignment.BottomCenter)
-        )
-    }
+    val showNetworkBanner = !isConnect && currentRoute !in setOf(
+        AppRoute.PLAYER_WITH_ARG
+    )
 
     AnimatedVisibility(
         visible = showMiniPlayer,
@@ -382,6 +399,26 @@ fun AppNavHost(
                     onNextClick = onNextClick
                 )
             }
+        }
+    }
+
+    AnimatedVisibility(
+        visible = showNetworkBanner,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            NetworkBanner(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(
+                        bottom = AppDimens.Layout.BottomBarHeight +
+                                AppDimens.Layout.MiniPlayerHeight
+                    )
+                    .align(Alignment.BottomCenter)
+            )
         }
     }
 }

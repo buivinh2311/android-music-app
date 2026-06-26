@@ -9,15 +9,15 @@ import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun RecommendedRoute(
-    navController: NavController,
+    isConnect: Boolean,
+    onSongClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
     RecommendedScreen(
-        onSongClick = { songId ->
-            navController.navigate("${AppRoute.PLAYER}/$songId")
-        },
+        isConnect = isConnect,
+        onSongClick = onSongClick,
         onBackCLick = onBackClick,
         onBottomActionClick = onBottomActionClick,
         onSongNavigationAction = onSongNavigationAction

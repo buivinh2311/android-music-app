@@ -50,6 +50,7 @@ import com.example.shared_presentation.presentation.SongActionHost
 @Composable
 fun AlbumDetailScreen(
     albumName: String,
+    isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit,
@@ -172,12 +173,21 @@ fun AlbumDetailScreen(
                                 .fillMaxWidth(),
                             song = songs[index],
                             onSongClick = { song ->
-                                albumDetailViewModel.play(
-                                    queueSource = QueueSource.ALBUM,
-                                    queue = songs,
-                                    startSong = song
-                                )
-                                onSongClick(song.id)
+                                if(isConnect) {
+                                    albumDetailViewModel.play(
+                                        queueSource = QueueSource.ALBUM,
+                                        queue = songs,
+                                        startSong = song
+                                    )
+                                    onSongClick(song.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
                             },
                             onMoreClick = { song ->
                                 selectedSong = song

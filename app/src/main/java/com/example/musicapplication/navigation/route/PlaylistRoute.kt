@@ -8,14 +8,12 @@ import com.example.musicapplication.navigation.AppRoute
 
 @Composable
 fun PlaylistRoute(
-    navController: NavController,
+    onPlaylistClick: (Int) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     PlaylistScreen(
-        onPlaylistClick = { playlistId ->
-            navController.navigate("${AppRoute.PLAYLIST_DETAIL}/$playlistId")
-        },
+        onPlaylistClick = onPlaylistClick,
         onBackClick = onBackClick,
         onBottomActionClick = onBottomActionClick
     )

@@ -230,7 +230,6 @@ class MediaPlaybackControllerImpl @Inject constructor(
     }
 
     private fun saveState() {
-        val state = playbackState.value
         playbackStateDataSource.saveLastPlaybackState(playbackState.value)
     }
 
