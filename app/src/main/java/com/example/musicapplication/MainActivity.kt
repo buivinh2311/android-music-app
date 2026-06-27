@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.theme.MusicApplicationTheme
@@ -30,6 +34,7 @@ import com.example.core_ui.component.NetworkBanner
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
+import com.example.feature_home.presentation.HomeViewModel
 import com.example.feature_settings.presentation.SettingsViewModel
 import com.example.musicapplication.navigation.AppNavHost
 import com.example.shared_presentation.presentation.MiniPlayer
@@ -56,8 +61,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel()
-            val settingsViewModel: SettingsViewModel = hiltViewModel()
-            val themeState by settingsViewModel.themeState.collectAsStateWithLifecycle()
+            val themeState by mainViewModel.themeState.collectAsStateWithLifecycle()
+
+            val playlists by mainViewModel.playlists
+                .collectAsStateWithLifecycle(emptyList())
+
             val playbackState by mainViewModel.playbackState
                 .collectAsStateWithLifecycle()
 
@@ -86,6 +94,7 @@ class MainActivity : ComponentActivity() {
                                 isFavoriteSong = isCurrentFavoriteSong,
                                 isConnect = isConnect,
                                 isPlaying = playbackState.isPlaying,
+                                playlists = playlists,
                                 onFavoriteClick = { song ->
                                     if (isCurrentFavoriteSong) {
                                         mainViewModel.removeSongFromFavorite(song.id)
@@ -106,6 +115,30 @@ class MainActivity : ComponentActivity() {
                                             )
                                         )
                                     }
+                                },
+                                observeFavoriteSong = { songId ->
+                                    mainViewModel.isFavoriteSong(songId)
+                                },
+                                observeDownloadSong = { songId ->
+                                    mainViewModel.isDownloadSong(songId)
+                                },
+                                onAddSongToDownload = { song ->
+                                    mainViewModel.download(song)
+                                },
+                                onRemoveSongFromDownload = { songId ->
+                                    mainViewModel.removeDownloadSong(songId)
+                                },
+                                onAddSongToFavorite = { songId ->
+                                    mainViewModel.addSongToFavorite(songId)
+                                },
+                                onRemoveSongFromFavorite = { songId ->
+                                    mainViewModel.removeSongFromFavorite(songId)
+                                },
+                                onCreatePlaylist = { playlistName ->
+                                    mainViewModel.createPlaylist(playlistName)
+                                },
+                                onAddSongToPlaylist = { playlistId, songId ->
+                                    mainViewModel.addSongToPlaylist(playlistId, songId)
                                 },
                                 onTogglePlayClick = {
                                     if (playbackState.isPlaying) {

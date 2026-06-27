@@ -1,6 +1,5 @@
 package com.example.core_database.datasource.user
 
-import com.example.core_database.entity.artist.ArtistEntity
 import com.example.core_database.entity.artist.FollowedArtistEntity
 import com.example.core_database.entity.user.UserFavoriteArtistCrossRefEntity
 import kotlinx.coroutines.flow.Flow

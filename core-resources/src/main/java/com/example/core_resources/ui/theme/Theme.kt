@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.example.core_model.ThemeMode
+import com.example.core_model.settings.ThemeMode
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,

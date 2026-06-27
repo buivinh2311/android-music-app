@@ -5,20 +5,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.core_database.entity.song.SongEntity
+import com.example.core_model.download.DownloadState
 import com.example.core_database.entity.user.UserDownloadSongCrossRefEntity
-import com.example.core_database.entity.user.UserFavoriteSongCrossRefEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDownloadSongCrossRefDao {
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(userDownloadSong: UserDownloadSongCrossRefEntity)
 
     @Query(
         "SELECT EXISTS( " +
                 "SELECT 1 FROM user_download_song_cross_ref u " +
-                "INNER JOIN songs s ON u.song_id = s.song_id " +
-                "ORDER BY u.user_id = :userId AND s.song_id = :songId" +
+                "WHERE u.user_id = :userId AND song_id = :songId" +
                 ")"
     )
     fun isDownloadSong(userId: Int, songId: String): Flow<Boolean>
@@ -36,6 +35,12 @@ interface UserDownloadSongCrossRefDao {
                 "WHERE user_id = :userId"
     )
     fun getDownloadSongCount(userId: Int): Flow<Int>
+
+    @Query(
+        "SELECT * FROM user_download_song_cross_ref " +
+                "WHERE user_id = :userId AND song_id = :songId"
+    )
+    suspend fun getDownloadInfo(userId: Int, songId: String): UserDownloadSongCrossRefEntity?
 
     @Query(
         "SELECT song_id FROM user_download_song_cross_ref " +

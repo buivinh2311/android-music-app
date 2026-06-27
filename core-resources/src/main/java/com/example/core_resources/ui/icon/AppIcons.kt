@@ -154,4 +154,8 @@ object AppIcons {
     val NoInternet
         @Composable
         get() = painterResource(R.drawable.ic_no_internet)
+
+    val Delete
+        @Composable
+        get() = painterResource(R.drawable.ic_delete)
 }

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -48,16 +48,17 @@ import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 @Composable
 fun LibraryScreen(
     isConnect: Boolean,
+    onSongOptionClick: (Song) -> Unit,
     onRecentClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    onDownloadClick: () -> Unit,
     onFavoriteAlbumClick: () -> Unit,
     onFollowedArtistClick: () -> Unit,
     onMorePlaylistClick: () -> Unit,
     onPlaylistClick: (Int) -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
@@ -117,6 +118,7 @@ fun LibraryScreen(
                     favoriteAlbumCount = favoriteAlbumCount,
                     followedArtistCount = followedArtistCount,
                     onFavoriteClick = onFavoriteClick,
+                    onDownloadClick = onDownloadClick,
                     onFavoriteAlbumClick = onFavoriteAlbumClick,
                     onFollowedArtistClick = onFollowedArtistClick
                 )
@@ -162,9 +164,7 @@ fun LibraryScreen(
                                     )
                                 }
                             },
-                            onMoreClick = { song ->
-                                selectedSong = song
-                            }
+                            onSongOptionClick = onSongOptionClick
                         )
                     }
                 }
@@ -206,26 +206,26 @@ fun LibraryScreen(
             )
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                libraryViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                libraryViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                libraryViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = {playlistName ->
-                libraryViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = {playlistId, songId ->
-                libraryViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                libraryViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                libraryViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                libraryViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = {playlistName ->
+//                libraryViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = {playlistId, songId ->
+//                libraryViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

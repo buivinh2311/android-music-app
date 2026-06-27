@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
@@ -44,7 +44,7 @@ class ForYouViewModel @Inject constructor(
     }
 
     val playlists = playlistUseCases.getAllPlaylist()
-    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
+    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observeFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {

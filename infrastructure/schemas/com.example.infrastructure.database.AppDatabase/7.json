@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "f5423964ab1211b01c995ee3cfcfda8c",
+    "identityHash": "e17d1c0a2a006a9921963902d49834f3",
     "entities": [
       {
         "tableName": "albums",
@@ -527,7 +527,7 @@
       },
       {
         "tableName": "user_download_song_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `song_id` TEXT NOT NULL, `created_at` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `song_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `song_id` TEXT NOT NULL, `download_id` INTEGER NOT NULL, `local_path` TEXT, `state` TEXT NOT NULL, `created_at` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `song_id`))",
         "fields": [
           {
             "fieldPath": "userId",
@@ -536,8 +536,25 @@
             "notNull": true
           },
           {
-            "fieldPath": "songIdd",
+            "fieldPath": "songId",
             "columnName": "song_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadId",
+            "columnName": "download_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localPath",
+            "columnName": "local_path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -880,7 +897,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f5423964ab1211b01c995ee3cfcfda8c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e17d1c0a2a006a9921963902d49834f3')"
     ]
   }
 }

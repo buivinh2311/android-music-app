@@ -15,7 +15,10 @@ data class UserDownloadSongCrossRefEntity (
     val userId: Int,
 
     @ColumnInfo(name = "song_id")
-    val songIdd: String,
+    val songId: String,
+
+    @ColumnInfo(name = "download_id")
+    val downloadId: Long,
 
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()

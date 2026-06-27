@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-model"))
     // room
     implementation(libs.room.runtime)
     implementation(libs.room.paging)

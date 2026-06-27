@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.core_database.entity.artist.ArtistEntity
 import com.example.core_database.entity.artist.FollowedArtistEntity
-import com.example.core_database.entity.song.SongEntity
 import com.example.core_database.entity.user.UserFavoriteArtistCrossRefEntity
 import kotlinx.coroutines.flow.Flow
 

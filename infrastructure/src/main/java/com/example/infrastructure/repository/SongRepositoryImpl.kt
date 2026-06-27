@@ -1,6 +1,5 @@
 package com.example.infrastructure.repository
 
-import android.util.Log
 import androidx.room.withTransaction
 import com.example.core_database.datasource.album.AlbumSongLocalDataSource
 import com.example.core_database.datasource.artist.ArtistSongLocalDataSource
@@ -17,7 +16,7 @@ import com.example.core_database.entity.artist.ArtistSongCrossRefEntity
 import com.example.core_database.entity.song.SongListEntity
 import com.example.core_database.entity.tracking.DBTrackingEntity
 import com.example.core_domain.manager.UserManager
-import com.example.core_domain.model.SongListType
+import com.example.core_model.SongListType
 import com.example.core_domain.repository.SongRepository
 import com.example.core_model.Song
 import com.example.core_network.datasource.SongRemoteDataSource
@@ -30,7 +29,6 @@ import com.example.infrastructure.mapper.local.toModel
 import com.example.infrastructure.mapper.local.toModels
 import com.example.infrastructure.mapper.remote.toModels
 import com.example.infrastructure.mapper.remote.toModel
-import com.example.infrastructure.mapper.remote.toModels
 import javax.inject.Inject
 
 class SongRepositoryImpl @Inject constructor(

@@ -1,6 +1,5 @@
 package com.example.infrastructure.repository
 
-import com.example.core_database.dao.user.UserFavoriteAlbumCrossRefDao
 import com.example.core_database.datasource.user.FavoriteAlbumLocalDataSource
 import com.example.core_database.entity.user.UserFavoriteAlbumCrossRefEntity
 import com.example.core_domain.manager.UserManager

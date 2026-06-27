@@ -1,4 +1,6 @@
-package com.example.core_model
+package com.example.core_model.playback
+
+import com.example.core_model.Song
 
 data class PlaybackState (
     val queueSource: QueueSource = QueueSource.DEFAULT,

@@ -1,7 +1,6 @@
 package com.example.feature_home.presentation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,7 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -50,21 +48,16 @@ import com.example.shared_presentation.presentation.SongItem
 @Composable
 fun HomeScreen(
     isConnect: Boolean,
+    onSongOptionClick: (Song) -> Unit,
     onMoreAlbumClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
     onRecommendedClick: () -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
     val homeViewModel: HomeViewModel = hiltViewModel()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val playlists by homeViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
     val context = LocalContext.current
 
     Scaffold(
@@ -184,9 +177,7 @@ fun HomeScreen(
                                         )
                                     }
                                 },
-                                onMoreClick = { song ->
-                                    selectedSong = song
-                                }
+                                onSongOptionClick = onSongOptionClick
                             )
                         }
                     }
@@ -194,26 +185,26 @@ fun HomeScreen(
             }
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                homeViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                homeViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                homeViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = { playlistName ->
-                homeViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = {playlistId, songId ->
-                homeViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                homeViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                homeViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                homeViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = { playlistName ->
+//                homeViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = {playlistId, songId ->
+//                homeViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

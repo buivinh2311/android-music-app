@@ -1,6 +1,7 @@
 package com.example.core_database.datasource.user
 
 import com.example.core_database.entity.song.SongEntity
+import com.example.core_model.download.DownloadState
 import com.example.core_database.entity.user.UserDownloadSongCrossRefEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -9,6 +10,7 @@ interface DownloadSongLocalDataSource {
     fun isDownloadSong(userId: Int, songId: String): Flow<Boolean>
     fun getDownloadSongs(userId: Int): Flow<List<SongEntity>>
     fun getDownloadSongCount(userId: Int): Flow<Int>
+    suspend fun getDownloadInfo(userId: Int, songId: String): UserDownloadSongCrossRefEntity?
     suspend fun getAllDownloadSongIds(userId: Int): List<String>
     suspend fun delete(userId: Int, songId: String)
 }

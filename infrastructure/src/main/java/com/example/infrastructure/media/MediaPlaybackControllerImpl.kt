@@ -8,10 +8,10 @@ import androidx.media3.session.MediaController
 import com.example.core_model.Song
 import com.example.core_playback.MediaControllerProvider
 import com.example.core_playback.MediaPlaybackController
-import com.example.core_model.PlaybackState
+import com.example.core_model.playback.PlaybackState
 import com.example.core_playback.PlaybackStateDataSource
-import com.example.core_model.QueueSource
-import com.example.core_model.RepeatMode
+import com.example.core_model.playback.QueueSource
+import com.example.core_model.playback.RepeatMode
 import com.example.core_playback.usecase.AddRecentSongUseCase
 import com.example.core_playback.usecase.GetSongByIdUseCase
 import com.example.core_playback.usecase.IncreasePlayCountUseCase

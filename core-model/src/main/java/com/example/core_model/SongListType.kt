@@ -1,4 +1,4 @@
-package com.example.core_domain.model
+package com.example.core_model
 
 object SongListType {
     const val RECOMMENDED = "RECOMMENDED"

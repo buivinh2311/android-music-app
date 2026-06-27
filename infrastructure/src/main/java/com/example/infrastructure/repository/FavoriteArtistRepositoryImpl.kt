@@ -6,7 +6,6 @@ import com.example.core_domain.manager.UserManager
 import com.example.core_domain.repository.FavoriteArtistRepository
 import com.example.core_model.Artist
 import com.example.infrastructure.mapper.local.toFollowedModels
-import com.example.infrastructure.mapper.local.toModels
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

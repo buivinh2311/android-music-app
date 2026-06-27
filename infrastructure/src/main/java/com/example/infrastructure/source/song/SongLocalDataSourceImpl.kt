@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import com.example.core_database.dao.song.SongDao
 import com.example.core_database.datasource.song.SongLocalDataSource
 import com.example.core_database.entity.song.SongEntity
-import com.example.core_domain.model.SongListType
+import com.example.core_model.SongListType
 import javax.inject.Inject
 
 class SongLocalDataSourceImpl @Inject constructor(

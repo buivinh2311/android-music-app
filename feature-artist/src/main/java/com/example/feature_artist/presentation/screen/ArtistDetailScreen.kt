@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -48,9 +48,9 @@ fun ArtistDetailScreen(
     artistName: String,
     isConnect: Boolean,
     onSongClick: (String) -> Unit,
+    onSongOptionClick: (Song) -> Unit,
     onBackCLick: () -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
@@ -187,35 +187,33 @@ fun ArtistDetailScreen(
                                     )
                                 }
                             },
-                            onMoreClick = { song ->
-                                selectedSong = song
-                            }
+                            onSongOptionClick = onSongOptionClick
                         )
                     }
                 }
             }
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                artistDetailViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                artistDetailViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                artistDetailViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = {playlistName ->
-                artistDetailViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = {playlistId, songId ->
-                artistDetailViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                artistDetailViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                artistDetailViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                artistDetailViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = {playlistName ->
+//                artistDetailViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = {playlistId, songId ->
+//                artistDetailViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

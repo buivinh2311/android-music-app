@@ -2,7 +2,6 @@ package com.example.feature_album.presentation.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Song
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -42,7 +41,6 @@ import com.example.feature_album.presentation.component.AlbumAction
 import com.example.feature_album.presentation.component.AlbumInformation
 import com.example.feature_album.presentation.viewmodel.AlbumDetailViewModel
 import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -52,9 +50,9 @@ fun AlbumDetailScreen(
     albumName: String,
     isConnect: Boolean,
     onSongClick: (String) -> Unit,
+    onSongOptionClick: (Song) -> Unit,
     onBackCLick: () -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 
 ) {
     var selectedSong: Song? by remember {
@@ -189,35 +187,33 @@ fun AlbumDetailScreen(
                                     )
                                 }
                             },
-                            onMoreClick = { song ->
-                                selectedSong = song
-                            }
+                            onSongOptionClick = onSongOptionClick
                         )
                     }
                 }
             }
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                albumDetailViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                albumDetailViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                albumDetailViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = { playlistName ->
-                albumDetailViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = { playlistId, songId ->
-                albumDetailViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                albumDetailViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                albumDetailViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                albumDetailViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = { playlistName ->
+//                albumDetailViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = { playlistId, songId ->
+//                albumDetailViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

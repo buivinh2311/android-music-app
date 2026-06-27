@@ -1,4 +1,4 @@
-package com.example.core_model
+package com.example.core_model.playback
 
 enum class RepeatMode {
     OFF,

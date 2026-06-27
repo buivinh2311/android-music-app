@@ -1,7 +1,7 @@
 package com.example.infrastructure.repository
 
 import com.example.core_domain.repository.ThemeRepository
-import com.example.core_model.ThemeMode
+import com.example.core_model.settings.ThemeMode
 import com.example.infrastructure.source.theme.ThemePreferencesDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -13,7 +13,7 @@ class FavoriteSongUseCases @Inject constructor(
         favoriteSongRepository.addSongToFavorite(songId)
     }
 
-    fun observerFavoriteSong(songId: String): Flow<Boolean> {
+    fun observeFavoriteSong(songId: String): Flow<Boolean> {
         return favoriteSongRepository.isFavoriteSong(songId)
     }
 

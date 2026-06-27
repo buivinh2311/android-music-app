@@ -3,7 +3,7 @@ package com.example.infrastructure.source.theme
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.core_model.ThemeMode
+import com.example.core_model.settings.ThemeMode
 import com.example.infrastructure.source.theme.datastore.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

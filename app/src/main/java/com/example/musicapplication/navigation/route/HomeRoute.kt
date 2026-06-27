@@ -2,6 +2,7 @@ package com.example.musicapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.example.core_model.Song
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_home.presentation.HomeScreen
 import com.example.musicapplication.navigation.AppRoute
@@ -11,13 +12,14 @@ import com.example.shared_presentation.menu.SongOptionItem
 fun HomeRoute(
     navController: NavController,
     isConnect: Boolean,
+    onSongOptionClick: (Song) -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     HomeScreen(
         isConnect = isConnect,
+        onSongOptionClick = onSongOptionClick,
         onMoreAlbumClick = {
             navController.navigate(AppRoute.ALBUM)
         },
@@ -32,7 +34,6 @@ fun HomeRoute(
 
         onSearchClick = onSearchClick,
         onSongClick = onSongClick,
-        onBottomActionClick = onBottomActionClick,
-        onSongNavigationAction = onSongNavigationAction
+        onBottomActionClick = onBottomActionClick
     )
 }

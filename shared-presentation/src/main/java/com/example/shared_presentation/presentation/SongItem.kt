@@ -32,7 +32,7 @@ fun SongItem(
     modifier: Modifier = Modifier,
     song: Song,
     onSongClick: (Song) -> Unit,
-    onMoreClick: (Song) -> Unit
+    onSongOptionClick: (Song) -> Unit
 ) {
     Surface(
         onClick = {
@@ -92,7 +92,7 @@ fun SongItem(
                 tint = MaterialTheme.colorScheme.onBackground,
                 rippleColor = MaterialTheme.colorScheme.onBackground
             ) {
-                onMoreClick(song)
+                onSongOptionClick(song)
             }
         }
     }

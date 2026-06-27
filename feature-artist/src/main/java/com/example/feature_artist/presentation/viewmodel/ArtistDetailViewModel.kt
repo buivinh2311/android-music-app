@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Artist
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
@@ -68,7 +68,6 @@ class ArtistDetailViewModel @Inject constructor(
 
     fun isFavoriteArtist(artistName: String) = observeFavoriteArtistUseCase(artistName)
     val playlists = playlistUseCases.getAllPlaylist()
-    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
 
     fun addArtistToFavorite(artistName: String) {
         viewModelScope.launch {

@@ -1,7 +1,7 @@
 package com.example.core_playback
 
-import com.example.core_model.PlaybackState
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.PlaybackState
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import kotlinx.coroutines.flow.StateFlow
 

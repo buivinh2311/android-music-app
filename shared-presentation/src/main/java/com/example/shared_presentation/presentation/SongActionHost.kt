@@ -22,7 +22,10 @@ fun SongActionHost(
     selectedSong: Song?,
     playlists: List<Playlist>,
     observeFavoriteSong: (String) -> Flow<Boolean>,
+    observeDownloadSong: (String) -> Flow<Boolean>,
     onDismissSong: () -> Unit,
+    onAddSongToDownload: (Song) -> Unit,
+    onRemoveSongFromDownload: (String) -> Unit,
     onAddSongToFavorite: (String) -> Unit,
     onRemoveSongFromFavorite: (String) -> Unit,
     onCreatePlaylist: (String) -> Unit,
@@ -42,9 +45,12 @@ fun SongActionHost(
     selectedSong?.let { song ->
         val isFavorite by observeFavoriteSong(song.id)
             .collectAsStateWithLifecycle(false)
+        val isDownload by observeDownloadSong(song.id)
+            .collectAsStateWithLifecycle(false)
         SongOptionBottomSheet(
             song = song,
             isFavorite = isFavorite,
+            isDownload = isDownload,
             onDismiss = { onDismissSong() },
             onShareClick = {
                 showToast(
@@ -60,12 +66,24 @@ fun SongActionHost(
             onSongBusinessAction = { item ->
                 when (item.action) {
                     SongOptionAction.DOWNLOAD -> {
-                        showToast(
-                            context,
-                            message = context.getString(
-                                R.string.currently_under_development,
+                        if(isDownload) {
+                            onRemoveSongFromDownload(song.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_download_success,
+                                    song.title
+                                )
                             )
-                        )
+                        } else {
+                            onAddSongToDownload(song)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.text_downloading
+                                )
+                            )
+                        }
                     }
 
                     SongOptionAction.ADD_TO_LIBRARY -> {

@@ -3,7 +3,6 @@ package com.example.feature_recent.presentation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Song
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -44,7 +43,6 @@ import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -52,9 +50,9 @@ import com.example.shared_presentation.presentation.SongActionHost
 fun RecentScreen(
     isConnect: Boolean,
     onSongClick: (String) -> Unit,
+    onSongOptionClick: (Song) -> Unit,
     onBackCLick: () -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
@@ -149,35 +147,33 @@ fun RecentScreen(
                                     )
                                 }
                             },
-                            onMoreClick = { song ->
-                                selectedSong = song
-                            }
+                            onSongOptionClick = onSongOptionClick
                         )
                     }
                 }
             }
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                recentViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                recentViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                recentViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = {playlistName ->
-                recentViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = {playlistId, songId ->
-                recentViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                recentViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                recentViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                recentViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = {playlistName ->
+//                recentViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = {playlistId, songId ->
+//                recentViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

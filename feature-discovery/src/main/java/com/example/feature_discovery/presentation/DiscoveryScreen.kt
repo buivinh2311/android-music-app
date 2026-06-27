@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -50,14 +50,14 @@ import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 @Composable
 fun DiscoveryScreen(
     isConnect: Boolean,
+    onSongOptionClick: (Song) -> Unit,
     onMoreArtistClick: () -> Unit,
     onArtistClick: (String) -> Unit,
     onForYouClick: () -> Unit,
     onMostListenedClick: () -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
@@ -177,9 +177,7 @@ fun DiscoveryScreen(
                                         )
                                     }
                                 },
-                                onMoreClick = { song ->
-                                    selectedSong = song
-                                }
+                                onSongOptionClick = onSongOptionClick
                             )
                         }
                     }
@@ -235,9 +233,7 @@ fun DiscoveryScreen(
                                         )
                                     }
                                 },
-                                onMoreClick = { song ->
-                                    selectedSong = song
-                                }
+                                onSongOptionClick = onSongOptionClick
                             )
                         }
                     }
@@ -245,26 +241,26 @@ fun DiscoveryScreen(
             }
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                discoveryViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                discoveryViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                discoveryViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = {playlistName ->
-                discoveryViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = {playlistId, songId ->
-                discoveryViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                discoveryViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                discoveryViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                discoveryViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = {playlistName ->
+//                discoveryViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = {playlistId, songId ->
+//                discoveryViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

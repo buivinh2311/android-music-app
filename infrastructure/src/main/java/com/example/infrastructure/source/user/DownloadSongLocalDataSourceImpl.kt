@@ -26,6 +26,13 @@ class DownloadSongLocalDataSourceImpl @Inject constructor(
         return crossRefDao.getDownloadSongCount(userId)
     }
 
+    override suspend fun getDownloadInfo(
+        userId: Int,
+        songId: String
+    ): UserDownloadSongCrossRefEntity? {
+        return crossRefDao.getDownloadInfo(userId, songId)
+    }
+
     override suspend fun getAllDownloadSongIds(userId: Int): List<String> {
         return crossRefDao.getAllDownloadSongIds(userId)
     }

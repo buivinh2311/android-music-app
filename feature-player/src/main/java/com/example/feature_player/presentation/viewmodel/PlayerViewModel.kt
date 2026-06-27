@@ -81,10 +81,10 @@ class PlayerViewModel @Inject constructor(
             .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { id ->
-                favoriteSongUseCases.observerFavoriteSong(id)
+                favoriteSongUseCases.observeFavoriteSong(id)
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
+    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observeFavoriteSong(songId)
 
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {

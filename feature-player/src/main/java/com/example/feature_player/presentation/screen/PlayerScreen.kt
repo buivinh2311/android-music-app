@@ -45,8 +45,8 @@ import com.example.shared_presentation.presentation.SongActionHost
 @Composable
 fun PlayerScreen(
     songId: String,
-    onBackClick: () -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onSongOptionClick: (Song) -> Unit,
+    onBackClick: () -> Unit
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
@@ -86,7 +86,7 @@ fun PlayerScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent
         ) { innerPadding ->
-            if(uiState.isLoading) {
+            if (uiState.isLoading) {
 
             } else {
                 currentSong?.let {
@@ -101,7 +101,9 @@ fun PlayerScreen(
                             queueSource = playbackState.queueSource,
                             song = currentSong,
                             sourceName = playbackState.sourceName ?: "_",
-                            onClick = { selectedSong = currentSong },
+                            onClick = {
+                                onSongOptionClick(currentSong)
+                            },
                             onBackClick = onBackClick
                         )
                         Spacer(modifier = Modifier.height(40.dp))
@@ -109,7 +111,7 @@ fun PlayerScreen(
                         PlayerArtWork(
                             artworkUrl = currentSong.artworkUrl,
                             onArtworkClick = {
-                                selectedSong = currentSong
+                                onSongOptionClick(currentSong)
                             }
                         )
                         Spacer(modifier = Modifier.height(48.dp))
@@ -119,7 +121,7 @@ fun PlayerScreen(
                             artist = currentSong.artist,
                             isFavoriteSong = isCurrentFavoriteSong,
                             onFavoriteClick = {
-                                if(isCurrentFavoriteSong) {
+                                if (isCurrentFavoriteSong) {
                                     playerViewModel.removeSongToFavorite(currentSong.id)
                                     showToast(
                                         context,
@@ -162,7 +164,7 @@ fun PlayerScreen(
                         PlayerControls(
                             isPlaying = playbackState.isPlaying,
                             onPlayClick = {
-                                if(playbackState.isPlaying) {
+                                if (playbackState.isPlaying) {
                                     playerViewModel.pause()
                                 } else {
                                     playerViewModel.resume()
@@ -187,27 +189,27 @@ fun PlayerScreen(
                         PlayerExtraAction()
                     }
 
-                    SongActionHost(
-                        selectedSong = selectedSong,
-                        playlists = playlists,
-                        observeFavoriteSong = { songId ->
-                            playerViewModel.isFavoriteSong(songId)
-                        },
-                        onDismissSong = { selectedSong = null },
-                        onAddSongToFavorite = { songId ->
-                            playerViewModel.addSongToFavorite(songId)
-                        },
-                        onRemoveSongFromFavorite = { songId ->
-                            playerViewModel.removeSongToFavorite(songId)
-                        },
-                        onCreatePlaylist = {playlistName ->
-                            playerViewModel.createPlaylist(playlistName)
-                        },
-                        onAddSongToPlaylist = {playlistId, songId ->
-                            playerViewModel.addSongToPlaylist(playlistId, songId)
-                        },
-                        onSongNavigationAction = onSongNavigationAction
-                    )
+//                    SongActionHost(
+//                        selectedSong = selectedSong,
+//                        playlists = playlists,
+//                        observeFavoriteSong = { songId ->
+//                            playerViewModel.isFavoriteSong(songId)
+//                        },
+//                        onDismissSong = { selectedSong = null },
+//                        onAddSongToFavorite = { songId ->
+//                            playerViewModel.addSongToFavorite(songId)
+//                        },
+//                        onRemoveSongFromFavorite = { songId ->
+//                            playerViewModel.removeSongToFavorite(songId)
+//                        },
+//                        onCreatePlaylist = {playlistName ->
+//                            playerViewModel.createPlaylist(playlistName)
+//                        },
+//                        onAddSongToPlaylist = {playlistId, songId ->
+//                            playerViewModel.addSongToPlaylist(playlistId, songId)
+//                        },
+//                        onSongNavigationAction = onSongNavigationAction
+//                    )
                 }
             }
         }

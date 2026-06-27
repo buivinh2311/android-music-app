@@ -2,7 +2,6 @@ package com.example.feature_search.presentation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Song
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -45,7 +44,6 @@ import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.DeleteConfirmDialog
 import com.example.feature_search.presentation.component.SearchTopBar
 import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.MiniPlayer
 import com.example.shared_presentation.presentation.SongActionHost
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -53,10 +51,10 @@ import com.example.shared_presentation.presentation.SongActionHost
 @Composable
 fun SearchScreen (
     isConnect: Boolean,
+    onSongOptionClick: (Song) -> Unit,
     onSongClick: (String) -> Unit,
     onBackClick: () -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit,
-    onSongNavigationAction: (SongOptionItem) -> Unit
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var selectedSong: Song? by remember {
         mutableStateOf(null)
@@ -163,9 +161,9 @@ fun SearchScreen (
                                     )
                                     onSongClick(song.id)
                                 },
-                                onMoreClick = { song ->
+                                onSongOptionClick = { song ->
                                     keyboardController?.hide()
-                                    selectedSong = song
+                                    onSongOptionClick(song)
                                 }
                             )
                         }
@@ -231,9 +229,9 @@ fun SearchScreen (
                                     )
                                 }
                             },
-                            onMoreClick = { song ->
+                            onSongOptionClick = { song ->
                                 keyboardController?.hide()
-                                selectedSong = song
+                                onSongOptionClick(song)
                             }
                         )
                     }
@@ -256,26 +254,26 @@ fun SearchScreen (
             )
         }
 
-        SongActionHost(
-            selectedSong = selectedSong,
-            playlists = playlists,
-            observeFavoriteSong = { songId ->
-                searchViewModel.isFavoriteSong(songId)
-            },
-            onDismissSong = { selectedSong = null },
-            onAddSongToFavorite = { songId ->
-                searchViewModel.addSongToFavorite(songId)
-            },
-            onRemoveSongFromFavorite = { songId ->
-                searchViewModel.removeSongFromFavorite(songId)
-            },
-            onCreatePlaylist = {playlistName ->
-                searchViewModel.createPlaylist(playlistName)
-            },
-            onAddSongToPlaylist = {playlistId, songId ->
-                searchViewModel.addSongToPlaylist(playlistId, songId)
-            },
-            onSongNavigationAction = onSongNavigationAction
-        )
+//        SongActionHost(
+//            selectedSong = selectedSong,
+//            playlists = playlists,
+//            observeFavoriteSong = { songId ->
+//                searchViewModel.isFavoriteSong(songId)
+//            },
+//            onDismissSong = { selectedSong = null },
+//            onAddSongToFavorite = { songId ->
+//                searchViewModel.addSongToFavorite(songId)
+//            },
+//            onRemoveSongFromFavorite = { songId ->
+//                searchViewModel.removeSongFromFavorite(songId)
+//            },
+//            onCreatePlaylist = {playlistName ->
+//                searchViewModel.createPlaylist(playlistName)
+//            },
+//            onAddSongToPlaylist = {playlistId, songId ->
+//                searchViewModel.addSongToPlaylist(playlistId, songId)
+//            },
+//            onSongNavigationAction = onSongNavigationAction
+//        )
     }
 }

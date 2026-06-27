@@ -1,6 +1,6 @@
 package com.example.infrastructure.source.theme
 
-import com.example.core_model.ThemeMode
+import com.example.core_model.settings.ThemeMode
 import kotlinx.coroutines.flow.Flow
 
 interface ThemePreferencesDataSource {

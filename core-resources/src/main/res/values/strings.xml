@@ -104,4 +104,11 @@
     <string name="message_playlist_song_empty">Không có bài hát nào trong playlist của bạn. Tìm bài hát để thêm vào Playlist của bạn</string>
     <string name="no_internet">Bạn đang không có kết nối mạng</string>
     <string name="no_internet_message">Bạn đang không có kết nối mạng. Vui lòng thử lại sau</string>
+    <string name="title_download">Tải xuống</string>
+    <string name="title_download_song_empty">Bạn chưa có bài hát nào</string>
+    <string name="message_download_song_empty">Tìm và bấm tải xuống để thêm vào thư viện</string>
+    <string name="label_download">Tải xuống</string>
+    <string name="action_delete_file">Xóa file đã tải</string>
+    <string name="remove_song_from_download_success">Đã xóa %s khỏi bộ nhớ</string>
+    <string name="text_downloading">Thêm vào danh sách tải xuống</string>
 </resources>

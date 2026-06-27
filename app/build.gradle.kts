@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":feature-library"))
     implementation(project(":feature-discovery"))
     implementation(project(":feature-search"))
+    implementation(project(":feature-download"))
     implementation(project(":feature-favorite"))
     implementation(project(":feature-foryou"))
     implementation(project(":feature-mostheard"))

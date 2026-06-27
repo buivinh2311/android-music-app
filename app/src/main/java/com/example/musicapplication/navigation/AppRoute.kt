@@ -11,6 +11,7 @@ object AppRoute {
     const val ALBUM_DETAIL = "albumDetail"
     const val ALBUM_DETAIL_WITH_ARG = "albumDetail/{albumName}"
     const val RECOMMENDED = "recommended"
+    const val DOWNLOAD = "download"
     const val FAVORITE = "favorite"
     const val RECENT = "recent"
     const val PLAYLIST = "playlist"

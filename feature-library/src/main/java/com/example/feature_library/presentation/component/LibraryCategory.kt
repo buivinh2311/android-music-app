@@ -39,6 +39,7 @@ fun LibraryCategory(
     favoriteAlbumCount: Int,
     followedArtistCount: Int,
     onFavoriteClick: () -> Unit,
+    onDownloadClick: () -> Unit,
     onFavoriteAlbumClick: () -> Unit,
     onFollowedArtistClick: () -> Unit
 ) {
@@ -63,7 +64,7 @@ fun LibraryCategory(
             title = stringResource(R.string.action_library_downloaded),
             count = downloadSongCount,
             tint = Color(0xFF7A43DA),
-            onClick = onFavoriteClick
+            onClick = onDownloadClick
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
         CategoryOption(

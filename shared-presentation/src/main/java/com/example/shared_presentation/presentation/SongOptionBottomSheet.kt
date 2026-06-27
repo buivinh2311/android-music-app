@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 fun SongOptionBottomSheet(
     song: Song,
     isFavorite: Boolean,
+    isDownload: Boolean,
     onDismiss: () -> Unit,
     onShareClick: () -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit,
@@ -58,6 +59,7 @@ fun SongOptionBottomSheet(
         SongOptionBottomSheetContent(
             modifier = Modifier.padding(horizontal = AppDimens.Space.Lg),
             isFavorite = isFavorite,
+            isDownload = isDownload,
             song = song,
             onShareClick = onShareClick
         ) { item ->
@@ -84,6 +86,7 @@ private fun SongOptionBottomSheetContent(
     modifier: Modifier = Modifier,
     song: Song,
     isFavorite: Boolean,
+    isDownload: Boolean,
     onShareClick: () -> Unit,
     onClick: (SongOptionItem) -> Unit
 ) {
@@ -137,7 +140,7 @@ private fun SongOptionBottomSheetContent(
         }
         HorizontalDivider(modifier = Modifier.padding(vertical = AppDimens.Space.Md))
 
-        songOptions(song, isFavorite).forEach { item ->
+        songOptions(song, isFavorite, isDownload).forEach { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,16 +170,18 @@ private fun SongOptionBottomSheetContent(
 @Composable
 private fun songOptions(
     song: Song,
-    isFavorite: Boolean
+    isFavorite: Boolean,
+    isDownload: Boolean,
 ): List<SongOptionItem> {
     val options = mutableListOf<SongOptionItem>().apply {
 
         add(
             SongOptionItem(
                 id = song.id,
-                icon = AppIcons.Download,
+                icon = if(isDownload) AppIcons.Delete else AppIcons.Download,
                 iconColor = MaterialTheme.colorScheme.onBackground,
-                title = stringResource(R.string.action_download),
+                title = if(isDownload) stringResource(R.string.action_delete_file)
+                else stringResource(R.string.action_download),
                 action = SongOptionAction.DOWNLOAD
             )
         )

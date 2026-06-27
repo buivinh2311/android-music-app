@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode.Companion.Screen
@@ -22,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -34,6 +38,7 @@ import com.example.musicapplication.navigation.route.ArtistChooserRoute
 import com.example.musicapplication.navigation.route.ArtistDetailRoute
 import com.example.musicapplication.navigation.route.ArtistRoute
 import com.example.musicapplication.navigation.route.DiscoveryRoute
+import com.example.musicapplication.navigation.route.DownloadRoute
 import com.example.musicapplication.navigation.route.FavoriteAlbumRoute
 import com.example.musicapplication.navigation.route.FavoriteRoute
 import com.example.musicapplication.navigation.route.FollowedArtistRoute
@@ -51,6 +56,8 @@ import com.example.musicapplication.navigation.route.SettingsRoute
 import com.example.shared_presentation.menu.SongOptionAction
 import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.MiniPlayer
+import com.example.shared_presentation.presentation.SongActionHost
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun AppNavHost(
@@ -58,13 +65,30 @@ fun AppNavHost(
     isFavoriteSong: Boolean,
     isConnect: Boolean,
     isPlaying: Boolean,
+    playlists: List<Playlist>,
     onFavoriteClick: (Song) -> Unit,
+    observeFavoriteSong: (String) -> Flow<Boolean>,
+    observeDownloadSong: (String) -> Flow<Boolean>,
+    onAddSongToDownload: (Song) -> Unit,
+    onRemoveSongFromDownload: (String) -> Unit,
+    onAddSongToFavorite: (String) -> Unit,
+    onRemoveSongFromFavorite: (String) -> Unit,
+    onCreatePlaylist: (String) -> Unit,
+    onAddSongToPlaylist: (Int, String) -> Unit,
     onTogglePlayClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
     val navController = rememberNavController()
+    var selectedSong: Song? by remember {
+        mutableStateOf(null)
+    }
+
     val onSongClick: (String) -> Unit = { songId ->
         navController.navigate("${AppRoute.PLAYER}/$songId")
+    }
+
+    val onSongOptionClick: (Song) -> Unit = { song ->
+        selectedSong = song
     }
 
     val onPlaylistClick: (Int) -> Unit = { playlistId ->
@@ -139,10 +163,10 @@ fun AppNavHost(
             HomeRoute(
                 navController = navController,
                 isConnect = isConnect,
+                onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -150,10 +174,10 @@ fun AppNavHost(
             LibraryRoute(
                 navController = navController,
                 isConnect = isConnect,
+                onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -161,10 +185,10 @@ fun AppNavHost(
             DiscoveryRoute(
                 navController = navController,
                 isConnect = isConnect,
+                onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -178,10 +202,10 @@ fun AppNavHost(
         composable(AppRoute.SEARCH) {
             SearchRoute(
                 isConnect = isConnect,
+                onSongOptionClick = onSongOptionClick,
                 onSongClick = onSongClick,
                 onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -208,9 +232,9 @@ fun AppNavHost(
                     albumName = albumName,
                     isConnect = isConnect,
                     onSongClick = onSongClick,
+                    onSongOptionClick = onSongOptionClick,
                     onBackClick = onBackClick,
-                    onBottomActionClick = onBottomActionClick,
-                    onSongNavigationAction = onSongNavigationAction
+                    onBottomActionClick = onBottomActionClick
                 )
             }
         }
@@ -219,9 +243,18 @@ fun AppNavHost(
             RecommendedRoute(
                 isConnect = isConnect,
                 onSongClick = onSongClick,
+                onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
+        composable(AppRoute.DOWNLOAD) {
+            DownloadRoute(
+                onSongClick = onSongClick,
+                onSongOptionClick = onSongOptionClick,
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -229,9 +262,9 @@ fun AppNavHost(
             FavoriteRoute(
                 isConnect = isConnect,
                 onSongClick = onSongClick,
+                onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -239,9 +272,9 @@ fun AppNavHost(
             RecentRoute(
                 isConnect = isConnect,
                 onSongClick = onSongClick,
+                onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -267,9 +300,9 @@ fun AppNavHost(
                     playlistId = playlistId,
                     isConnect = isConnect,
                     onSongClick = onSongClick,
+                    onSongOptionClick = onSongOptionClick,
                     onBackClick = onBackClick,
-                    onBottomActionClick = onBottomActionClick,
-                    onSongNavigationAction = onSongNavigationAction
+                    onBottomActionClick = onBottomActionClick
                 )
             }
         }
@@ -309,9 +342,9 @@ fun AppNavHost(
                     artistName = artistName,
                     isConnect = isConnect,
                     onSongClick = onSongClick,
+                    onSongOptionClick = onSongOptionClick,
                     onBackClick = onBackClick,
-                    onBottomActionClick = onBottomActionClick,
-                    onSongNavigationAction = onSongNavigationAction
+                    onBottomActionClick = onBottomActionClick
                 )
             }
         }
@@ -320,9 +353,9 @@ fun AppNavHost(
             MostListenedRoute(
                 isConnect = isConnect,
                 onSongClick = onSongClick,
+                onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -330,9 +363,9 @@ fun AppNavHost(
             ForYouRoute(
                 isConnect = isConnect,
                 onSongClick = onSongClick,
+                onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick,
-                onSongNavigationAction = onSongNavigationAction
+                onBottomActionClick = onBottomActionClick
             )
         }
 
@@ -355,8 +388,8 @@ fun AppNavHost(
             songId?.let {
                 PlayerRoute(
                     songId = songId,
-                    onBackClick = onBackClick,
-                    onSongNavigationAction = onSongNavigationAction
+                    onSongOptionClick = onSongOptionClick,
+                    onBackClick = onBackClick
                 )
             }
         }
@@ -421,4 +454,19 @@ fun AppNavHost(
             )
         }
     }
+
+    SongActionHost(
+        selectedSong = selectedSong,
+        playlists = playlists,
+        observeFavoriteSong = observeFavoriteSong,
+        observeDownloadSong = observeDownloadSong,
+        onDismissSong = { selectedSong = null },
+        onAddSongToDownload = onAddSongToDownload,
+        onRemoveSongFromDownload = onRemoveSongFromDownload,
+        onAddSongToFavorite = onAddSongToFavorite,
+        onRemoveSongFromFavorite = onRemoveSongFromFavorite,
+        onCreatePlaylist = onCreatePlaylist,
+        onAddSongToPlaylist = onAddSongToPlaylist,
+        onSongNavigationAction = onSongNavigationAction
+    )
 }

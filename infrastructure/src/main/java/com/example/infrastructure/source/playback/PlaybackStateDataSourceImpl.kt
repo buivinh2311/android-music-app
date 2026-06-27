@@ -2,10 +2,10 @@ package com.example.infrastructure.source.playback
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.core_model.PlaybackState
+import com.example.core_model.playback.PlaybackState
 import com.example.core_playback.PlaybackStateDataSource
-import com.example.core_model.QueueSource
-import com.example.core_model.RepeatMode
+import com.example.core_model.playback.QueueSource
+import com.example.core_model.playback.RepeatMode
 import com.example.core_utils.util.AppUtil
 import javax.inject.Inject
 

@@ -6,20 +6,12 @@ import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
 import com.example.core_playback.MediaPlaybackController
-import com.example.core_model.QueueSource
+import com.example.core_model.playback.QueueSource
 import com.example.core_ui.state.UiState
 import com.example.feature_favorite.domain.usecase.GetAllFavoriteSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,32 +44,6 @@ class FavoriteViewModel @Inject constructor(
     }
 
     val playlists = playlistUseCases.getAllPlaylist()
-
-    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observerFavoriteSong(songId)
-
-    fun createPlaylist(playlistName: String) {
-        viewModelScope.launch {
-            playlistUseCases.createPlaylist(playlistName)
-        }
-    }
-
-    fun addSongToPlaylist(playlistId: Int, songId: String) {
-        viewModelScope.launch {
-            playlistUseCases.addSongToPlaylist(playlistId, songId)
-        }
-    }
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
-        }
-    }
 
     fun play(queueSource: QueueSource, queue: List<Song>, startSong: Song) {
         mediaPlaybackController.play(queueSource, queue, startSong)

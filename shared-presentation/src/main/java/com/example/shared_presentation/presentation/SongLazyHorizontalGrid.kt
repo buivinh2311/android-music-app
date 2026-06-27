@@ -19,7 +19,7 @@ fun SongLazyHorizontalGrid(
     songs: List<Song>,
     rowWidth: Dp,
     onSongClick: (Song) -> Unit,
-    onMoreClick: (Song) -> Unit
+    onSongOptionClick: (Song) -> Unit
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(3),
@@ -36,7 +36,7 @@ fun SongLazyHorizontalGrid(
                     .width(rowWidth),
                 song = songs[index],
                 onSongClick = onSongClick,
-                onMoreClick = onMoreClick
+                onSongOptionClick = onSongOptionClick
             )
         }
     }
