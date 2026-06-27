@@ -1,13 +1,10 @@
 package com.example.infrastructure.source.album
 
-import android.util.Log
 import com.example.core_network.api.AlbumApi
 import com.example.core_network.datasource.AlbumRemoteDataSource
 import com.example.core_network.dto.AlbumDto
-import com.example.core_network.dto.AlbumListDto
 import com.example.core_network.dto.PagingParamRequest
 import com.example.core_network.utils.safeApiCall
-import com.example.infrastructure.mapper.remote.toModel
 import javax.inject.Inject
 
 class AlbumRemoteDataSourceImpl @Inject constructor(
@@ -36,7 +33,7 @@ class AlbumRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAlbumById(albumId: Int): AlbumDto? {
+    override suspend fun getAlbumById(albumId: Int): AlbumDto {
         return safeApiCall("getAlbumById") {
             albumApi.getAlbumById(albumId)
         }

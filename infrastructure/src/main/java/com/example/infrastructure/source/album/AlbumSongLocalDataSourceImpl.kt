@@ -12,7 +12,7 @@ class AlbumSongLocalDataSourceImpl @Inject constructor(
         albumSongCrossRefDao.insertAll(crossRefs)
     }
 
-    override suspend fun getCrossRefByAlbumId(albumId: Int): AlbumSongCrossRefEntity? {
+    override suspend fun getCrossRefByAlbumId(albumId: Int): AlbumSongCrossRefEntity {
         return albumSongCrossRefDao.getCrossRefById(albumId)
     }
 

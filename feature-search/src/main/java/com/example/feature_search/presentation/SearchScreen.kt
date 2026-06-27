@@ -37,14 +37,12 @@ import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.EmptyScreen
-import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.DeleteConfirmDialog
 import com.example.feature_search.presentation.component.SearchTopBar
-import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,10 +54,6 @@ fun SearchScreen (
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
-
     var showConfirmDialog by remember {
         mutableStateOf(false)
     }
@@ -79,13 +73,8 @@ fun SearchScreen (
     }
     val searchViewModel: SearchViewModel = hiltViewModel()
     val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
-
     val searchSong by searchViewModel.searchSong
         .collectAsStateWithLifecycle(emptyList())
-
-    val playlists by searchViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
-
     val context = LocalContext.current
     
     Scaffold(
@@ -120,11 +109,7 @@ fun SearchScreen (
             if(queryStr.isNotEmpty()) {
                 when(val state = uiState) {
                     UiState.Loading -> {
-                        item {
-//                            LoadingScreen(
-//                                modifier = Modifier.padding(innerPadding)
-//                            )
-                        }
+
                     }
 
                     UiState.Empty -> {
@@ -253,27 +238,5 @@ fun SearchScreen (
                 }
             )
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                searchViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                searchViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                searchViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = {playlistName ->
-//                searchViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = {playlistId, songId ->
-//                searchViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

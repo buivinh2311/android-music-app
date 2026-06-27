@@ -16,9 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,8 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
+import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -39,8 +36,6 @@ import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
-import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.SongActionHost
 import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -52,15 +47,8 @@ fun FavoriteScreen(
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
     val favoriteViewModel: FavoriteViewModel = hiltViewModel()
     val uiState by favoriteViewModel.uiState.collectAsStateWithLifecycle()
-
-    val playlists by favoriteViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
-
     val context = LocalContext.current
     
     Scaffold(
@@ -165,27 +153,5 @@ fun FavoriteScreen(
                 }
             }
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                favoriteViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                favoriteViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                favoriteViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = {playlistName ->
-//                favoriteViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = {playlistId, songId ->
-//                favoriteViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

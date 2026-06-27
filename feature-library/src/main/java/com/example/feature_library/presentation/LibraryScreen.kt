@@ -60,9 +60,6 @@ fun LibraryScreen(
     onSongClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
 
     var showCreatePlaylistDialog by remember {
         mutableStateOf(false)
@@ -205,27 +202,5 @@ fun LibraryScreen(
                 }
             )
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                libraryViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                libraryViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                libraryViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = {playlistName ->
-//                libraryViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = {playlistId, songId ->
-//                libraryViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

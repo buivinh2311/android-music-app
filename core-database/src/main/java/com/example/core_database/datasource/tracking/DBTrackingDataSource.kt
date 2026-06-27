@@ -1,6 +1,5 @@
 package com.example.core_database.datasource.tracking
 
-import androidx.room.Query
 import com.example.core_database.entity.tracking.DBTrackingEntity
 
 interface DBTrackingDataSource {

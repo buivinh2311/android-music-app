@@ -1,7 +1,6 @@
 package com.example.core_database.datasource.artist
 
 import androidx.paging.PagingSource
-import androidx.room.Query
 import com.example.core_database.entity.artist.ArtistEntity
 
 interface ArtistLocalDataSource {

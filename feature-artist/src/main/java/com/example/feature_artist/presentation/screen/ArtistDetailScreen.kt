@@ -14,17 +14,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
+import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -38,8 +35,6 @@ import com.example.core_ui.state.UiState
 import com.example.feature_artist.presentation.component.ArtistAction
 import com.example.feature_artist.presentation.component.ArtistInformation
 import com.example.feature_artist.presentation.viewmodel.ArtistDetailViewModel
-import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.SongActionHost
 import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -52,18 +47,12 @@ fun ArtistDetailScreen(
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
     val artistDetailViewModel: ArtistDetailViewModel = hiltViewModel()
     val uiState by artistDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(artistName) {
         artistDetailViewModel.loadArtistDetail(artistName)
         artistDetailViewModel.loadSongs(artistName)
     }
-    val playlists by artistDetailViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
-
     val isFavoriteArtist by artistDetailViewModel.isFavoriteArtist(artistName)
         .collectAsStateWithLifecycle(false)
     val context = LocalContext.current
@@ -193,27 +182,5 @@ fun ArtistDetailScreen(
                 }
             }
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                artistDetailViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                artistDetailViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                artistDetailViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = {playlistName ->
-//                artistDetailViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = {playlistId, songId ->
-//                artistDetailViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

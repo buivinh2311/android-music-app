@@ -2,7 +2,6 @@ package com.example.core_domain.repository
 
 import com.example.core_model.Song
 import com.example.core_model.download.DownloadInfo
-import com.example.core_model.download.DownloadState
 import kotlinx.coroutines.flow.Flow
 
 

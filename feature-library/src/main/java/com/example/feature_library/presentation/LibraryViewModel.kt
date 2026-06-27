@@ -2,19 +2,18 @@ package com.example.feature_library.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
-import com.example.core_playback.MediaPlaybackController
 import com.example.core_model.playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
-import com.example.feature_library.domain.usecase.GetDownloadSongCountUseCase
-import com.example.feature_library.domain.usecase.GetFavoriteAlbumCountUseCase
-import com.example.feature_library.domain.usecase.GetFavoriteSongCountUseCase
-import com.example.feature_library.domain.usecase.GetFollowedArtistCountUseCase
-import com.example.feature_library.domain.usecase.GetLimitPlaylistUseCase
-import com.example.feature_library.domain.usecase.GetLimitRecentSongsUseCase
+import com.example.feature_library.usecase.GetDownloadSongCountUseCase
+import com.example.feature_library.usecase.GetFavoriteAlbumCountUseCase
+import com.example.feature_library.usecase.GetFavoriteSongCountUseCase
+import com.example.feature_library.usecase.GetFollowedArtistCountUseCase
+import com.example.feature_library.usecase.GetLimitPlaylistUseCase
+import com.example.feature_library.usecase.GetLimitRecentSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +29,6 @@ class LibraryViewModel @Inject constructor(
     getFavoriteSongCountUseCase: GetFavoriteSongCountUseCase,
     getFollowedArtistCountUseCase: GetFollowedArtistCountUseCase,
     private val playlistUseCases: PlaylistUseCases,
-    private val favoriteSongUseCases: FavoriteSongUseCases,
     private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
 
@@ -61,28 +59,9 @@ class LibraryViewModel @Inject constructor(
     val followedArtistCount = getFollowedArtistCountUseCase()
     val playlists = getLimitPlaylistUseCase(5)
 
-
     fun createPlaylist(playlistName: String) {
         viewModelScope.launch {
             playlistUseCases.createPlaylist(playlistName)
-        }
-    }
-
-    fun addSongToPlaylist(playlistId: Int, songId: String) {
-        viewModelScope.launch {
-            playlistUseCases.addSongToPlaylist(playlistId, songId)
-        }
-    }
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
         }
     }
 

@@ -1,15 +1,9 @@
 package com.example.feature_artist.presentation.component
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,12 +17,10 @@ import coil.compose.AsyncImage
 import com.example.core_model.Artist
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
-import com.example.core_ui.component.AppButton
 import com.example.core_utils.util.ArtistUtil
 
 @Composable
 fun ArtistInformation(
-    modifier: Modifier = Modifier,
     artist: Artist,
     isFavoriteArtist: Boolean
 ) {

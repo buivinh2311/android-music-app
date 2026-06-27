@@ -3,7 +3,6 @@ package com.example.core_database.entity.playlist
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
-import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "playlist_song_cross_ref",

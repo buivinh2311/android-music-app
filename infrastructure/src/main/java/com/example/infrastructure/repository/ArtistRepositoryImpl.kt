@@ -1,6 +1,5 @@
 package com.example.infrastructure.repository
 
-import android.util.Log
 import com.example.core_database.datasource.artist.ArtistLocalDataSource
 import com.example.core_database.datasource.tracking.DBTrackingDataSource
 import com.example.core_database.datasource.user.FavoriteArtistLocalDataSource

@@ -58,17 +58,6 @@ fun AppTopBar(
                     else MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
-//        if(onBackClick == null) {
-//            AppIconButton(
-//                painter = AppIcons.Mic,
-//                contentDescription = stringResource(R.string.action_search_by_voice),
-//                iconSize = AppDimens.Icon.Md,
-//                rippleRadius = AppDimens.Ripple.Sm,
-//                tint = MaterialTheme.colorScheme.onBackground,
-//                rippleColor = MaterialTheme.colorScheme.onBackground
-//            ) { }
-//            Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
-//        }
 
         if(onSearchClick != null) {
             AppIconButton(

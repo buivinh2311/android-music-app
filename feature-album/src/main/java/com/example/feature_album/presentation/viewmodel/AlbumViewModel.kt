@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_model.Album
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
-import com.example.feature_album.domain.usecase.GetTopAlbumsUseCase
+import com.example.feature_album.usecase.GetTopAlbumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -19,9 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,12 +36,10 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptyScreen
 import com.example.core_ui.component.LoadingScreen
-import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
-import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -55,13 +50,8 @@ fun RecommendedScreen(
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
     val recommendedViewModel: RecommendedViewModel = hiltViewModel()
     val uiState by recommendedViewModel.uiState.collectAsStateWithLifecycle()
-    val playlists by recommendedViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
     val context = LocalContext.current
     
     Scaffold(
@@ -161,27 +151,5 @@ fun RecommendedScreen(
                 }
             }
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                recommendedViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                recommendedViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                recommendedViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = {playlistName ->
-//                recommendedViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = {playlistId, songId ->
-//                recommendedViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

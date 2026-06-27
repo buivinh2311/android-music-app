@@ -1,7 +1,6 @@
 package com.example.core_network.datasource
 
 import com.example.core_network.dto.ArtistDto
-import com.example.core_network.dto.ArtistListDto
 import com.example.core_network.dto.PagingParamRequest
 
 interface ArtistRemoteDataSource {

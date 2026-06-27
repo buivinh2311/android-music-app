@@ -1,9 +1,7 @@
 package com.example.core_domain.usecase
 
-import android.util.Log
 import com.example.core_domain.repository.FavoriteSongRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class FavoriteSongUseCases @Inject constructor(

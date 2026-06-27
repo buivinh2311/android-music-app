@@ -86,7 +86,7 @@ class SongRepositoryImpl @Inject constructor(
             )
         }
         val tracking = dbTrackingDataSource.getTracking() ?: return
-        if (!isCacheExpired(tracking.lastRecommendedSongUpdated,)) {
+        if (!isCacheExpired(tracking.lastRecommendedSongUpdated)) {
             return
         }
         database.withTransaction {

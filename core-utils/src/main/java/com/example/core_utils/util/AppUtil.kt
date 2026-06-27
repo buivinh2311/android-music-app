@@ -1,7 +1,6 @@
 package com.example.core_utils.util
 
 object AppUtil {
-    const val EXTRA_NETWORK_STATE = "EXTRA_NETWORK_STATE"
     const val PREF_QUEUE_SOURCE = "PREF_QUEUE_SOURCE"
     const val PREF_CURRENT_INDEX = "PREF_CURRENT_INDEX"
     const val PREF_SONG_ID = "PREF_SONG_ID"
@@ -16,7 +15,6 @@ object AppUtil {
     const val PREF_FILE_NAME = "music_app_pref"
     const val PREF_CURRENT_USER_ID = "PREF_CURRENT_USER_ID"
     const val SECTION_PAGE_SIZE = 12
-    const val DEFAULT_PAGE_SIZE = 20
     const val DEFAULT_LIST_SIZE = 40
     const val CACHE_TIMEOUT =  24 * 60 * 60 * 1000L
 }

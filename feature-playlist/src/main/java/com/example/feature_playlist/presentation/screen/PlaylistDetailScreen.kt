@@ -18,9 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,14 +34,12 @@ import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptySection
-import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_playlist.presentation.component.PlaylistInformation
 import com.example.feature_playlist.presentation.viewmodel.PlaylistDetailViewModel
-import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -56,21 +51,13 @@ fun PlaylistDetailScreen(
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
     val playlistDetailViewModel: PlaylistDetailViewModel = hiltViewModel()
     val uiState by playlistDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(playlistId) {
         playlistDetailViewModel.loadPlaylist(playlistId)
     }
-
-    val playlists by playlistDetailViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
-
     val songsInPlaylist by playlistDetailViewModel.songInPlaylist(playlistId)
         .collectAsStateWithLifecycle(emptyList())
-
     val context = LocalContext.current
 
     Scaffold(
@@ -173,27 +160,5 @@ fun PlaylistDetailScreen(
                 }
             }
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                playlistDetailViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                playlistDetailViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                playlistDetailViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = {playlistName ->
-//                playlistDetailViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = {playlistId, songId ->
-//                playlistDetailViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

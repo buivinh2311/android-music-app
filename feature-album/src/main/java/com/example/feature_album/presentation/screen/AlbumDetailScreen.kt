@@ -15,9 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,15 +30,13 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.EmptySection
 import com.example.core_ui.component.LoadingSection
-import com.example.shared_presentation.presentation.SongItem
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_album.presentation.component.AlbumAction
 import com.example.feature_album.presentation.component.AlbumInformation
 import com.example.feature_album.presentation.viewmodel.AlbumDetailViewModel
-import com.example.shared_presentation.menu.SongOptionItem
-import com.example.shared_presentation.presentation.SongActionHost
+import com.example.shared_presentation.presentation.SongItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,21 +50,15 @@ fun AlbumDetailScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit
 
 ) {
-    var selectedSong: Song? by remember {
-        mutableStateOf(null)
-    }
     val albumDetailViewModel: AlbumDetailViewModel = hiltViewModel()
     val uiState by albumDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(albumName) {
         albumDetailViewModel.loadAlbumDetail(albumName)
         albumDetailViewModel.loadSongs(albumName)
     }
-    val playlists by albumDetailViewModel.playlists
-        .collectAsStateWithLifecycle(emptyList())
 
     val isFavoriteAlbum by albumDetailViewModel.isFavoriteAlbum(albumName)
         .collectAsStateWithLifecycle(false)
-
     val context = LocalContext.current
 
     Scaffold(
@@ -193,27 +182,5 @@ fun AlbumDetailScreen(
                 }
             }
         }
-
-//        SongActionHost(
-//            selectedSong = selectedSong,
-//            playlists = playlists,
-//            observeFavoriteSong = { songId ->
-//                albumDetailViewModel.isFavoriteSong(songId)
-//            },
-//            onDismissSong = { selectedSong = null },
-//            onAddSongToFavorite = { songId ->
-//                albumDetailViewModel.addSongToFavorite(songId)
-//            },
-//            onRemoveSongFromFavorite = { songId ->
-//                albumDetailViewModel.removeSongFromFavorite(songId)
-//            },
-//            onCreatePlaylist = { playlistName ->
-//                albumDetailViewModel.createPlaylist(playlistName)
-//            },
-//            onAddSongToPlaylist = { playlistId, songId ->
-//                albumDetailViewModel.addSongToPlaylist(playlistId, songId)
-//            },
-//            onSongNavigationAction = onSongNavigationAction
-//        )
     }
 }

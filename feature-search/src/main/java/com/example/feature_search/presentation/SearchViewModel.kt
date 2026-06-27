@@ -2,17 +2,15 @@ package com.example.feature_search.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_domain.usecase.FavoriteSongUseCases
-import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
-import com.example.core_playback.MediaPlaybackController
 import com.example.core_model.playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
-import com.example.feature_search.domain.AddSongToDatabaseUseCase
-import com.example.feature_search.domain.AddSongToSearchSongUseCase
-import com.example.feature_search.domain.ClearAllSearchSongsUseCase
-import com.example.feature_search.domain.FindSongBySongNameOrArtistNameUseCase
-import com.example.feature_search.domain.GetSearchSongsUseCase
+import com.example.feature_search.usecase.AddSongToDatabaseUseCase
+import com.example.feature_search.usecase.AddSongToSearchSongUseCase
+import com.example.feature_search.usecase.ClearAllSearchSongsUseCase
+import com.example.feature_search.usecase.FindSongBySongNameOrArtistNameUseCase
+import com.example.feature_search.usecase.GetSearchSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +19,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val playlistUseCases: PlaylistUseCases,
     getSearchSongsUseCase: GetSearchSongsUseCase,
     private val findSongBySongNameOrArtistNameUseCase: FindSongBySongNameOrArtistNameUseCase,
     private val addSongToSearchSongUseCase: AddSongToSearchSongUseCase,
@@ -36,10 +32,6 @@ class SearchViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     val searchSong = getSearchSongsUseCase()
-
-    val playlists = playlistUseCases.getAllPlaylist()
-
-    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observeFavoriteSong(songId)
 
     fun findSongBySongNameOrArtistName(query: String) {
         viewModelScope.launch {
@@ -68,30 +60,6 @@ class SearchViewModel @Inject constructor(
     fun clearAllSearchSong() {
         viewModelScope.launch {
             clearAllSearchSongsUseCase()
-        }
-    }
-
-    fun createPlaylist(playlistName: String) {
-        viewModelScope.launch {
-            playlistUseCases.createPlaylist(playlistName)
-        }
-    }
-
-    fun addSongToPlaylist(playlistId: Int, songId: String) {
-        viewModelScope.launch {
-            playlistUseCases.addSongToPlaylist(playlistId, songId)
-        }
-    }
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
         }
     }
 

@@ -24,7 +24,7 @@ fun AlbumAction(
 ) {
     Row(horizontalArrangement = Arrangement.Center) {
         AppButton(
-            modifier = Modifier.width(140.dp),
+            modifier = modifier.width(140.dp),
             title = if (isFavoriteAlbum) stringResource(R.string.label_favorited)
             else stringResource(R.string.action_favorite),
             color = if (isFavoriteAlbum) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)

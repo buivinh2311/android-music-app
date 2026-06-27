@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_model.Artist
 import com.example.core_ui.state.UiState
-import com.example.feature_artist.domain.usecase.GetArtistDetailUseCase
+import com.example.feature_artist.usecase.GetArtistDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

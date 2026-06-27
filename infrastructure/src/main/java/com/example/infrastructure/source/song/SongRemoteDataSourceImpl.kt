@@ -1,13 +1,11 @@
 package com.example.infrastructure.source.song
 
-import android.util.Log
 import com.example.core_network.api.SongApi
 import com.example.core_network.datasource.SongRemoteDataSource
 import com.example.core_network.dto.PagingParamRequest
 import com.example.core_network.dto.SongDto
 import com.example.core_network.dto.SongListDto
 import com.example.core_network.utils.safeApiCall
-import com.example.infrastructure.mapper.remote.toModels
 import javax.inject.Inject
 
 class SongRemoteDataSourceImpl @Inject constructor(
@@ -103,7 +101,7 @@ class SongRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSongById(songId: String): SongDto? {
+    override suspend fun getSongById(songId: String): SongDto {
         return safeApiCall("getSongById") {
             songApi.getSongById(songId = songId)
         }

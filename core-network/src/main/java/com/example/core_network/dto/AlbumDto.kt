@@ -1,7 +1,6 @@
 package com.example.core_network.dto
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Serializer
 
 data class AlbumDto(
     @SerializedName("id")

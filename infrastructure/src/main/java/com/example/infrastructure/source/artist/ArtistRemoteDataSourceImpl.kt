@@ -1,10 +1,8 @@
 package com.example.infrastructure.source.artist
 
-import android.util.Log
 import com.example.core_network.api.ArtistApi
 import com.example.core_network.datasource.ArtistRemoteDataSource
 import com.example.core_network.dto.ArtistDto
-import com.example.core_network.dto.ArtistListDto
 import com.example.core_network.dto.PagingParamRequest
 import com.example.core_network.utils.safeApiCall
 import javax.inject.Inject

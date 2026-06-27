@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_model.settings.ThemeMode
 import com.example.core_ui.state.UiState
-import com.example.feature_settings.presentation.usecase.GetThemeModeUseCase
-import com.example.feature_settings.presentation.usecase.SaveThemeModeUseCase
+import com.example.feature_settings.usecase.GetThemeModeUseCase
+import com.example.feature_settings.usecase.SaveThemeModeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

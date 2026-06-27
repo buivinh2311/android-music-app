@@ -2,18 +2,16 @@ package com.example.feature_album.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_domain.usecase.FavoriteSongUseCases
-import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Album
-import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
+import com.example.core_model.playback.QueueSource
 import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
-import com.example.feature_album.domain.usecase.AddAlbumToFavoriteUseCase
-import com.example.feature_album.domain.usecase.GetAlbumDetailUseCase
-import com.example.feature_album.domain.usecase.GetSongsInAlbumUseCase
-import com.example.feature_album.domain.usecase.ObserveFavoriteAlbumUseCase
-import com.example.feature_album.domain.usecase.RemoveAlbumFromFavoriteUseCase
+import com.example.feature_album.usecase.AddAlbumToFavoriteUseCase
+import com.example.feature_album.usecase.GetAlbumDetailUseCase
+import com.example.feature_album.usecase.GetSongsInAlbumUseCase
+import com.example.feature_album.usecase.ObserveFavoriteAlbumUseCase
+import com.example.feature_album.usecase.RemoveAlbumFromFavoriteUseCase
 import com.example.feature_album.presentation.state.AlbumDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,8 +22,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumDetailViewModel @Inject constructor(
-    private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val playlistUseCases: PlaylistUseCases,
     private val getAlbumDetailUseCase: GetAlbumDetailUseCase,
     private val getSongsInAlbumUseCase: GetSongsInAlbumUseCase,
     private val addAlbumToFavoriteUseCase: AddAlbumToFavoriteUseCase,
@@ -67,14 +63,7 @@ class AlbumDetailViewModel @Inject constructor(
             }
         }
     }
-    val playlists = playlistUseCases.getAllPlaylist()
     fun isFavoriteAlbum(albumName: String) = observeFavoriteAlbumUseCase(albumName)
-
-    fun createPlaylist(playlistName: String) {
-        viewModelScope.launch {
-            playlistUseCases.createPlaylist(playlistName)
-        }
-    }
 
     fun addAlbumToFavorite(albumName: String) {
         viewModelScope.launch {
@@ -85,24 +74,6 @@ class AlbumDetailViewModel @Inject constructor(
     fun removeAlbumFromFavorite(albumName: String) {
         viewModelScope.launch {
             removeAlbumFromFavoriteUseCase(albumName)
-        }
-    }
-
-    fun addSongToPlaylist(playlistId: Int, songId: String) {
-        viewModelScope.launch {
-            playlistUseCases.addSongToPlaylist(playlistId, songId)
-        }
-    }
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
         }
     }
 

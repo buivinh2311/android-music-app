@@ -2,14 +2,12 @@ package com.example.feature_recent.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_domain.usecase.FavoriteSongUseCases
-import com.example.core_domain.usecase.PlaylistUseCases
 import com.example.core_model.Song
-import com.example.core_playback.MediaPlaybackController
 import com.example.core_model.playback.QueueSource
+import com.example.core_playback.MediaPlaybackController
 import com.example.core_ui.state.UiState
 import com.example.core_utils.util.AppUtil
-import com.example.feature_recent.domain.usecase.GetLimitRecentSongsUseCase
+import com.example.feature_recent.usecase.GetLimitRecentSongsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,8 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecentViewModel @Inject constructor(
-    private val favoriteSongUseCases: FavoriteSongUseCases,
-    private val playlistUseCases: PlaylistUseCases,
     private val getLimitRecentSongsUseCase: GetLimitRecentSongsUseCase,
     private val mediaPlaybackController: MediaPlaybackController
 ): ViewModel() {
@@ -41,34 +37,6 @@ class RecentViewModel @Inject constructor(
                     UiState.Success(songs)
                 }
             }
-        }
-    }
-
-    val playlists = playlistUseCases.getAllPlaylist()
-
-    fun isFavoriteSong(songId: String) = favoriteSongUseCases.observeFavoriteSong(songId)
-
-    fun createPlaylist(playlistName: String) {
-        viewModelScope.launch {
-            playlistUseCases.createPlaylist(playlistName)
-        }
-    }
-
-    fun addSongToPlaylist(playlistId: Int, songId: String) {
-        viewModelScope.launch {
-            playlistUseCases.addSongToPlaylist(playlistId, songId)
-        }
-    }
-
-    fun addSongToFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.addSongToFavorite(songId)
-        }
-    }
-
-    fun removeSongFromFavorite(songId: String) {
-        viewModelScope.launch {
-            favoriteSongUseCases.removeSongFromFavorite(songId)
         }
     }
 
