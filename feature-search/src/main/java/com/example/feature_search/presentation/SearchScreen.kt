@@ -73,8 +73,6 @@ fun SearchScreen (
     }
     val searchViewModel: SearchViewModel = hiltViewModel()
     val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
-    val searchSong by searchViewModel.searchSong
-        .collectAsStateWithLifecycle(emptyList())
     val context = LocalContext.current
     
     Scaffold(
@@ -180,45 +178,54 @@ fun SearchScreen (
                     }
                 }
 
-                if(searchSong.isEmpty()) {
-                    item {
-                        EmptyScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            icon = AppIcons.Song,
-                            title = stringResource(R.string.title_no_song_found)
-                        )
+                when(val state = uiState) {
+                    UiState.Loading -> {
+
                     }
-                } else {
-                    items(
-                        count = searchSong.size,
-                        key = { index -> searchSong[index].id }
-                    ) { index ->
-                        SongItem(
-                            modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
-                            song = searchSong[index],
-                            onSongClick = { song ->
-                                if(isConnect) {
-                                    keyboardController?.hide()
-                                    searchViewModel.play(
-                                        queueSource = QueueSource.SEARCH,
-                                        queue = searchSong,
-                                        startSong = song
-                                    )
-                                    onSongClick(song.id)
-                                } else {
-                                    showToast(
-                                        context,
-                                        message = context.getString(
-                                            R.string.no_internet_message
+
+                    UiState.Empty -> {
+                        item {
+                            EmptyScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                icon = AppIcons.Song,
+                                title = stringResource(R.string.title_no_song_found)
+                            )
+                        }
+                    }
+
+                    is UiState.Success -> {
+                        val searchSongs = state.data
+                        items(
+                            count = searchSongs.size,
+                            key = { index -> searchSongs[index].id }
+                        ) { index ->
+                            SongItem(
+                                modifier = Modifier.padding(horizontal = AppDimens.Space.Xs),
+                                song = searchSongs[index],
+                                onSongClick = { song ->
+                                    if(isConnect) {
+                                        keyboardController?.hide()
+                                        searchViewModel.play(
+                                            queueSource = QueueSource.SEARCH,
+                                            queue = searchSongs,
+                                            startSong = song
                                         )
-                                    )
+                                        onSongClick(song.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
+                                },
+                                onSongOptionClick = { song ->
+                                    keyboardController?.hide()
+                                    onSongOptionClick(song)
                                 }
-                            },
-                            onSongOptionClick = { song ->
-                                keyboardController?.hide()
-                                onSongOptionClick(song)
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

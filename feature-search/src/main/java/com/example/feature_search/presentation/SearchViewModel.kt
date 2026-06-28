@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    getSearchSongsUseCase: GetSearchSongsUseCase,
+    private val getSearchSongsUseCase: GetSearchSongsUseCase,
     private val findSongBySongNameOrArtistNameUseCase: FindSongBySongNameOrArtistNameUseCase,
     private val addSongToSearchSongUseCase: AddSongToSearchSongUseCase,
     private val clearAllSearchSongsUseCase: ClearAllSearchSongsUseCase,
@@ -31,7 +31,21 @@ class SearchViewModel @Inject constructor(
     )
     val uiState = _uiState.asStateFlow()
 
-    val searchSong = getSearchSongsUseCase()
+    init {
+        observeSearchSongs()
+    }
+
+    fun observeSearchSongs() {
+        viewModelScope.launch {
+            getSearchSongsUseCase().collect { songs ->
+                _uiState.value = if(songs.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Success(songs)
+                }
+            }
+        }
+    }
 
     fun findSongBySongNameOrArtistName(query: String) {
         viewModelScope.launch {
