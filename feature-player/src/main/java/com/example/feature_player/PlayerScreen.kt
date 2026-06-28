@@ -34,7 +34,6 @@ import com.example.feature_player.component.PlayerExtraAction
 import com.example.feature_player.component.PlayerInfo
 import com.example.feature_player.component.PlayerProgress
 import com.example.feature_player.component.PlayerTopBar
-import com.example.feature_player.PlayerViewModel
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,6 +100,7 @@ fun PlayerScreen(
 
                         PlayerArtWork(
                             artworkUrl = currentSong.artworkUrl,
+                            isPlaying = playbackState.isPlaying,
                             onArtworkClick = {
                                 onSongOptionClick(currentSong)
                             }

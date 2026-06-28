@@ -1,5 +1,8 @@
 package com.example.feature_player.component
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,7 +14,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -23,8 +29,25 @@ import com.example.core_resources.ui.dimen.AppDimens
 fun PlayerArtWork(
     modifier: Modifier = Modifier,
     artworkUrl: String,
+    isPlaying: Boolean,
     onArtworkClick: () -> Unit
 ) {
+    val rotation = remember {
+        Animatable(0f)
+    }
+
+    LaunchedEffect(isPlaying) {
+        while (isPlaying) {
+            rotation.animateTo(
+                rotation.value + 360f,
+                tween(
+                    durationMillis = 20000,
+                    easing = LinearEasing
+                )
+            )
+        }
+    }
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
@@ -39,6 +62,7 @@ fun PlayerArtWork(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .aspectRatio(1f)
+                .rotate(rotation.value)
         ) {
             AsyncImage(
                 model = artworkUrl,
