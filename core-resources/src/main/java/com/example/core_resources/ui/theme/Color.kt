@@ -1,7 +1,7 @@
 package com.example.core_resources.ui.theme
 
 import androidx.compose.ui.graphics.Color
-val primaryLight = Color(0xFFA64CFC)
+val primaryLight = Color(0xFF8C4FF3)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFEBDCFF)
 val onPrimaryContainerLight = Color(0xFF503C74)
@@ -37,7 +37,7 @@ val surfaceContainerLight = Color(0xFFFFFFFF)
 val surfaceContainerHighLight = Color(0xFFEAE7EF)
 val surfaceContainerHighestLight = Color(0xFFE4E1E9)
 
-val primaryDark = Color(0xFFA64CFC)
+val primaryDark = Color(0xFF8C4FF3)
 val onPrimaryDark = Color(0xFFFFFFFF)
 val primaryContainerDark = Color(0xFF503C74)
 val onPrimaryContainerDark = Color(0xFFEBDCFF)

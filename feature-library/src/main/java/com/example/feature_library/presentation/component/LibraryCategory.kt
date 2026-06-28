@@ -121,7 +121,7 @@ private fun CategoryOption(
             Icon(
                 painter = painter,
                 contentDescription = null,
-                modifier = Modifier.size(AppDimens.Icon.Md),
+                modifier = Modifier.size(AppDimens.Icon.Lg),
                 tint = tint
             )
             Spacer(modifier = Modifier.height(AppDimens.Space.Md))
