@@ -54,8 +54,8 @@
     <string name="title_followed_artist">nghệ sĩ đã theo dõi</string>
     <string name="title_add_song_to_playlist">Thêm bài hát vào playlist</string>
     <string name="action_create_new_playlist">Tạo playlist mới</string>
-    <string name="action_create">Tạo</string>
-    <string name="action_cancel">Hủy</string>
+    <string name="action_create">Đồng ý</string>
+    <string name="action_cancel">Hủy bỏ</string>
     <string name="hint_playlist_name">Nhập tên của Playlist</string>
     <string name="title_favorite_song">Bài hát yêu thích</string>
     <string name="create_new_playlist_success">Tạo playlist mới thành công</string>
@@ -111,4 +111,5 @@
     <string name="action_delete_file">Xóa file đã tải</string>
     <string name="remove_song_from_download_success">Đã xóa %s khỏi bộ nhớ</string>
     <string name="text_downloading">Thêm vào danh sách tải xuống</string>
+    <string name="delete_download_song_confirm">Bạn có chắc muốn xóa %s khỏi bộ nhớ?</string>
 </resources>

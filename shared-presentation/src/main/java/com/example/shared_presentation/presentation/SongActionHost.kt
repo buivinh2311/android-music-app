@@ -40,6 +40,10 @@ fun SongActionHost(
         mutableStateOf(false)
     }
 
+    var deleteSong: Song? by remember {
+        mutableStateOf(null)
+    }
+
     val context = LocalContext.current
 
     selectedSong?.let { song ->
@@ -67,14 +71,7 @@ fun SongActionHost(
                 when (item.action) {
                     SongOptionAction.DOWNLOAD -> {
                         if(isDownload) {
-                            onRemoveSongFromDownload(song.id)
-                            showToast(
-                                context,
-                                message = context.getString(
-                                    R.string.remove_song_from_download_success,
-                                    song.title
-                                )
-                            )
+                            deleteSong = song
                         } else {
                             onAddSongToDownload(song)
                             showToast(
@@ -154,6 +151,23 @@ fun SongActionHost(
                     context,
                     message = context.getString(
                         R.string.create_new_playlist_success
+                    )
+                )
+            }
+        )
+    }
+
+    deleteSong?.let { song ->
+        DeleteDownloadSongDialog(
+            song = song,
+            onDismiss = { deleteSong = null },
+            onDelete = { song ->
+                onRemoveSongFromDownload(song.id)
+                showToast(
+                    context,
+                    message = context.getString(
+                        R.string.remove_song_from_download_success,
+                        song.title
                     )
                 )
             }
