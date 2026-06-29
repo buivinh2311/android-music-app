@@ -23,7 +23,8 @@ fun AppTopBar(
     modifier: Modifier = Modifier,
     title: String,
     onBackClick: (() -> Unit)? = null,
-    onSearchClick: (() -> Unit)? = null
+    onSearchClick: (() -> Unit)? = null,
+    onMoreClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -69,6 +70,19 @@ fun AppTopBar(
                 rippleColor = MaterialTheme.colorScheme.onBackground
             ) {
                 onSearchClick()
+            }
+        }
+
+        if(onMoreClick != null) {
+            AppIconButton(
+                painter = AppIcons.More,
+                contentDescription = stringResource(R.string.action_view_more),
+                iconSize = AppDimens.Icon.Md,
+                rippleRadius = AppDimens.Ripple.Sm,
+                tint = MaterialTheme.colorScheme.onBackground,
+                rippleColor = MaterialTheme.colorScheme.onBackground
+            ) {
+                onMoreClick()
             }
         }
     }

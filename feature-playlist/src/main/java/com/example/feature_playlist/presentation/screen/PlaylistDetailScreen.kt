@@ -1,6 +1,7 @@
 package com.example.feature_playlist.presentation.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core_model.Playlist
 import com.example.core_model.Song
 import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
@@ -37,7 +42,11 @@ import com.example.core_ui.component.EmptySection
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
+import com.example.feature_playlist.menu.PlaylistOptionAction
+import com.example.feature_playlist.presentation.component.DeletePlaylistDialog
 import com.example.feature_playlist.presentation.component.PlaylistInformation
+import com.example.feature_playlist.presentation.component.PlaylistOptionBottomSheet
+import com.example.feature_playlist.presentation.component.RenamePlaylistDialog
 import com.example.feature_playlist.presentation.viewmodel.PlaylistDetailViewModel
 import com.example.shared_presentation.presentation.SongItem
 
@@ -48,13 +57,25 @@ fun PlaylistDetailScreen(
     isConnect: Boolean,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
-    onBackCLick: () -> Unit,
+    onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
+    var selectedPlaylist: Playlist? by remember {
+        mutableStateOf(null)
+    }
+
+    var renamePlaylist: Playlist? by remember {
+        mutableStateOf(null)
+    }
+
+    var deletePlaylist: Playlist? by remember {
+        mutableStateOf(null)
+    }
+
     val playlistDetailViewModel: PlaylistDetailViewModel = hiltViewModel()
     val uiState by playlistDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(playlistId) {
-        playlistDetailViewModel.loadPlaylist(playlistId)
+        playlistDetailViewModel.observePlaylist(playlistId)
     }
     val songsInPlaylist by playlistDetailViewModel.songInPlaylist(playlistId)
         .collectAsStateWithLifecycle(emptyList())
@@ -68,10 +89,18 @@ fun PlaylistDetailScreen(
         topBar = {
             AppTopBar(
                 title = when(val state = uiState) {
-                    is UiState.Success -> state.data.name
+                    is UiState.Success -> {
+                        state.data.name
+                    }
                     else -> ""
                 },
-                onBackClick = onBackCLick
+                onBackClick = onBackClick,
+                onMoreClick = {
+                    when(val state = uiState) {
+                        is UiState.Success -> { selectedPlaylist = state.data }
+                        else -> { }
+                    }
+                }
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -160,5 +189,65 @@ fun PlaylistDetailScreen(
                 }
             }
         }
+    }
+
+    selectedPlaylist?.let { playlist ->
+        Log.d("PlaylistVM", "screen ${playlistDetailViewModel.hashCode()}")
+        PlaylistOptionBottomSheet(
+            playlist = playlist,
+            onDismiss = { selectedPlaylist = null },
+            onShareClick = {
+                showToast(
+                    context,
+                    message = context.getString(
+                        R.string.currently_under_development
+                    )
+                )
+            },
+            onPlaylistOptionClick = { item ->
+                when(item.action) {
+                    PlaylistOptionAction.EDIT -> {
+                        renamePlaylist = playlist
+                    }
+
+                    PlaylistOptionAction.DELETE -> {
+                        deletePlaylist = playlist
+                    }
+                }
+            }
+        )
+    }
+
+    renamePlaylist?.let { playlist ->
+        RenamePlaylistDialog(
+            oldName = playlist.name,
+            onDismiss = { renamePlaylist = null },
+            onRename = { newName ->
+                playlistDetailViewModel.rename(playlist.id, newName)
+                showToast(
+                    context,
+                    message = context.getString(
+                        R.string.rename_playlist_successful
+                    )
+                )
+            }
+        )
+    }
+
+    deletePlaylist?.let { playlist ->
+        DeletePlaylistDialog(
+            playlist = playlist,
+            onDismiss = { deletePlaylist = null },
+            onDelete = { playlistId ->
+                playlistDetailViewModel.delete(playlistId)
+                onBackClick()
+                showToast(
+                    context,
+                    message = context.getString(
+                        R.string.delete_playlist_successful
+                    )
+                )
+            }
+        )
     }
 }

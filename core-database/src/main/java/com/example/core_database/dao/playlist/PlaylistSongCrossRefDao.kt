@@ -47,6 +47,12 @@ interface PlaylistSongCrossRefDao {
     )
     suspend fun delete(playlistId: Int, songId: String)
 
+    @Query(
+        "DELETE FROM playlist_song_cross_ref " +
+                "WHERE playlist_id = :playlistId"
+    )
+    suspend fun deleteByPlaylist(playlistId: Int)
+
     @Query("DELETE FROM playlist_song_cross_ref")
     suspend fun clearAll()
 }

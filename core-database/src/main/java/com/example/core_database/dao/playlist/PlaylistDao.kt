@@ -14,11 +14,12 @@ interface PlaylistDao {
     suspend fun insert(playlist: PlaylistEntity)
 
     @Query(
-        "SELECT p.*, COUNT(ps.song_id) AS size FROM playlists p " +
+        "SELECT p.*, 1 AS size FROM playlists p " +
                 "LEFT JOIN playlist_song_cross_ref ps ON p.playlist_id = ps.playlist_id " +
-                "WHERE p.playlist_id = :playlistId"
+                "WHERE p.playlist_id = :playlistId " +
+                "GROUP BY p.playlist_id"
     )
-    suspend fun getPlaylistById(playlistId: Int): PlaylistWithCountEntity?
+    fun getPlaylistById(playlistId: Int): Flow<PlaylistWithCountEntity?>
 
     @Query(
         "SELECT p.*, COUNT(ps.song_id) AS size FROM playlists p " +
@@ -42,6 +43,9 @@ interface PlaylistDao {
 
     @Query("UPDATE playlists SET artwork_url = :artwork WHERE playlist_id = :playlistId")
     suspend fun updateArtwork(playlistId: Int, artwork: String)
+
+    @Query("UPDATE playlists SET name = :newName WHERE playlist_id = :playlistId")
+    suspend fun rename(playlistId: Int, newName: String)
 
     @Query("DELETE FROM playlists WHERE playlist_id = :playlistId")
     suspend fun delete(playlistId: Int)

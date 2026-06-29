@@ -11,5 +11,6 @@ interface PlaylistSongLocalDataSource {
     fun getSongsInPlaylist(playlistId: Int): Flow<List<SongEntity>>
     suspend fun getAllSongIds(): List<String>
     suspend fun delete(playlistId: Int, songId: String)
+    suspend fun deleteByPlaylist(playlistId: Int)
     suspend fun clearAll()
 }

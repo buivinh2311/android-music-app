@@ -112,4 +112,9 @@
     <string name="remove_song_from_download_success">Đã xóa %s khỏi bộ nhớ</string>
     <string name="text_downloading">Thêm vào danh sách tải xuống</string>
     <string name="delete_download_song_confirm">Bạn có chắc muốn xóa %s khỏi bộ nhớ?</string>
+    <string name="action_rename_playlist">Đổi tên playlist</string>
+    <string name="delete_playlist_successful">Xóa playlist thành công</string>
+    <string name="rename_playlist_successful">Đổi tên playlist thành công</string>
+    <string name="action_delete_playlist">Xóa playlist</string>
+    <string name="delete_playlist_confirm">Bạn có chắc muốn xóa %s khỏi thư viện không?</string>
 </resources>

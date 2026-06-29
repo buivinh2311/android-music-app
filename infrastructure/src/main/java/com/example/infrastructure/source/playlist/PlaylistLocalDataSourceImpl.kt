@@ -14,7 +14,7 @@ class PlaylistLocalDataSourceImpl @Inject constructor(
         playlistDao.insert(playlist)
     }
 
-    override suspend fun getPlaylistById(playlistId: Int): PlaylistWithCountEntity? {
+    override fun getPlaylistById(playlistId: Int): Flow<PlaylistWithCountEntity?> {
         return playlistDao.getPlaylistById(playlistId)
     }
 
@@ -32,6 +32,10 @@ class PlaylistLocalDataSourceImpl @Inject constructor(
 
     override suspend fun updateArtwork(playlistId: Int, artwork: String) {
         playlistDao.updateArtwork(playlistId, artwork)
+    }
+
+    override suspend fun rename(playlistId: Int, newName: String) {
+        playlistDao.rename(playlistId, newName)
     }
 
     override suspend fun delete(playlistId: Int) {

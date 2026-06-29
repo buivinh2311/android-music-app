@@ -46,7 +46,7 @@ object AppDimens {
         val Xs = 16.dp
         val Sm = 26.dp
         val Md = 30.dp
-        val Lg = 36.dp
+        val Lg = 32.dp
         val Xl = 40.dp
     }
 

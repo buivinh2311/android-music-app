@@ -13,8 +13,11 @@ import javax.inject.Inject
 class PlaylistRepositoryImpl @Inject constructor(
     private val playlistLocalDataSource: PlaylistLocalDataSource
 ): PlaylistRepository {
-    override suspend fun getPlaylistById(playlistId: Int): Playlist? {
-        return playlistLocalDataSource.getPlaylistById(playlistId)?.toModel()
+    override fun getPlaylistById(playlistId: Int): Flow<Playlist?> {
+        return playlistLocalDataSource.getPlaylistById(playlistId)
+            .map { playlist ->
+                playlist?.toModel()
+            }
     }
 
     override fun getLimitPlaylists(limit: Int): Flow<List<Playlist>> {
@@ -41,6 +44,10 @@ class PlaylistRepositoryImpl @Inject constructor(
 
     override suspend fun updateArtwork(playlistId: Int, artwork: String) {
         playlistLocalDataSource.updateArtwork(playlistId, artwork)
+    }
+
+    override suspend fun rename(playlistId: Int, newName: String) {
+        playlistLocalDataSource.rename(playlistId, newName)
     }
 
     override suspend fun delete(playlistId: Int) {

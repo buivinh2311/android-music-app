@@ -34,6 +34,10 @@ class PlaylistSongLocalDataSourceImpl @Inject constructor(
         playlistSongCrossRefDao.delete(playlistId, songId)
     }
 
+    override suspend fun deleteByPlaylist(playlistId: Int) {
+        playlistSongCrossRefDao.deleteByPlaylist(playlistId)
+    }
+
     override suspend fun clearAll() {
         return playlistSongCrossRefDao.clearAll()
     }

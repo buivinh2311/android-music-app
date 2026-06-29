@@ -7,5 +7,6 @@ interface PlaylistSongRepository {
     fun getSongsInPlaylist(playlistId: Int): Flow<List<Song>>
     suspend fun addSongToPlaylist(playlistId: Int, songId: String)
     suspend fun removeSongFromPlaylist(playlistId: Int, songId: String)
+    suspend fun removeAllSongFromPlaylist(playlistId: Int)
     suspend fun isSongInPlaylist(playlistId: Int, songId: String): Boolean
 }

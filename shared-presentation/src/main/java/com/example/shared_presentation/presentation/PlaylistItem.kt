@@ -25,6 +25,8 @@ import coil.compose.AsyncImage
 import com.example.core_model.Playlist
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_resources.ui.icon.AppIcons
+import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun PlaylistItem(
@@ -62,8 +64,7 @@ fun PlaylistItem(
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = playlist.name,
@@ -72,6 +73,7 @@ fun PlaylistItem(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+
                 Text(
                     text = playlist.size.toString() + stringResource(R.string.text_song),
                     style = MaterialTheme.typography.bodyMedium,

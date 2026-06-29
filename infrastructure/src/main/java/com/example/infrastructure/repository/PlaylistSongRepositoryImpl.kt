@@ -37,6 +37,10 @@ class PlaylistSongRepositoryImpl @Inject constructor(
         playlistSongLocalDataSource.delete(playlistId, songId)
     }
 
+    override suspend fun removeAllSongFromPlaylist(playlistId: Int) {
+        playlistSongLocalDataSource.deleteByPlaylist(playlistId)
+    }
+
     override suspend fun isSongInPlaylist(playlistId: Int, songId: String):Boolean {
         return playlistSongLocalDataSource.isSongInPlaylist(playlistId, songId)
     }
