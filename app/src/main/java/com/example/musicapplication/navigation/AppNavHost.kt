@@ -26,9 +26,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.core_model.Playlist
 import com.example.core_model.Song
+import com.example.core_model.settings.ThemeMode
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.NetworkBanner
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.musicapplication.SystemBarController
 import com.example.musicapplication.navigation.route.AlbumDetailRoute
 import com.example.musicapplication.navigation.route.AlbumRoute
 import com.example.musicapplication.navigation.route.ArtistChooserRoute
@@ -59,6 +61,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun AppNavHost(
+    themeMode: ThemeMode,
     currentSong: Song?,
     isFavoriteSong: Boolean,
     isConnect: Boolean,
@@ -77,6 +80,11 @@ fun AppNavHost(
     onNextClick: () -> Unit
 ) {
     val navController = rememberNavController()
+    val backStackEntry by navController
+        .currentBackStackEntryAsState()
+    val route = backStackEntry?.destination?.route
+    SystemBarController(route, themeMode)
+
     var selectedSong: Song? by remember {
         mutableStateOf(null)
     }

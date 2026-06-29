@@ -1,7 +1,6 @@
 package com.example.feature_player.screen
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,10 +18,8 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -32,13 +28,13 @@ import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
-import com.example.feature_player.viewmodel.PlayerViewModel
 import com.example.feature_player.component.PlayerArtWork
 import com.example.feature_player.component.PlayerControls
 import com.example.feature_player.component.PlayerExtraAction
 import com.example.feature_player.component.PlayerInfo
 import com.example.feature_player.component.PlayerProgress
 import com.example.feature_player.component.PlayerTopBar
+import com.example.feature_player.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -86,13 +82,6 @@ fun PlayerScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent
         ) { innerPadding ->
-            val view = LocalView.current
-            SideEffect {
-                val window = (view.context as Activity).window
-                WindowCompat.getInsetsController(window, view)
-                    .isAppearanceLightStatusBars = false // icon trắng
-            }
-
             if (uiState.isLoading) {
                 LoadingScreen(modifier = Modifier.padding(innerPadding))
             } else {
