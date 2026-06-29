@@ -1,4 +1,4 @@
-package com.example.feature_player
+package com.example.feature_player.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -28,20 +28,26 @@ import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
+import com.example.feature_player.viewmodel.PlayerViewModel
 import com.example.feature_player.component.PlayerArtWork
 import com.example.feature_player.component.PlayerControls
 import com.example.feature_player.component.PlayerExtraAction
 import com.example.feature_player.component.PlayerInfo
 import com.example.feature_player.component.PlayerProgress
 import com.example.feature_player.component.PlayerTopBar
+import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
     songId: String,
+    observeDownloadSong: (String) -> Flow<Boolean>,
     onSongOptionClick: (Song) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onViewArtistClick: (String) -> Unit,
+    onDownloadClick: (Song) -> Unit,
+    onViewQueueClick: () -> Unit,
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val uiState by playerViewModel.uiState.collectAsStateWithLifecycle()
@@ -49,7 +55,7 @@ fun PlayerScreen(
         .collectAsStateWithLifecycle()
     val isCurrentFavoriteSong by playerViewModel.currentSongFavorite
         .collectAsStateWithLifecycle()
-    val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
+    val currentSong = playbackState.playQueue.getOrNull(playbackState.currentIndex)
     val context = LocalContext.current
 
     Box(
@@ -80,6 +86,8 @@ fun PlayerScreen(
                 LoadingScreen(modifier = Modifier.padding(innerPadding))
             } else {
                 currentSong?.let {
+                    val isDownloadSong by observeDownloadSong(currentSong.id)
+                        .collectAsStateWithLifecycle(false)
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -177,7 +185,39 @@ fun PlayerScreen(
                             }
                         )
                         Spacer(modifier = Modifier.height(32.dp))
-                        PlayerExtraAction()
+                        PlayerExtraAction(
+                            isDownloadSong = isDownloadSong,
+                            onViewComment = {
+                                showToast(
+                                    context,
+                                    message = context.getString(
+                                        R.string.currently_under_development
+                                    )
+                                )
+                            },
+                            onDownloadClick = {
+                                if(isDownloadSong) {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.text_downloading
+                                        )
+                                    )
+                                } else {
+                                    onDownloadClick(currentSong)
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.text_downloading
+                                        )
+                                    )
+                                }
+                            },
+                            onViewArtistClick = {
+                                onViewArtistClick(currentSong.artist)
+                            },
+                            onViewQueueClick = onViewQueueClick
+                        )
                     }
                 }
             }

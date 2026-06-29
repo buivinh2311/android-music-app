@@ -4,7 +4,8 @@ import com.example.core_model.Song
 
 data class PlaybackState (
     val queueSource: QueueSource = QueueSource.DEFAULT,
-    val queue: List<Song> = emptyList(),
+    val originalQueue: List<Song> = emptyList(),
+    val playQueue: List<Song> = emptyList(),
     val currentIndex: Int = 0,
     val currentSongId: String? = null,
     val isPlaying: Boolean = false,

@@ -1,9 +1,10 @@
-package com.example.feature_player
+package com.example.feature_player.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_domain.usecase.FavoriteSongUseCases
 import com.example.core_playback.MediaPlaybackController
+import com.example.feature_player.state.PlayerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,7 +65,7 @@ class PlayerViewModel @Inject constructor(
             .flatMapLatest { id ->
                 favoriteSongUseCases.observeFavoriteSong(id)
             }
-            .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(), false)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     fun addSongToFavorite(songId: String) {
         viewModelScope.launch {

@@ -33,8 +33,8 @@ fun AppTopBar(
             .padding(
                 start = AppDimens.Space.Lg,
                 end = AppDimens.Space.Lg,
-                top = AppDimens.Space.Sm,
-                bottom = AppDimens.Space.Xs
+                top = AppDimens.Space.Md,
+                bottom = AppDimens.Space.Sm
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {

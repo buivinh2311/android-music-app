@@ -24,7 +24,14 @@ import com.example.core_resources.ui.icon.AppIcons
 import com.example.core_ui.component.AppIconButton
 
 @Composable
-fun PlayerExtraAction(modifier: Modifier = Modifier) {
+fun PlayerExtraAction(
+    modifier: Modifier = Modifier,
+    isDownloadSong: Boolean,
+    onDownloadClick: () -> Unit,
+    onViewComment: () -> Unit,
+    onViewArtistClick: () -> Unit,
+    onViewQueueClick: () -> Unit
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -36,7 +43,9 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
             rippleRadius = AppDimens.Ripple.Lg,
             tint = Color.LightGray,
             rippleColor = Color.White
-        ) { }
+        ) {
+            onViewComment()
+        }
 
         Row(
             modifier = Modifier.weight(1f),
@@ -44,13 +53,15 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AppIconButton(
-                painter = AppIcons.AddToPlaylist,
-                contentDescription = stringResource(R.string.action_add_to_library),
+                painter = AppIcons.Artist,
+                contentDescription = stringResource(R.string.action_view_artist),
                 iconSize = AppDimens.Icon.Md,
                 rippleRadius = AppDimens.Ripple.Lg,
                 tint = Color.LightGray,
                 rippleColor = Color.White
-            ) { }
+            ) {
+                onViewArtistClick()
+            }
             Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
 
             Box(
@@ -74,25 +85,29 @@ fun PlayerExtraAction(modifier: Modifier = Modifier) {
                         ) { }
                 )
             }
-
             Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
+
             AppIconButton(
                 painter = AppIcons.Download,
                 contentDescription = stringResource(R.string.action_download),
                 iconSize = AppDimens.Icon.Md,
                 rippleRadius = AppDimens.Ripple.Lg,
-                tint = Color.LightGray,
+                tint = if(isDownloadSong) MaterialTheme.colorScheme.primary else Color.LightGray,
                 rippleColor = Color.White
-            ) { }
+            ) {
+                onDownloadClick()
+            }
         }
 
         AppIconButton(
-            painter = AppIcons.Artist,
-            contentDescription = stringResource(R.string.action_view_artist),
+            painter = AppIcons.Queue,
+            contentDescription = stringResource(R.string.action_queue_song),
             iconSize = AppDimens.Icon.Md,
             rippleRadius = AppDimens.Ripple.Lg,
             tint = Color.LightGray,
             rippleColor = Color.White
-        ) { }
+        ) {
+            onViewQueueClick()
+        }
     }
 }

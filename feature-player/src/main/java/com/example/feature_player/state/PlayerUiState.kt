@@ -1,4 +1,4 @@
-package com.example.feature_player
+package com.example.feature_player.state
 
 import com.example.core_model.Song
 

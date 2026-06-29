@@ -162,4 +162,8 @@ object AppIcons {
     val Edit
         @Composable
         get() = painterResource(R.drawable.ic_edit)
+
+    val Queue
+        @Composable
+        get() = painterResource(R.drawable.ic_queue)
 }

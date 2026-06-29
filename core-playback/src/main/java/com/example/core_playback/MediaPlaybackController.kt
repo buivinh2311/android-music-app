@@ -17,6 +17,7 @@ interface MediaPlaybackController {
     fun pause()
     fun resume()
     fun seekTo(position: Long)
+    fun seekTo(mediaItemIndex: Int, position: Long)
     fun skipNext()
     fun skipPrevious()
     fun toggleShuffle()

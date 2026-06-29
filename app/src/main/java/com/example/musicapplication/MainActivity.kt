@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
             val isConnect by mainViewModel.isConnect
                 .collectAsStateWithLifecycle()
 
-            val currentSong = playbackState.queue.getOrNull(playbackState.currentIndex)
+            val currentSong = playbackState.playQueue.getOrNull(playbackState.currentIndex)
             val context = LocalContext.current
 
             when(val state = themeState) {

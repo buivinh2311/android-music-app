@@ -112,6 +112,25 @@ class MediaPlaybackControllerImpl @Inject constructor(
         }
     }
 
+    private fun toMediaItems(queue: List<Song>): List<MediaItem> {
+        return queue.map { song ->
+            MediaItem.Builder()
+                .setMediaId(song.id)
+                .setUri(song.sourceUrl)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(song.title)
+                        .setArtist(song.artist)
+                        .setAlbumTitle("")
+                        .setArtworkUri(
+                            song.artworkUrl.toUri()
+                        )
+                        .build()
+                )
+                .build()
+        }
+    }
+
     override fun play(
         queueSource: QueueSource,
         queue: List<Song>,
@@ -121,24 +140,28 @@ class MediaPlaybackControllerImpl @Inject constructor(
     ) {
         scope.launch {
             val mediaController = mediaControllerProvider.await()
-            val startIndex = queue.indexOfFirst { it.id == startSong.id }
-            val mediaItems = queue.map { song ->
-                MediaItem.Builder()
-                    .setMediaId(song.id)
-                    .setUri(song.sourceUrl)
-                    .setMediaMetadata(
-                        MediaMetadata.Builder()
-                            .setTitle(song.title)
-                            .setArtist(song.artist)
-                            .setAlbumTitle("")
-                            .setArtworkUri(
-                                song.artworkUrl.toUri()
-                            )
-                            .build()
-                    )
-                    .build()
+            val state = playbackState.value
+            var playQueue = queue
+            var startIndex = queue.indexOfFirst { it.id == startSong.id }
+            if(state.isShuffleEnabled) {
+                val shuffleQueue = state.originalQueue.filter {
+                    it.id != startSong.id
+                }.shuffled()
+                playQueue = listOf(startSong) + shuffleQueue
+                startIndex = 0
+            }
+            _playbackState.update {
+                it.copy(
+                    queueSource = queueSource,
+                    playlistId = playlistId ?: 0,
+                    currentIndex = 0,
+                    sourceName = sourceName,
+                    originalQueue = queue,
+                    playQueue = playQueue
+                )
             }
 
+            val mediaItems = toMediaItems(playQueue)
             mediaController.setMediaItems(
                 mediaItems,
                 startIndex,
@@ -147,15 +170,6 @@ class MediaPlaybackControllerImpl @Inject constructor(
 
             mediaController.prepare()
             mediaController.play()
-
-            _playbackState.update {
-                it.copy(
-                    queueSource = queueSource,
-                    playlistId = playlistId ?: 0,
-                    sourceName = sourceName,
-                    queue = queue
-                )
-            }
         }
     }
 
@@ -180,6 +194,13 @@ class MediaPlaybackControllerImpl @Inject constructor(
         }
     }
 
+    override fun seekTo(mediaItemIndex: Int, position: Long) {
+        scope.launch {
+            mediaControllerProvider.await().seekTo(mediaItemIndex, position)
+            saveState()
+        }
+    }
+
     override fun skipNext() {
         scope.launch {
             mediaControllerProvider.await().seekToNextMediaItem()
@@ -196,12 +217,45 @@ class MediaPlaybackControllerImpl @Inject constructor(
 
     override fun toggleShuffle() {
         scope.launch {
+            val state = playbackState.value
+            val currentSong = state.playQueue[state.currentIndex]
+//            val mediaController = mediaControllerProvider.await()
+//            mediaController.shuffleModeEnabled = !mediaController.shuffleModeEnabled
+            if(state.isShuffleEnabled) {
+                val originalQueue = state.originalQueue
+                val index = originalQueue.indexOfFirst {
+                    it.id == currentSong.id
+                }
+                _playbackState.update {
+                    it.copy(
+//                    isShuffleEnabled = mediaController.shuffleModeEnabled
+                        isShuffleEnabled = false,
+                        currentIndex = index,
+                        playQueue = originalQueue
+                    )
+                }
+            } else {
+                val shuffleQueue = state.originalQueue.filter {
+                    it.id != currentSong.id
+                }.shuffled()
+                val playQueue = listOf(currentSong) + shuffleQueue
+                _playbackState.update {
+                    it.copy(
+                        isShuffleEnabled = true,
+                        currentIndex = 0,
+                        playQueue = playQueue
+                    )
+                }
+            }
+            val newState = playbackState.value
+            val currentPosition = newState.currentPosition
+            val isPlaying = newState.isPlaying
             val mediaController = mediaControllerProvider.await()
-            mediaController.shuffleModeEnabled = !mediaController.shuffleModeEnabled
-            _playbackState.update {
-                it.copy(
-                    isShuffleEnabled = mediaController.shuffleModeEnabled
-                )
+            mediaController.setMediaItems(toMediaItems(newState.playQueue))
+            mediaController.prepare()
+            mediaController.seekTo(newState.currentIndex, currentPosition)
+            if (isPlaying) {
+                mediaController.play()
             }
             saveState()
         }
@@ -238,9 +292,6 @@ class MediaPlaybackControllerImpl @Inject constructor(
     ) {
         val state = playbackStateDataSource.loadLastPlaybackState()
         var queue = restorePlaybackQueueUseCase(state)
-        _playbackState.value = state.copy(
-            queue = queue
-        )
         val songId = state.currentSongId ?: return
         val currentSong = getSongByIdUseCase(songId) ?: return
         var currentIndex = queue.indexOfFirst { song ->
@@ -254,34 +305,28 @@ class MediaPlaybackControllerImpl @Inject constructor(
             currentIndex = 0
         }
 
+        var playQueue = queue
+        if(state.isShuffleEnabled) {
+            val shuffleQueue = queue.filter {
+                it.id != currentSong.id
+            }.shuffled()
+            playQueue = listOf(currentSong) + shuffleQueue
+            currentIndex = 0
+        }
+
         _playbackState.value = state.copy(
-            queue = queue,
+            originalQueue = queue,
+            playQueue = playQueue,
             currentIndex = currentIndex
         )
 
-        val mediaItems = queue.map { song ->
-            MediaItem.Builder()
-                .setMediaId(song.id)
-                .setUri(song.sourceUrl)
-                .setMediaMetadata(
-                    MediaMetadata.Builder()
-                        .setTitle(song.title)
-                        .setArtist(song.artist)
-                        .setAlbumTitle("")
-                        .setArtworkUri(
-                            song.artworkUrl.toUri()
-                        )
-                        .build()
-                )
-                .build()
-        }
+        val mediaItems = toMediaItems(playQueue)
 
         mediaController.setMediaItems(
             mediaItems,
             currentIndex,
             state.currentPosition
         )
-        mediaController.shuffleModeEnabled = state.isShuffleEnabled
         mediaController.repeatMode = when (state.repeatMode) {
             RepeatMode.ALL -> Player.REPEAT_MODE_ALL
             RepeatMode.ONE -> Player.REPEAT_MODE_ONE

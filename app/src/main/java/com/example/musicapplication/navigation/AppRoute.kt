@@ -27,4 +27,5 @@ object AppRoute {
     const val MOST_LISTENED = "mostListened"
     const val PLAYER = "player"
     const val PLAYER_WITH_ARG = "player/{songId}"
+    const val QUEUE = "queue"
 }

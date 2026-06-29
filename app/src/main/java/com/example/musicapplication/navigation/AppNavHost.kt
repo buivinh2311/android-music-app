@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,10 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.core_model.Playlist
 import com.example.core_model.Song
-import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_ui.component.NetworkBanner
-import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.musicapplication.navigation.route.AlbumDetailRoute
 import com.example.musicapplication.navigation.route.AlbumRoute
@@ -49,6 +46,7 @@ import com.example.musicapplication.navigation.route.MostListenedRoute
 import com.example.musicapplication.navigation.route.PlayerRoute
 import com.example.musicapplication.navigation.route.PlaylistDetailRoute
 import com.example.musicapplication.navigation.route.PlaylistRoute
+import com.example.musicapplication.navigation.route.QueueRoute
 import com.example.musicapplication.navigation.route.RecentRoute
 import com.example.musicapplication.navigation.route.RecommendedRoute
 import com.example.musicapplication.navigation.route.SearchRoute
@@ -388,21 +386,43 @@ fun AppNavHost(
             songId?.let {
                 PlayerRoute(
                     songId = songId,
+                    observeDownloadSong = observeDownloadSong,
                     onSongOptionClick = onSongOptionClick,
-                    onBackClick = onBackClick
+                    onBackClick = onBackClick,
+                    onViewArtistClick = { artistStr ->
+                        if (artistStr.contains(" ft ")) {
+                            navController.navigate("${AppRoute.ARTIST_CHOOSER}/${artistStr}")
+                        } else {
+                            navController.navigate("${AppRoute.ARTIST_DETAIL}/${artistStr}")
+                        }
+                    },
+                    onDownloadClick = onAddSongToDownload,
+                    onViewQueueClick = {
+                        navController.navigate(AppRoute.QUEUE)
+                    }
                 )
             }
+        }
+
+        composable(AppRoute.QUEUE) {
+            QueueRoute(
+                isConnect = isConnect,
+                onSongOptionClick = onSongOptionClick,
+                onBackClick = onBackClick
+            )
         }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val showMiniPlayer = currentRoute !in setOf(
-        AppRoute.PLAYER_WITH_ARG
+        AppRoute.PLAYER_WITH_ARG,
+        AppRoute.QUEUE
     )
 
     val showNetworkBanner = !isConnect && currentRoute !in setOf(
-        AppRoute.PLAYER_WITH_ARG
+        AppRoute.PLAYER_WITH_ARG,
+        AppRoute.QUEUE
     )
 
     AnimatedVisibility(
