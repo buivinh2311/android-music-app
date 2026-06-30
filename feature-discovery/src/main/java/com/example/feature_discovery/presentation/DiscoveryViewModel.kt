@@ -35,7 +35,7 @@ class DiscoveryViewModel @Inject constructor(
 
     private fun loadHotArtists() {
         viewModelScope.launch {
-            val artists = getTopArtistUseCase(AppUtil.DEFAULT_LIST_SIZE)
+            val artists = getTopArtistUseCase(AppUtil.SECTION_PAGE_SIZE)
             _uiState.update {
                 it.copy(
                     hotArtists = if(artists.isEmpty()) {
