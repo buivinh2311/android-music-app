@@ -35,7 +35,6 @@ fun SongActionHost(
     onRemoveSongFromPlaylist: (Int, String) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
-    Log.d("PLAYLISTID", selectedPlaylistId.toString())
     var songForPlaylistPicker: Song? by remember {
         mutableStateOf(null)
     }

@@ -187,7 +187,6 @@ private fun songOptions(
     isDownload: Boolean,
 ): List<SongOptionItem> {
     val options = mutableListOf<SongOptionItem>().apply {
-        Log.d("PLAYLISTID", selectedPlaylistId.toString())
         selectedPlaylistId?.let {
             add(
                 SongOptionItem(
