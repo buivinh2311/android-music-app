@@ -16,6 +16,11 @@ class MusicApplication: Application() {
     @Inject
     lateinit var registerUseCase: RegisterUseCase
 
+    override fun onCreate() {
+        super.onCreate()
+        setupDefaultUser()
+    }
+
     private fun setupDefaultUser() {
         CoroutineScope(Dispatchers.IO).launch {
             val defaultUser = User(id = 0, username = "guest")
