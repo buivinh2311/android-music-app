@@ -150,7 +150,7 @@ fun HomeScreen(
                     is UiState.Success -> {
                         val recommendedSongs = state.data
                         items(
-                            count = AppUtil.SECTION_PAGE_SIZE,
+                            count = minOf(recommendedSongs.size, AppUtil.SECTION_PAGE_SIZE),
                             key = { index -> recommendedSongs[index].id }
                         ) { index ->
                             SongItem(

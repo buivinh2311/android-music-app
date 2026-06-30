@@ -1,6 +1,7 @@
 package com.example.shared_presentation.presentation
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,8 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.Song
 import com.example.core_model.Playlist
+import com.example.core_model.Song
 import com.example.core_resources.R
 import com.example.core_ui.component.showToast
 import com.example.shared_presentation.menu.SongOptionAction
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun SongActionHost(
     selectedSong: Song?,
+    selectedPlaylistId: Int?,
     playlists: List<Playlist>,
     observeFavoriteSong: (String) -> Flow<Boolean>,
     observeDownloadSong: (String) -> Flow<Boolean>,
@@ -30,8 +32,10 @@ fun SongActionHost(
     onRemoveSongFromFavorite: (String) -> Unit,
     onCreatePlaylist: (String) -> Unit,
     onAddSongToPlaylist: (Int, String) -> Unit,
+    onRemoveSongFromPlaylist: (Int, String) -> Unit,
     onSongNavigationAction: (SongOptionItem) -> Unit
 ) {
+    Log.d("PLAYLISTID", selectedPlaylistId.toString())
     var songForPlaylistPicker: Song? by remember {
         mutableStateOf(null)
     }
@@ -53,6 +57,7 @@ fun SongActionHost(
             .collectAsStateWithLifecycle(false)
         SongOptionBottomSheet(
             song = song,
+            selectedPlaylistId = selectedPlaylistId,
             isFavorite = isFavorite,
             isDownload = isDownload,
             onDismiss = { onDismissSong() },
@@ -69,6 +74,19 @@ fun SongActionHost(
             },
             onSongBusinessAction = { item ->
                 when (item.action) {
+                    SongOptionAction.REMOVE -> {
+                        selectedPlaylistId?.let { playlistId ->
+                            onRemoveSongFromPlaylist(playlistId, song.id)
+                            showToast(
+                                context,
+                                message = context.getString(
+                                    R.string.remove_song_from_playlist_successful,
+                                    song.title
+                                )
+                            )
+                        }
+                    }
+
                     SongOptionAction.DOWNLOAD -> {
                         if(isDownload) {
                             deleteSong = song

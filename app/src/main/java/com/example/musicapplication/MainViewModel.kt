@@ -86,6 +86,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun removeSongFromPlaylist(playlistId: Int, songId: String) {
+        viewModelScope.launch {
+            playlistUseCases.removeSongFromPlaylist(playlistId, songId)
+        }
+    }
+
     fun addSongToFavorite(songId: String) {
         viewModelScope.launch {
             favoriteSongUseCases.addSongToFavorite(songId)

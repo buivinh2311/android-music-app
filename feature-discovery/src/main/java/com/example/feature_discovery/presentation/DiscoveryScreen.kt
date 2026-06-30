@@ -199,7 +199,7 @@ fun DiscoveryScreen(
                     is UiState.Success -> {
                         val forYouSongs = state.data
                         items(
-                            count = AppUtil.SECTION_PAGE_SIZE,
+                            count = minOf(forYouSongs.size, AppUtil.SECTION_PAGE_SIZE),
                             key = { index -> forYouSongs[index].id }
                         ) { index ->
                             SongItem(

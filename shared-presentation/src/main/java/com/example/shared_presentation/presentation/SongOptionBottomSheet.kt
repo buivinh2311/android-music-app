@@ -1,5 +1,6 @@
 package com.example.shared_presentation.presentation
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SongOptionBottomSheet(
     song: Song,
+    selectedPlaylistId: Int?,
     isFavorite: Boolean,
     isDownload: Boolean,
     onDismiss: () -> Unit,
@@ -57,9 +59,10 @@ fun SongOptionBottomSheet(
         sheetState = sheetState
     ) {
         SongOptionBottomSheetContent(
+            song = song,
+            selectedPlaylistId = selectedPlaylistId,
             isFavorite = isFavorite,
             isDownload = isDownload,
-            song = song,
             onShareClick = onShareClick
         ) { item ->
             when (item.action) {
@@ -84,6 +87,7 @@ fun SongOptionBottomSheet(
 private fun SongOptionBottomSheetContent(
     modifier: Modifier = Modifier,
     song: Song,
+    selectedPlaylistId: Int?,
     isFavorite: Boolean,
     isDownload: Boolean,
     onShareClick: () -> Unit,
@@ -140,7 +144,12 @@ private fun SongOptionBottomSheetContent(
         }
         HorizontalDivider(modifier = Modifier.padding(vertical = AppDimens.Space.Md))
 
-        songOptions(song, isFavorite, isDownload).forEach { item ->
+        songOptions(
+            song,
+            selectedPlaylistId = selectedPlaylistId,
+            isFavorite,
+            isDownload
+        ).forEach { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -173,17 +182,30 @@ private fun SongOptionBottomSheetContent(
 @Composable
 private fun songOptions(
     song: Song,
+    selectedPlaylistId: Int?,
     isFavorite: Boolean,
     isDownload: Boolean,
 ): List<SongOptionItem> {
     val options = mutableListOf<SongOptionItem>().apply {
+        Log.d("PLAYLISTID", selectedPlaylistId.toString())
+        selectedPlaylistId?.let {
+            add(
+                SongOptionItem(
+                    id = song.id,
+                    icon = AppIcons.Remove,
+                    iconColor = MaterialTheme.colorScheme.onBackground,
+                    title = stringResource(R.string.action_remove_from_playlist),
+                    action = SongOptionAction.REMOVE
+                )
+            )
+        }
 
         add(
             SongOptionItem(
                 id = song.id,
-                icon = if(isDownload) AppIcons.Delete else AppIcons.Download,
+                icon = if (isDownload) AppIcons.Delete else AppIcons.Download,
                 iconColor = MaterialTheme.colorScheme.onBackground,
-                title = if(isDownload) stringResource(R.string.action_delete_file)
+                title = if (isDownload) stringResource(R.string.action_delete_file)
                 else stringResource(R.string.action_download),
                 action = SongOptionAction.DOWNLOAD
             )
@@ -192,10 +214,10 @@ private fun songOptions(
         add(
             SongOptionItem(
                 id = song.id,
-                icon = if(isFavorite) AppIcons.Favorite_filled else AppIcons.Favorite,
-                iconColor = if(isFavorite) MaterialTheme.colorScheme.primary
+                icon = if (isFavorite) AppIcons.Favorite_filled else AppIcons.Favorite,
+                iconColor = if (isFavorite) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onBackground,
-                title = if(isFavorite) stringResource(R.string.added_song_to_library)
+                title = if (isFavorite) stringResource(R.string.added_song_to_library)
                 else stringResource(R.string.action_add_to_library),
                 action = SongOptionAction.ADD_TO_LIBRARY
             )

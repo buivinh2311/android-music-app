@@ -7,7 +7,6 @@ data class SongOptionItem (
     val id: String,
     val artist: String? = null,
     val album: String? = null,
-    val playlistId: Int? = null,
     val icon: Painter,
     val iconColor: Color,
     val title: String,

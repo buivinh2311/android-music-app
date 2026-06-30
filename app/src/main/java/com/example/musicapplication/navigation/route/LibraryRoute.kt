@@ -15,6 +15,7 @@ fun LibraryRoute(
     onSongOptionClick: (Song) -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
+    onPlaylistClick: (Int) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     LibraryScreen(
@@ -44,11 +45,7 @@ fun LibraryRoute(
             navController.navigate(AppRoute.PLAYLIST)
         },
 
-
-        onPlaylistClick = { playlistId ->
-            navController.navigate("${AppRoute.PLAYLIST_DETAIL}/$playlistId")
-        },
-
+        onPlaylistClick = onPlaylistClick,
         onSearchClick = onSearchClick,
         onSongClick = onSongClick,
         onBottomActionClick = onBottomActionClick

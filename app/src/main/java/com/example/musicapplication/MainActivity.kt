@@ -125,6 +125,9 @@ class MainActivity : ComponentActivity() {
                                 onAddSongToPlaylist = { playlistId, songId ->
                                     mainViewModel.addSongToPlaylist(playlistId, songId)
                                 },
+                                onRemoveSongFromPlaylist = { playlistId, songId ->
+                                    mainViewModel.removeSongFromPlaylist(playlistId, songId)
+                                },
                                 onTogglePlayClick = {
                                     if (playbackState.isPlaying) {
                                         mainViewModel.pause()

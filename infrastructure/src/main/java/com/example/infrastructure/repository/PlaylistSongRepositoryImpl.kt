@@ -35,6 +35,8 @@ class PlaylistSongRepositoryImpl @Inject constructor(
 
     override suspend fun removeSongFromPlaylist(playlistId: Int, songId: String) {
         playlistSongLocalDataSource.delete(playlistId, songId)
+        val artwork = getSongsInPlaylist(playlistId).first().firstOrNull()?.artworkUrl
+        playlistLocalDataSource.updateArtwork(playlistId, artwork ?: "")
     }
 
     override suspend fun removeAllSongFromPlaylist(playlistId: Int) {

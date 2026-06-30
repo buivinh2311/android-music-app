@@ -119,4 +119,6 @@
     <string name="delete_playlist_confirm">Bạn có chắc muốn xóa %s khỏi thư viện không?</string>
     <string name="action_queue_song">Xem hàng đợi nhạc</string>
     <string name="title_queue">Danh sách phát</string>
+    <string name="action_remove_from_playlist">Xoá khỏi playlist này</string>
+    <string name="remove_song_from_playlist_successful">Đã xóa %s khỏi playlist</string>
 </resources>

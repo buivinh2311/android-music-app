@@ -3,7 +3,7 @@ package com.example.core_model
 data class Song(
     val id: String,
     val title: String,
-    val album: String,
+    val album: String? = null,
     val artist: String,
     val sourceUrl: String,
     val artworkUrl: String,

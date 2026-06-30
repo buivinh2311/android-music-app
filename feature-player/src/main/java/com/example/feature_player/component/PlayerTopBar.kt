@@ -64,7 +64,7 @@ fun PlayerTopBar(
                     QueueSource.MOST_HEARD -> stringResource(R.string.title_discovery_most_listened)
                     QueueSource.FOR_YOU -> stringResource(R.string.title_discovery_for_your)
                     QueueSource.ARTIST -> song.artist
-                    QueueSource.ALBUM -> song.album
+                    QueueSource.ALBUM -> song.album.orEmpty()
                     QueueSource.PLAYLIST -> sourceName
                     QueueSource.DOWNLOAD -> stringResource(R.string.action_download)
                     else -> "_"

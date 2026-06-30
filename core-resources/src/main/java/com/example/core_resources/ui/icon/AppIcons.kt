@@ -166,4 +166,8 @@ object AppIcons {
     val Queue
         @Composable
         get() = painterResource(R.drawable.ic_queue)
+
+    val Remove
+        @Composable
+        get() = painterResource(R.drawable.ic_remove)
 }

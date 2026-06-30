@@ -76,6 +76,7 @@ fun AppNavHost(
     onRemoveSongFromFavorite: (String) -> Unit,
     onCreatePlaylist: (String) -> Unit,
     onAddSongToPlaylist: (Int, String) -> Unit,
+    onRemoveSongFromPlaylist: (Int, String) -> Unit,
     onTogglePlayClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
@@ -89,6 +90,10 @@ fun AppNavHost(
         mutableStateOf(null)
     }
 
+    var selectedPlaylistId: Int? by remember {
+        mutableStateOf(null)
+    }
+
     val onSongClick: (String) -> Unit = { songId ->
         navController.navigate("${AppRoute.PLAYER}/$songId")
     }
@@ -98,6 +103,7 @@ fun AppNavHost(
     }
 
     val onPlaylistClick: (Int) -> Unit = { playlistId ->
+        selectedPlaylistId = playlistId
         navController.navigate("${AppRoute.PLAYLIST_DETAIL}/$playlistId")
     }
 
@@ -183,6 +189,7 @@ fun AppNavHost(
                 onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
+                onPlaylistClick = onPlaylistClick,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -433,6 +440,10 @@ fun AppNavHost(
         AppRoute.QUEUE
     )
 
+    if(currentRoute !in setOf(AppRoute.PLAYLIST_DETAIL_WITH_ARG)) {
+        selectedPlaylistId = null
+    }
+
     AnimatedVisibility(
         visible = showMiniPlayer,
         enter = fadeIn(),
@@ -485,6 +496,7 @@ fun AppNavHost(
 
     SongActionHost(
         selectedSong = selectedSong,
+        selectedPlaylistId = selectedPlaylistId,
         playlists = playlists,
         observeFavoriteSong = observeFavoriteSong,
         observeDownloadSong = observeDownloadSong,
@@ -495,6 +507,7 @@ fun AppNavHost(
         onRemoveSongFromFavorite = onRemoveSongFromFavorite,
         onCreatePlaylist = onCreatePlaylist,
         onAddSongToPlaylist = onAddSongToPlaylist,
+        onRemoveSongFromPlaylist = onRemoveSongFromPlaylist,
         onSongNavigationAction = onSongNavigationAction
     )
 }

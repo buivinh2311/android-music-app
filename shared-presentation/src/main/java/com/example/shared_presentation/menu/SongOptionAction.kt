@@ -1,6 +1,7 @@
 package com.example.shared_presentation.menu
 
 enum class SongOptionAction {
+    REMOVE,
     DOWNLOAD,
     ADD_TO_PLAYLIST,
     ADD_TO_LIBRARY,

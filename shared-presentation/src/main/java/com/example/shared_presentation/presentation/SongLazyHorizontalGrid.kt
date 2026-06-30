@@ -28,7 +28,7 @@ fun SongLazyHorizontalGrid(
         horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm)
     ) {
         items(
-            count = AppUtil.SECTION_PAGE_SIZE,
+            count = minOf(songs.size, AppUtil.SECTION_PAGE_SIZE),
             key = { index -> songs[index].id }
         ) { index ->
             SongItem(
