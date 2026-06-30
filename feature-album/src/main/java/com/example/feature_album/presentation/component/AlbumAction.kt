@@ -20,7 +20,8 @@ fun AlbumAction(
     modifier: Modifier = Modifier,
     album: Album,
     isFavoriteAlbum: Boolean,
-    onFavoriteClick: (String) -> Unit
+    onFavoriteClick: (String) -> Unit,
+    onPlayClick: () -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.Center) {
         AppButton(
@@ -40,7 +41,7 @@ fun AlbumAction(
             modifier = Modifier.width(140.dp),
             title = stringResource(R.string.action_play_music),
             color = MaterialTheme.colorScheme.primary,
-            onClick = {}
+            onClick = onPlayClick
         )
     }
 }

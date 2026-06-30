@@ -6,17 +6,4 @@ data class Playlist(
     val artwork: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val size: Int? = 0
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Playlist
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
+)

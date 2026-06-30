@@ -35,7 +35,7 @@ class DiscoveryViewModel @Inject constructor(
 
     private fun loadHotArtists() {
         viewModelScope.launch {
-            val artists = getTopArtistUseCase(AppUtil.SECTION_PAGE_SIZE)
+            val artists = getTopArtistUseCase(AppUtil.DEFAULT_LIST_SIZE)
             _uiState.update {
                 it.copy(
                     hotArtists = if(artists.isEmpty()) {
@@ -50,7 +50,7 @@ class DiscoveryViewModel @Inject constructor(
 
     private fun loadMostHeardSongs() {
         viewModelScope.launch {
-            val songs = getMostHeardSongUseCase(AppUtil.SECTION_PAGE_SIZE)
+            val songs = getMostHeardSongUseCase(AppUtil.DEFAULT_LIST_SIZE)
             _uiState.update {
                 it.copy(
                     mostHeardSongs = if(songs.isEmpty()) {

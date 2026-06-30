@@ -67,13 +67,6 @@ class PlaylistDetailViewModel @Inject constructor(
     fun rename(playlistId: Int, newName: String) {
         viewModelScope.launch {
             renamePlaylistUseCase(playlistId, newName)
-            val playlist = getPlaylistByIdUseCase(playlistId).first()
-            Log.d("PLAYLIST_TEST", playlist.toString())
-            _uiState.value = if(playlist != null) {
-                UiState.Success(playlist)
-            } else {
-                UiState.Empty
-            }
         }
     }
 }

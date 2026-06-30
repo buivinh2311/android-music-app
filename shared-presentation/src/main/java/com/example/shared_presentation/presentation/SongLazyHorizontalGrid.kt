@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.core_model.Song
 import com.example.core_resources.ui.dimen.AppDimens
+import com.example.core_utils.util.AppUtil
 
 @Composable
 fun SongLazyHorizontalGrid(
@@ -27,7 +28,7 @@ fun SongLazyHorizontalGrid(
         horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm)
     ) {
         items(
-            count = songs.size,
+            count = AppUtil.SECTION_PAGE_SIZE,
             key = { index -> songs[index].id }
         ) { index ->
             SongItem(

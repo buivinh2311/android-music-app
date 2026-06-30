@@ -43,7 +43,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun observeRecentSongs() {
         viewModelScope.launch {
-            getLimitRecentSongsUseCase(AppUtil.SECTION_PAGE_SIZE).collect { songs ->
+            getLimitRecentSongsUseCase(AppUtil.DEFAULT_LIST_SIZE).collect { songs ->
                 _uiState.value = if (songs.isEmpty()) {
                     UiState.Empty
                 } else {

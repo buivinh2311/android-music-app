@@ -56,7 +56,7 @@ fun AlbumDetailScreen(
         albumDetailViewModel.loadAlbumDetail(albumName)
         albumDetailViewModel.loadSongs(albumName)
     }
-
+    var songs: List<Song>? = null
     val isFavoriteAlbum by albumDetailViewModel.isFavoriteAlbum(albumName)
         .collectAsStateWithLifecycle(false)
     val context = LocalContext.current
@@ -125,6 +125,26 @@ fun AlbumDetailScreen(
                                         )
                                     )
                                 }
+                            },
+                            onPlayClick = {
+                                songs?.let { songs ->
+                                    if(isConnect) {
+                                        val startSong = songs[0]
+                                        albumDetailViewModel.play(
+                                            queueSource = QueueSource.ALBUM,
+                                            queue = songs,
+                                            startSong = startSong
+                                        )
+                                        onSongClick(startSong.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         )
                     }
@@ -149,7 +169,7 @@ fun AlbumDetailScreen(
                 }
 
                 is UiState.Success -> {
-                    val songs = state.data
+                    songs = state.data
                     items(
                         count = songs.size,
                         key = { index -> songs[index].id }

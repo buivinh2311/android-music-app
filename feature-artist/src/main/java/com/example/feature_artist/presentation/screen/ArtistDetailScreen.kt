@@ -55,6 +55,7 @@ fun ArtistDetailScreen(
     }
     val isFavoriteArtist by artistDetailViewModel.isFavoriteArtist(artistName)
         .collectAsStateWithLifecycle(false)
+    var songs: List<Song>? = null
     val context = LocalContext.current
     
     Scaffold(
@@ -125,6 +126,26 @@ fun ArtistDetailScreen(
                                         )
                                     )
                                 }
+                            },
+                            onPlayClick = {
+                                songs?.let { songs ->
+                                    if(isConnect) {
+                                        val startSong = songs[0]
+                                        artistDetailViewModel.play(
+                                            queueSource = QueueSource.ARTIST,
+                                            queue = songs,
+                                            startSong = startSong
+                                        )
+                                        onSongClick(startSong.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         )
                     }
@@ -149,7 +170,7 @@ fun ArtistDetailScreen(
                 }
 
                 is UiState.Success -> {
-                    val songs = state.data
+                    songs = state.data
                     items(
                         count = songs.size,
                         key = { index -> songs[index].id }

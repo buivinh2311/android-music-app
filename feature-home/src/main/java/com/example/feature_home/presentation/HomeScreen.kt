@@ -35,6 +35,7 @@ import com.example.core_ui.component.ViewAllButton
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
+import com.example.core_utils.util.AppUtil
 import com.example.shared_presentation.presentation.AlbumItem
 import com.example.shared_presentation.presentation.SongItem
 
@@ -108,7 +109,7 @@ fun HomeScreen(
                                 horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Lg)
                             ) {
                                 items(
-                                    count = hotAlbums.size,
+                                    count = AppUtil.SECTION_PAGE_SIZE,
                                     key = { index -> hotAlbums[index].id }
                                 ) { index ->
                                     AlbumItem(
@@ -149,7 +150,7 @@ fun HomeScreen(
                     is UiState.Success -> {
                         val recommendedSongs = state.data
                         items(
-                            count = recommendedSongs.size,
+                            count = AppUtil.SECTION_PAGE_SIZE,
                             key = { index -> recommendedSongs[index].id }
                         ) { index ->
                             SongItem(

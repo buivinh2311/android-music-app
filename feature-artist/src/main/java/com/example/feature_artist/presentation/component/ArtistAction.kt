@@ -19,7 +19,8 @@ import com.example.core_ui.component.AppButton
 fun ArtistAction (
     artist: Artist,
     isFavoriteArtist: Boolean,
-    onFollowClick: (String) -> Unit
+    onFollowClick: (String) -> Unit,
+    onPlayClick: () -> Unit,
 ) {
     Row(horizontalArrangement = Arrangement.Center) {
         AppButton(
@@ -39,7 +40,7 @@ fun ArtistAction (
             modifier = Modifier.width(140.dp),
             title = stringResource(R.string.action_play_music),
             color = MaterialTheme.colorScheme.primary,
-            onClick = {}
+            onClick = onPlayClick
         )
     }
 }

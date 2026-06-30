@@ -57,7 +57,6 @@ fun SongOptionBottomSheet(
         sheetState = sheetState
     ) {
         SongOptionBottomSheetContent(
-            modifier = Modifier.padding(horizontal = AppDimens.Space.Lg),
             isFavorite = isFavorite,
             isDownload = isDownload,
             song = song,
@@ -94,6 +93,7 @@ private fun SongOptionBottomSheetContent(
         modifier = modifier.fillMaxWidth()
     ) {
         Row(
+            modifier = Modifier.padding(horizontal = AppDimens.Space.Lg),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -147,7 +147,10 @@ private fun SongOptionBottomSheetContent(
                     .clickable {
                         onClick(item)
                     }
-                    .padding(vertical = AppDimens.Space.Md),
+                    .padding(
+                        vertical = AppDimens.Space.Md,
+                        horizontal = AppDimens.Space.Lg
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

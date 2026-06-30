@@ -70,7 +70,7 @@ class MainViewModel @Inject constructor(
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    val playlists = playlistUseCases.getAllPlaylist()
+    var playlists = playlistUseCases.getAllPlaylist()
     fun isDownloadSong(songId: String) = downloadUseCases.observeDownloadSong(songId)
     fun isFavoriteSong(songId: String) = favoriteSongUseCases.observeFavoriteSong(songId)
 

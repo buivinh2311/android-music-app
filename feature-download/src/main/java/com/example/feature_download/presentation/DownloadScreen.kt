@@ -54,7 +54,7 @@ fun DownloadScreen(
         },
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_download),
+                title = stringResource(R.string.action_library_downloaded),
                 onBackClick = onBackClick
             )
         },
@@ -91,7 +91,7 @@ fun DownloadScreen(
                 ) {
                     item {
                         Text(
-                            text = stringResource(R.string.label_download),
+                            text = stringResource(R.string.action_library_downloaded),
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -103,7 +103,15 @@ fun DownloadScreen(
                         )
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                         Button(
-                            onClick = {},
+                            onClick = {
+                                val startSong = downloadSongs[0]
+                                downloadViewModel.play(
+                                    queueSource = QueueSource.DOWNLOAD,
+                                    queue = downloadSongs,
+                                    startSong = startSong
+                                )
+                                onSongClick(startSong.id)
+                            },
                             modifier = Modifier.width(150.dp),
                             colors = ButtonDefaults.buttonColors(
                                 contentColor = Color.White,

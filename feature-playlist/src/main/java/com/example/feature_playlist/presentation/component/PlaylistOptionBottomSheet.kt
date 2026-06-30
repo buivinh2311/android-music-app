@@ -54,7 +54,6 @@ fun PlaylistOptionBottomSheet (
         sheetState = sheetState
     ) {
         PlaylistOptionBottomSheetContent(
-            modifier = Modifier.padding(horizontal = AppDimens.Space.Lg),
             playlist = playlist,
             onShareClick = onShareClick
         ) { item ->
@@ -79,6 +78,7 @@ private fun PlaylistOptionBottomSheetContent(
         modifier = modifier.fillMaxWidth()
     ) {
         Row(
+            modifier = Modifier.padding(horizontal = AppDimens.Space.Lg),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -132,7 +132,10 @@ private fun PlaylistOptionBottomSheetContent(
                     .clickable {
                         onClick(item)
                     }
-                    .padding(vertical = AppDimens.Space.Md),
+                    .padding(
+                        vertical = AppDimens.Space.Md,
+                        horizontal = AppDimens.Space.Lg
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

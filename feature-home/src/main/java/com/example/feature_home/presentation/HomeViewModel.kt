@@ -47,7 +47,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadRecommendedSongs() {
         viewModelScope.launch {
-            val songs = getRecommendedSongsUseCase(AppUtil.SECTION_PAGE_SIZE)
+            val songs = getRecommendedSongsUseCase(AppUtil.DEFAULT_LIST_SIZE)
             _uiState.update {
                 it.copy(
                     recommendedSongs = if(songs.isEmpty()) {

@@ -107,7 +107,24 @@ fun FavoriteScreen(
                             )
                             Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    if(isConnect) {
+                                        val startSong = favoriteSongs[0]
+                                        favoriteViewModel.play(
+                                            queueSource = QueueSource.FAVORITE,
+                                            queue = favoriteSongs,
+                                            startSong = startSong
+                                        )
+                                        onSongClick(startSong.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
+                                },
                                 modifier = Modifier.width(150.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     contentColor = Color.White,

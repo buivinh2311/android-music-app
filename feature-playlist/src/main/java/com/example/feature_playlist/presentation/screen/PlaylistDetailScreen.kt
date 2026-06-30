@@ -132,7 +132,26 @@ fun PlaylistDetailScreen(
                         PlaylistInformation(playlist)
                         Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
                         Button(
-                            onClick = {},
+                            onClick = {
+                                if(isConnect) {
+                                    val startSong = songsInPlaylist[0]
+                                    playlistDetailViewModel.play(
+                                        queueSource = QueueSource.PLAYLIST,
+                                        queue = songsInPlaylist,
+                                        startSong = startSong,
+                                        playlistId = playlist.id,
+                                        playlistName = playlist.name
+                                    )
+                                    onSongClick(startSong.id)
+                                } else {
+                                    showToast(
+                                        context,
+                                        message = context.getString(
+                                            R.string.no_internet_message
+                                        )
+                                    )
+                                }
+                            },
                             shape = RoundedCornerShape(48.dp),
                             modifier = Modifier
                                 .width(200.dp)
@@ -192,7 +211,6 @@ fun PlaylistDetailScreen(
     }
 
     selectedPlaylist?.let { playlist ->
-        Log.d("PlaylistVM", "screen ${playlistDetailViewModel.hashCode()}")
         PlaylistOptionBottomSheet(
             playlist = playlist,
             onDismiss = { selectedPlaylist = null },

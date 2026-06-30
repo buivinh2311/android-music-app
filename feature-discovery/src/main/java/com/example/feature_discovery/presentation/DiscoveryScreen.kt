@@ -36,6 +36,7 @@ import com.example.core_ui.component.ViewAllButton
 import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
+import com.example.core_utils.util.AppUtil
 import com.example.shared_presentation.presentation.ArtistItem
 import com.example.shared_presentation.presentation.SongItem
 import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
@@ -198,7 +199,7 @@ fun DiscoveryScreen(
                     is UiState.Success -> {
                         val forYouSongs = state.data
                         items(
-                            count = forYouSongs.size,
+                            count = AppUtil.SECTION_PAGE_SIZE,
                             key = { index -> forYouSongs[index].id }
                         ) { index ->
                             SongItem(

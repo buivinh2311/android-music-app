@@ -14,7 +14,7 @@ interface PlaylistDao {
     suspend fun insert(playlist: PlaylistEntity)
 
     @Query(
-        "SELECT p.*, 1 AS size FROM playlists p " +
+        "SELECT p.*, COUNT(ps.song_id) AS size FROM playlists p " +
                 "LEFT JOIN playlist_song_cross_ref ps ON p.playlist_id = ps.playlist_id " +
                 "WHERE p.playlist_id = :playlistId " +
                 "GROUP BY p.playlist_id"

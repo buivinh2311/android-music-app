@@ -102,15 +102,32 @@ fun RecommendedScreen(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Button(
-                                onClick = {},
-                                modifier = Modifier.width(200.dp),
+                                onClick = {
+                                    if(isConnect) {
+                                        val startSong = songs[0]
+                                        recommendedViewModel.play(
+                                            queueSource = QueueSource.RECOMMENDED,
+                                            queue = songs,
+                                            startSong = startSong
+                                        )
+                                        onSongClick(startSong.id)
+                                    } else {
+                                        showToast(
+                                            context,
+                                            message = context.getString(
+                                                R.string.no_internet_message
+                                            )
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.width(150.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     contentColor = Color.White,
                                     containerColor = MaterialTheme.colorScheme.primary
                                 )
                             ) {
                                 Text(
-                                    text = stringResource(R.string.action_play_random),
+                                    text = stringResource(R.string.action_play_music),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = Color.White
                                 )
