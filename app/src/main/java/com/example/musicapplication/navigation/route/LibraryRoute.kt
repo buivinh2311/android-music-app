@@ -12,6 +12,7 @@ import com.example.shared_presentation.menu.SongOptionItem
 fun LibraryRoute(
     navController: NavController,
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongOptionClick: (Song) -> Unit,
     onSearchClick: () -> Unit,
     onSongClick: (String) -> Unit,
@@ -20,6 +21,7 @@ fun LibraryRoute(
 ) {
     LibraryScreen(
         isConnect = isConnect,
+        selectedAction = selectedAction,
         onSongOptionClick = onSongOptionClick,
         onRecentClick = {
             navController.navigate(AppRoute.RECENT)

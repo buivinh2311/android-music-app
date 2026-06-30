@@ -26,7 +26,10 @@ fun SettingsScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

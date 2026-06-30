@@ -27,6 +27,7 @@ import com.example.shared_presentation.presentation.PlaylistItem
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun PlaylistScreen(
+    selectedAction: AppBottomBarAction,
     onPlaylistClick: (Int) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
@@ -37,7 +38,10 @@ fun PlaylistScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

@@ -6,11 +6,11 @@ import com.example.core_model.Song
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_discovery.presentation.DiscoveryScreen
 import com.example.musicapplication.navigation.AppRoute
-import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun DiscoveryRoute(
     navController: NavController,
+    selectedAction: AppBottomBarAction,
     onSongOptionClick: (Song) -> Unit,
     isConnect: Boolean,
     onSearchClick: () -> Unit,
@@ -19,6 +19,7 @@ fun DiscoveryRoute(
 ) {
     DiscoveryScreen(
         isConnect = isConnect,
+        selectedAction = selectedAction,
         onSongOptionClick = onSongOptionClick,
         onMoreArtistClick = {
             navController.navigate(AppRoute.ARTIST)

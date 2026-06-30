@@ -55,6 +55,7 @@ import com.example.shared_presentation.presentation.SongItem
 fun PlaylistDetailScreen(
     playlistId: Int,
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackClick: () -> Unit,
@@ -84,7 +85,10 @@ fun PlaylistDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

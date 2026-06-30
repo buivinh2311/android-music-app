@@ -49,6 +49,7 @@ import com.example.feature_artist.presentation.viewmodel.ArtistChooserViewModel
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun ArtistChooserScreen(
+    selectedAction: AppBottomBarAction,
     artistStr: String,
     onArtistClick: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -63,7 +64,10 @@ fun ArtistChooserScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

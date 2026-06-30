@@ -31,6 +31,7 @@ import com.example.shared_presentation.presentation.ArtistItem
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun ArtistScreen(
+    selectedAction: AppBottomBarAction,
     onArtistClick: (String) -> Unit,
     onBackCLick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
@@ -41,7 +42,10 @@ fun ArtistScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

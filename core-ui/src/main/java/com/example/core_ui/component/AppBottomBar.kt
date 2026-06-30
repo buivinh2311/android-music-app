@@ -1,5 +1,6 @@
 package com.example.core_ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
@@ -30,6 +30,7 @@ import com.example.core_ui.menu.AppBottomBarItem
 @Composable
 fun AppBottomBar(
     modifier: Modifier = Modifier,
+    selectedAction: AppBottomBarAction,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     BottomAppBar(
@@ -37,8 +38,10 @@ fun AppBottomBar(
             .fillMaxWidth()
             .navigationBarsPadding()
             .height(AppDimens.Layout.BottomBarHeight),
+        containerColor = MaterialTheme.colorScheme.background,
         actions = {
             appBottomBarItems().forEach { item ->
+                val isSelected = item.action == selectedAction
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -67,12 +70,14 @@ fun AppBottomBar(
                             modifier = Modifier.size(AppDimens.Icon.Sm),
                             painter = item.icon,
                             contentDescription = null,
-                            tint = Color.Gray
+                            tint = if(isSelected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                         )
                         Text(
                             text = item.title,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            color = if(isSelected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                         )
                     }
                 }

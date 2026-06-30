@@ -9,6 +9,7 @@ import com.example.feature_playlist.presentation.screen.PlaylistDetailScreen
 fun PlaylistDetailRoute(
     playlistId: Int,
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackClick: () -> Unit,
@@ -17,6 +18,7 @@ fun PlaylistDetailRoute(
     PlaylistDetailScreen(
         playlistId = playlistId,
         isConnect = isConnect,
+        selectedAction = selectedAction,
         onSongClick = onSongClick,
         onSongOptionClick = onSongOptionClick,
         onBackClick = onBackClick,

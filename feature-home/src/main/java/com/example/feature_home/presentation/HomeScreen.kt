@@ -44,6 +44,7 @@ import com.example.shared_presentation.presentation.SongItem
 @Composable
 fun HomeScreen(
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongOptionClick: (Song) -> Unit,
     onMoreAlbumClick: () -> Unit,
     onAlbumClick: (String) -> Unit,
@@ -65,7 +66,11 @@ fun HomeScreen(
             )
         },
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
+
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->

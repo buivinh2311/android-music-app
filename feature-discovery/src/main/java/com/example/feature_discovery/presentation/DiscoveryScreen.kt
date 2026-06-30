@@ -46,6 +46,7 @@ import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 @Composable
 fun DiscoveryScreen(
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongOptionClick: (Song) -> Unit,
     onMoreArtistClick: () -> Unit,
     onArtistClick: (String) -> Unit,
@@ -63,7 +64,10 @@ fun DiscoveryScreen(
         modifier = Modifier
             .fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

@@ -23,6 +23,7 @@ import com.example.feature_settings.presentation.component.PreferenceItem
 
 @Composable
 fun SettingsScreen(
+    selectedAction: AppBottomBarAction,
     onSearchClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
@@ -31,7 +32,10 @@ fun SettingsScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

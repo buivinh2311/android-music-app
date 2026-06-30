@@ -49,6 +49,7 @@ import com.example.shared_presentation.presentation.SongItem
 @Composable
 fun SearchScreen (
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongOptionClick: (Song) -> Unit,
     onSongClick: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -78,7 +79,10 @@ fun SearchScreen (
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             SearchTopBar(

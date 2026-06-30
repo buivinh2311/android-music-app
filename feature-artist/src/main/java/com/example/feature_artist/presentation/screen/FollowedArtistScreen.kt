@@ -48,6 +48,7 @@ import com.example.feature_artist.presentation.viewmodel.FollowedArtistViewModel
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun FollowedArtistScreen(
+    selectedAction: AppBottomBarAction,
     onArtistClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
@@ -58,7 +59,10 @@ fun FollowedArtistScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

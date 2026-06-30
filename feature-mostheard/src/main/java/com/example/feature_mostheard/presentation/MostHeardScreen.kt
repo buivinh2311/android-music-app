@@ -45,6 +45,7 @@ import com.example.shared_presentation.presentation.SongItem
 @Composable
 fun MostListenedScreen(
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackCLick: () -> Unit,
@@ -57,7 +58,11 @@ fun MostListenedScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
+
         },
         topBar = {
             AppTopBar(

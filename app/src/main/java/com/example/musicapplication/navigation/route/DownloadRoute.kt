@@ -7,12 +7,14 @@ import com.example.feature_download.presentation.DownloadScreen
 
 @Composable
 fun DownloadRoute(
+    selectedAction: AppBottomBarAction,
     onBackClick: () -> Unit,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     DownloadScreen(
+        selectedAction = selectedAction,
         onSongClick = onSongClick,
         onSongOptionClick = onSongOptionClick,
         onBackClick = onBackClick,

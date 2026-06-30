@@ -39,6 +39,7 @@ import com.example.shared_presentation.presentation.SongItem
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun DownloadScreen(
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackClick: () -> Unit,
@@ -50,7 +51,10 @@ fun DownloadScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

@@ -94,6 +94,10 @@ fun AppNavHost(
         mutableStateOf(null)
     }
 
+    var selectedAction: AppBottomBarAction by remember {
+        mutableStateOf(AppBottomBarAction.HOME)
+    }
+
     val onSongClick: (String) -> Unit = { songId ->
         navController.navigate("${AppRoute.PLAYER}/$songId")
     }
@@ -129,18 +133,22 @@ fun AppNavHost(
     val onBottomActionClick: (AppBottomBarAction) -> Unit = { action ->
         when (action) {
             AppBottomBarAction.HOME -> {
+                selectedAction = AppBottomBarAction.HOME
                 navController.navigate(AppRoute.HOME)
             }
 
             AppBottomBarAction.LIBRARY -> {
+                selectedAction = AppBottomBarAction.LIBRARY
                 navController.navigate(AppRoute.LIBRARY)
             }
 
             AppBottomBarAction.DISCOVERY -> {
+                selectedAction = AppBottomBarAction.DISCOVERY
                 navController.navigate(AppRoute.DISCOVERY)
             }
 
             AppBottomBarAction.SETTINGS -> {
+                selectedAction = AppBottomBarAction.SETTINGS
                 navController.navigate(AppRoute.SETTINGS)
             }
         }
@@ -175,6 +183,7 @@ fun AppNavHost(
             HomeRoute(
                 navController = navController,
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
@@ -186,6 +195,7 @@ fun AppNavHost(
             LibraryRoute(
                 navController = navController,
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
@@ -198,6 +208,7 @@ fun AppNavHost(
             DiscoveryRoute(
                 navController = navController,
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongOptionClick = onSongOptionClick,
                 onSearchClick = onSearchClick,
                 onSongClick = onSongClick,
@@ -207,6 +218,7 @@ fun AppNavHost(
 
         composable(AppRoute.SETTINGS) {
             SettingsRoute(
+                selectedAction = selectedAction,
                 onSearchClick = onSearchClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -215,6 +227,7 @@ fun AppNavHost(
         composable(AppRoute.SEARCH) {
             SearchRoute(
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongOptionClick = onSongOptionClick,
                 onSongClick = onSongClick,
                 onBackClick = onBackClick,
@@ -224,6 +237,7 @@ fun AppNavHost(
 
         composable(AppRoute.ALBUM) {
             AlbumRoute(
+                selectedAction = selectedAction,
                 onAlbumClick = onAlbumClick,
                 onBottomActionClick = onBottomActionClick,
                 onBackClick = onBackClick
@@ -232,6 +246,7 @@ fun AppNavHost(
 
         composable(AppRoute.FAVORITE_ALBUM) {
             FavoriteAlbumRoute(
+                selectedAction = selectedAction,
                 onAlbumClick = onAlbumClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
@@ -244,6 +259,7 @@ fun AppNavHost(
                 AlbumDetailRoute(
                     albumName = albumName,
                     isConnect = isConnect,
+                    selectedAction = selectedAction,
                     onSongClick = onSongClick,
                     onSongOptionClick = onSongOptionClick,
                     onBackClick = onBackClick,
@@ -255,6 +271,7 @@ fun AppNavHost(
         composable(AppRoute.RECOMMENDED) {
             RecommendedRoute(
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongClick = onSongClick,
                 onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
@@ -264,6 +281,7 @@ fun AppNavHost(
 
         composable(AppRoute.DOWNLOAD) {
             DownloadRoute(
+                selectedAction = selectedAction,
                 onSongClick = onSongClick,
                 onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
@@ -274,6 +292,7 @@ fun AppNavHost(
         composable(AppRoute.FAVORITE) {
             FavoriteRoute(
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongClick = onSongClick,
                 onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
@@ -284,6 +303,7 @@ fun AppNavHost(
         composable(AppRoute.RECENT) {
             RecentRoute(
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongClick = onSongClick,
                 onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
@@ -293,6 +313,7 @@ fun AppNavHost(
 
         composable(AppRoute.PLAYLIST) {
             PlaylistRoute(
+                selectedAction = selectedAction,
                 onPlaylistClick = onPlaylistClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
@@ -312,6 +333,7 @@ fun AppNavHost(
                 PlaylistDetailRoute(
                     playlistId = playlistId,
                     isConnect = isConnect,
+                    selectedAction = selectedAction,
                     onSongClick = onSongClick,
                     onSongOptionClick = onSongOptionClick,
                     onBackClick = onBackClick,
@@ -322,6 +344,7 @@ fun AppNavHost(
 
         composable(AppRoute.ARTIST) {
             ArtistRoute(
+                selectedAction = selectedAction,
                 onArtistClick = onArtistClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
@@ -330,6 +353,7 @@ fun AppNavHost(
 
         composable(AppRoute.FOLLOWED_ARTIST) {
             FollowedArtistRoute(
+                selectedAction = selectedAction,
                 onArtistClick = onArtistClick,
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
@@ -340,6 +364,7 @@ fun AppNavHost(
             val artistStr = backStackEntry.arguments?.getString("artistStr")
             artistStr?.let {
                 ArtistChooserRoute(
+                    selectedAction = selectedAction,
                     artistStr = artistStr,
                     onArtistClick = onArtistClick,
                     onBackClick = onBackClick,
@@ -354,6 +379,7 @@ fun AppNavHost(
                 ArtistDetailRoute(
                     artistName = artistName,
                     isConnect = isConnect,
+                    selectedAction = selectedAction,
                     onSongClick = onSongClick,
                     onSongOptionClick = onSongOptionClick,
                     onBackClick = onBackClick,
@@ -365,6 +391,7 @@ fun AppNavHost(
         composable(AppRoute.MOST_LISTENED) {
             MostListenedRoute(
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongClick = onSongClick,
                 onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,
@@ -375,6 +402,7 @@ fun AppNavHost(
         composable(AppRoute.FOR_YOU) {
             ForYouRoute(
                 isConnect = isConnect,
+                selectedAction = selectedAction,
                 onSongClick = onSongClick,
                 onSongOptionClick = onSongOptionClick,
                 onBackClick = onBackClick,

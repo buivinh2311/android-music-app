@@ -11,6 +11,7 @@ import com.example.shared_presentation.menu.SongOptionItem
 @Composable
 fun RecentRoute(
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackClick: () -> Unit,
@@ -18,6 +19,7 @@ fun RecentRoute(
 ) {
     RecentScreen(
         isConnect = isConnect,
+        selectedAction = selectedAction,
         onSongClick = onSongClick,
         onSongOptionClick = onSongOptionClick,
         onBackCLick = onBackClick,

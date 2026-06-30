@@ -44,6 +44,7 @@ import com.example.shared_presentation.presentation.SongItem
 fun AlbumDetailScreen(
     albumName: String,
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackCLick: () -> Unit,
@@ -64,7 +65,10 @@ fun AlbumDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(

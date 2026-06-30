@@ -1,16 +1,14 @@
 package com.example.musicapplication.navigation.route
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import com.example.core_model.Song
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_recommended.presentation.RecommendedScreen
-import com.example.musicapplication.navigation.AppRoute
-import com.example.shared_presentation.menu.SongOptionItem
 
 @Composable
 fun RecommendedRoute(
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongClick: (String) -> Unit,
     onSongOptionClick: (Song) -> Unit,
     onBackClick: () -> Unit,
@@ -18,6 +16,7 @@ fun RecommendedRoute(
 ) {
     RecommendedScreen(
         isConnect = isConnect,
+        selectedAction = selectedAction,
         onSongClick = onSongClick,
         onSongOptionClick = onSongOptionClick,
         onBackCLick = onBackClick,

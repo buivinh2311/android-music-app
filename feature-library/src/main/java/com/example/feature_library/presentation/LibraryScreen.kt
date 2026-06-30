@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core_model.playback.QueueSource
 import com.example.core_model.Song
+import com.example.core_model.playback.QueueSource
 import com.example.core_resources.R
 import com.example.core_resources.ui.dimen.AppDimens
 import com.example.core_resources.ui.icon.AppIcons
@@ -37,10 +37,8 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_library.presentation.component.LibraryCategory
 import com.example.feature_library.presentation.component.LibraryPlaylistHeader
-import com.example.shared_presentation.menu.SongOptionItem
 import com.example.shared_presentation.presentation.CreatePlaylistDialog
 import com.example.shared_presentation.presentation.PlaylistItem
-import com.example.shared_presentation.presentation.SongActionHost
 import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 
 @SuppressLint("LocalContextGetResourceValueCall")
@@ -48,6 +46,7 @@ import com.example.shared_presentation.presentation.SongLazyHorizontalGrid
 @Composable
 fun LibraryScreen(
     isConnect: Boolean,
+    selectedAction: AppBottomBarAction,
     onSongOptionClick: (Song) -> Unit,
     onRecentClick: () -> Unit,
     onFavoriteClick: () -> Unit,
@@ -88,7 +87,10 @@ fun LibraryScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomBar(onBottomActionClick = onBottomActionClick)
+            AppBottomBar(
+                selectedAction = selectedAction,
+                onBottomActionClick = onBottomActionClick
+            )
         },
         topBar = {
             AppTopBar(
